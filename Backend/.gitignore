@@ -1,9 +1,21 @@
-# Entornos virtuales
-/venv
+# Alembic
+alembic.ini
+# Base de datos local
+*.sqlite
+*.db
 
-# Archivos de caché de Python
+# Python
 __pycache__/
 *.pyc
+*.pyo
+
+# Entorno virtual
+venv/
+.venv/
 
 # Archivos de entorno
 .env
+
+# IDEs
+.vscode/
+.idea/
