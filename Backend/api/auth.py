@@ -18,6 +18,7 @@ def get_jwt_strategy() -> JWTStrategy:
 
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
+
 auth_backend = AuthenticationBackend(
     name="jwt",
     transport=bearer_transport,
@@ -29,7 +30,6 @@ fastapi_users = FastAPIUsers[User, int](
     auth_backends=[auth_backend]
 )
 
-# Crear un router para agrupar las rutas
 router = APIRouter()
 
 # Rutas de autenticación

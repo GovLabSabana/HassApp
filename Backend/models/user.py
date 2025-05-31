@@ -1,7 +1,7 @@
 # models/user.py
 from core.db import get_db
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, TIMESTAMP
 from core.db import Base
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 import os
@@ -19,10 +19,16 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-
-    name = Column(String(50), nullable=True)
-
-    # FastAPI Users ya define: id, email, hashed_password, is_active, is_superuser, etc.
+    nombre = Column(String(50))
+    tipo_persona = Column(String(50))
+    razon_social = Column(String(100), nullable=True)
+    telefono = Column(String(50))
+    direccion = Column(String(100), nullable=True)
+    pagina_web = Column(String(100), nullable=True)
+    rut = Column(String(255))
+    cedula = Column(String(50))
+    logo = Column(String(255), nullable=True)
+    created_at = Column(TIMESTAMP)
 
 
 async def get_user_db():
