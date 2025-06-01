@@ -12,6 +12,8 @@ from fastapi import Depends
 from core.db import get_db
 from models.tipo_documento import TipoDocumento
 
+from sqlalchemy.orm import relationship
+
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
@@ -32,6 +34,8 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     tipo_documento_id = Column(Integer, ForeignKey(
         "tipo_documento.id"))
     num_documento = Column(String(50))
+
+    predios = relationship("Predio", back_populates="user")
 
 
 async def get_user_db():

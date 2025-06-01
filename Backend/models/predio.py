@@ -20,4 +20,4 @@ class Predio(Base):
     altitud_promedio = Column(DECIMAL(10, 2))
     tipo_riego = Column(String(50), nullable=True)
     municipio = relationship("Municipio", back_populates="predios")
-    usuario = relationship("Usuario", back_populates="predios")
+    user = relationship("User", back_populates="predios")
