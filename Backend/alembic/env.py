@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from core.db import Base
 import models.user
+import models.tipo_documento
 
 from alembic import context
 

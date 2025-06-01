@@ -2,6 +2,8 @@
 from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Optional
 from datetime import datetime
+# Importa el modelo TipoDocumentoRead
+from schemas.tipo_documento import TipoDocumentoRead
 
 
 class UserRead(BaseModel):
@@ -14,9 +16,12 @@ class UserRead(BaseModel):
     direccion: Optional[str]
     pagina_web: Optional[str]
     rut: Optional[str]
-    cedula: Optional[str]
     logo: Optional[str]
     created_at: Optional[datetime]
+    tipo_documento_id: Optional[int]
+    # Puedes incluir el objeto relacionado (opcional)
+    tipo_documento: Optional[TipoDocumentoRead]
+    num_documento: Optional[str]
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -30,9 +35,11 @@ class UserCreate(BaseModel):
     telefono: str
     direccion: Optional[str]
     pagina_web: Optional[str]
-    cedula: str
     rut: Optional[str]
     logo: Optional[str]
+
+    tipo_documento_id: int
+    num_documento: Optional[str]
 
     def create_update_dict(self):
         return self.model_dump(exclude_unset=True)
@@ -51,5 +58,7 @@ class UserUpdate(BaseModel):
     direccion: Optional[str]
     pagina_web: Optional[str]
     rut: Optional[str]
-    cedula: Optional[str]
     logo: Optional[str]
+
+    tipo_documento_id: Optional[int]
+    num_documento: Optional[str]

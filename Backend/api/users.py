@@ -27,7 +27,8 @@ async def custom_register(
     telefono: str = Form(None),
     direccion: str = Form(None),
     pagina_web: str = Form(None),
-    cedula: str = Form(None),
+    tipo_documento_id: int = Form(None),
+    num_documento: str = Form(None),
     rut_document: UploadFile = File(None),
     logo_document: UploadFile = File(None),
     user_manager: UserManager = Depends(get_user_manager)
@@ -42,7 +43,8 @@ async def custom_register(
             telefono=telefono,
             direccion=direccion,
             pagina_web=pagina_web,
-            cedula=cedula,
+            tipo_documento_id=tipo_documento_id,
+            num_documento=num_documento,
             rut_document=rut_document,
             logo_document=logo_document,
             user_manager=user_manager

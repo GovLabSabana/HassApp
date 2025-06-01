@@ -1,7 +1,7 @@
 # models/user.py
 from core.db import get_db
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-from sqlalchemy import Column, String, Integer, TIMESTAMP
+from sqlalchemy import Column, String, Integer, TIMESTAMP, ForeignKey
 from core.db import Base
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 import os
@@ -10,6 +10,7 @@ from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from fastapi_users import BaseUserManager, IntegerIDMixin
 from fastapi import Depends
 from core.db import get_db
+from models.tipo_documento import TipoDocumento
 
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -26,9 +27,11 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     direccion = Column(String(100), nullable=True)
     pagina_web = Column(String(100), nullable=True)
     rut = Column(String(255))
-    cedula = Column(String(50))
     logo = Column(String(255), nullable=True)
     created_at = Column(TIMESTAMP)
+    tipo_documento_id = Column(Integer, ForeignKey(
+        "tipo_documento.id"))
+    num_documento = Column(String(50))
 
 
 async def get_user_db():

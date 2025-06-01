@@ -13,7 +13,8 @@ async def create_user_with_files(
     telefono: str,
     direccion: str,
     pagina_web: str,
-    cedula: str,
+    tipo_documento_id: int,
+    num_documento: str,
     rut_document,
     logo_document,
     user_manager
@@ -43,7 +44,8 @@ async def create_user_with_files(
         "telefono": telefono,
         "direccion": direccion,
         "pagina_web": pagina_web,
-        "cedula": cedula,
+        "tipo_documento_id": tipo_documento_id,
+        "num_documento": num_documento,
         "rut": urls["rut"],
         "logo": urls["logo"],
     }
