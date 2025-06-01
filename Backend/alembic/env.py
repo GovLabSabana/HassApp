@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 from core.db import Base
 import models.user
 import models.tipo_documento
+import models.municipio
+import models.predio
+import models.departamento
 
 from alembic import context
 

@@ -17,7 +17,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
-    __tablename__ = "users"
+    __tablename__ = "user"
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(50))

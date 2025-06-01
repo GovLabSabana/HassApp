@@ -50,7 +50,6 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr]
     nombre: Optional[str]
     tipo_persona: Optional[str]
     razon_social: Optional[str]

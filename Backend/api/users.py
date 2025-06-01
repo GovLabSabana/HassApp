@@ -1,11 +1,19 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
-from sqlalchemy.orm import Session
 from core.db import get_db
 from models.user import UserManager, get_user_manager
-from repositories.user import create_user_with_files
+from repositories.user import create_user_with_files, update_user_with_files
 from models.user import User
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi_users import FastAPIUsers
+from models.user import User
+from models.user import get_user_manager
+from core.auth import auth_backend
+
+fastapi_users = FastAPIUsers[User, int](get_user_manager, [auth_backend])
+
+# Dependency que devuelve el usuario actual autenticado (lanzará 401 si no está autenticado)
+current_user = fastapi_users.current_user()
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -58,3 +66,49 @@ async def custom_register(
         "rut_url": urls.get("rut"),
         "logo_url": urls.get("logo"),
     }
+
+
+# api/users.py
+
+@router.put("/update/me")
+async def update_me(
+    nombre: str = Form(None),
+    tipo_persona: str = Form(None),
+    razon_social: str = Form(None),
+    telefono: str = Form(None),
+    direccion: str = Form(None),
+    pagina_web: str = Form(None),
+    tipo_documento_id: int = Form(None),
+    num_documento: str = Form(None),
+    rut_document: UploadFile = File(None),
+    logo_document: UploadFile = File(None),
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(current_user),
+):
+    try:
+        user, urls = await update_user_with_files(
+            db=db,
+            user_id=user.id,
+            nombre=nombre,
+            tipo_persona=tipo_persona,
+            razon_social=razon_social,
+            telefono=telefono,
+            direccion=direccion,
+            pagina_web=pagina_web,
+            tipo_documento_id=tipo_documento_id,
+            num_documento=num_documento,
+            rut_document=rut_document,
+            logo_document=logo_document
+        )
+        # ⚠️ Mueve el return AQUÍ
+        return {
+            "msg": "Usuario actualizado con éxito",
+            "user_id": user.id,
+            "rut_url": urls.get("rut"),
+            "logo_url": urls.get("logo"),
+        }
+
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
