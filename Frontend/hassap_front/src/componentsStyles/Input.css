@@ -1,0 +1,25 @@
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #2a7f45;
+  font-weight: 600;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border 0.3s;
+  font-family: Arial, sans-serif;
+}
+
+.input-group input:focus {
+  border-color: #2a7f45;
+  outline: none;
+}
