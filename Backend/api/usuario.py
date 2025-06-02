@@ -1,26 +1,23 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
 from core.db import get_db
-from models.user import UserManager, get_user_manager
-from repositories.user import create_user_with_files, update_user_with_files
-from models.user import User
+from models.usuario import UserManager, get_user_manager, Usuario
+from repositories.usuario import create_user_with_files, update_user_with_files
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_users import FastAPIUsers
-from models.user import User
-from models.user import get_user_manager
 from core.auth import auth_backend
 
-fastapi_users = FastAPIUsers[User, int](get_user_manager, [auth_backend])
+fastapi_users = FastAPIUsers[Usuario, int](get_user_manager, [auth_backend])
 
 # Dependency que devuelve el usuario actual autenticado (lanzará 401 si no está autenticado)
 current_user = fastapi_users.current_user()
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(prefix="/usuarios", tags=["usuarios"])
 
 
 @router.get("/")
 async def list_users(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(User))
+    result = await db.execute(select(Usuario))
     users = result.scalars().all()
     return users
 
@@ -83,7 +80,7 @@ async def update_me(
     rut_document: UploadFile = File(None),
     logo_document: UploadFile = File(None),
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(current_user),
+    user: Usuario = Depends(current_user),
 ):
     try:
         user, urls = await update_user_with_files(

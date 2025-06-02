@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from fastapi_users import FastAPIUsers
 from fastapi_users.authentication import JWTStrategy, AuthenticationBackend, BearerTransport
-from models.user import get_user_manager, User
+from models.usuario import get_user_manager, Usuario
 
 load_dotenv()
 
@@ -22,7 +22,7 @@ auth_backend = AuthenticationBackend(
     get_strategy=get_jwt_strategy,
 )
 
-fastapi_users = FastAPIUsers[User, int](
+fastapi_users = FastAPIUsers[Usuario, int](
     get_user_manager=get_user_manager,
     auth_backends=[auth_backend]
 )

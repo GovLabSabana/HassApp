@@ -1,6 +1,6 @@
 # api/auth.py
 from fastapi import APIRouter
-from schemas.user import UserRead, UserCreate
+from schemas.usuario import UsuarioRead, UsuarioCreate
 from core.auth import auth_backend, fastapi_users
 
 router = APIRouter()
@@ -13,13 +13,13 @@ router.include_router(
 )
 
 router.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
+    fastapi_users.get_register_router(UsuarioRead, UsuarioCreate),
     prefix="/auth",
     tags=["auth"],
 )
 
 router.include_router(
-    fastapi_users.get_verify_router(UserRead),
+    fastapi_users.get_verify_router(UsuarioRead),
     prefix="/auth",
     tags=["auth"],
 )

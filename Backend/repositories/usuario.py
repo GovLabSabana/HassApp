@@ -1,10 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from models.user import User
+from models.usuario import Usuario
 from fastapi import HTTPException
 import uuid
 from core.s3 import upload_file_to_s3
-from schemas.user import UserCreate
+from schemas.usuario import UsuarioCreate
 
 
 async def create_user_with_files(
@@ -53,7 +53,7 @@ async def create_user_with_files(
         "logo": urls["logo"],
     }
 
-    user_create_obj = UserCreate(**user_create_dict)
+    user_create_obj = UsuarioCreate(**user_create_dict)
     try:
         user = await user_manager.create(user_create_obj)
     except Exception as e:
@@ -82,7 +82,7 @@ async def update_user_with_files(
     logo_document=None
 ):
     # Obtener el usuario
-    result = await db.execute(select(User).where(User.id == user_id))
+    result = await db.execute(select(Usuario).where(Usuario.id == user_id))
     user = result.scalar_one_or_none()
 
     if user is None:

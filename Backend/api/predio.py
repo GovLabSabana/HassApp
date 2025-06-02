@@ -4,24 +4,28 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from core.db import get_db
 from models.predio import Predio
-from models.user import User
+from models.usuario import Usuario
 from schemas.predio import PredioCreate, PredioRead, PredioUpdate
-from models.user import get_user_manager
+from models.usuario import get_user_manager
 from core.auth import auth_backend
 from fastapi_users import FastAPIUsers
 
-router = APIRouter(prefix="/predios", tags=["predios"])
 
-fastapi_users = FastAPIUsers[User, int](get_user_manager, [auth_backend])
+fastapi_users = FastAPIUsers[Usuario, int](get_user_manager, [auth_backend])
 current_user = fastapi_users.current_user()
 
+router = APIRouter(
+    prefix="/predios",
+    tags=["predios"],
+    dependencies=[Depends(current_user)]  # esta línea protege todo el router
+)
 # Obtener todos los predios del usuario autenticado
 
 
 @router.get("/", response_model=list[PredioRead])
 async def list_my_predios(
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(current_user)
+    user: Usuario = Depends(current_user)
 ):
     result = await db.execute(
         select(Predio).where(Predio.usuario_id == user.id)
@@ -35,7 +39,7 @@ async def list_my_predios(
 async def create_predio(
     predio_data: PredioCreate,
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(current_user)
+    user: Usuario = Depends(current_user)
 ):
     predio = Predio(**predio_data.dict(), usuario_id=user.id)
     db.add(predio)
@@ -50,7 +54,7 @@ async def update_predio(
     predio_id: int,
     predio_update: PredioUpdate,
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(current_user)
+    user: Usuario = Depends(current_user)
 ):
     result = await db.execute(
         select(Predio).where(Predio.id == predio_id,

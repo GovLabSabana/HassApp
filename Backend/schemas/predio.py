@@ -21,7 +21,7 @@ class PredioCreate(PredioBase):
 
 
 class PredioUpdate(BaseModel):
-    Nombre: Optional[str] = None
+    nombre: Optional[str] = None
     cedula_catastral: Optional[int] = None
     municipio_id: Optional[int] = None
     vereda: Optional[str] = None

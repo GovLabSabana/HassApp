@@ -2,12 +2,12 @@
 from fastapi import APIRouter, Depends
 from fastapi_users import FastAPIUsers
 from api.auth import auth_backend
-from models.user import get_user_manager
-from models.user import User  # Asegúrate de tener tu modelo User
+from models.usuario import get_user_manager
+from models.usuario import Usuario  # Asegúrate de tener tu modelo User
 from fastapi_users.authentication import AuthenticationBackend
 
 # Instancia de FastAPIUsers
-fastapi_users = FastAPIUsers[User, int](
+fastapi_users = FastAPIUsers[Usuario, int](
     get_user_manager,
     [auth_backend],
 )

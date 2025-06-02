@@ -11,15 +11,15 @@ from fastapi_users import BaseUserManager, IntegerIDMixin
 from fastapi import Depends
 from core.db import get_db
 from models.tipo_documento import TipoDocumento
-
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 
-class User(SQLAlchemyBaseUserTable[int], Base):
-    __tablename__ = "user"
+class Usuario(SQLAlchemyBaseUserTable[int], Base):
+    __tablename__ = "usuario"
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(50))
@@ -30,20 +30,20 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     pagina_web = Column(String(100), nullable=True)
     rut = Column(String(255))
     logo = Column(String(255), nullable=True)
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, server_default=func.now())
     tipo_documento_id = Column(Integer, ForeignKey(
         "tipo_documento.id"))
     num_documento = Column(String(50))
 
-    predios = relationship("Predio", back_populates="user")
+    predios = relationship("Predio", back_populates="usuario")
 
 
 async def get_user_db():
     async for db in get_db():
-        yield SQLAlchemyUserDatabase(db, User)
+        yield SQLAlchemyUserDatabase(db, Usuario)
 
 
-class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
+class UserManager(IntegerIDMixin, BaseUserManager[Usuario, int]):
     reset_password_token_secret = SECRET_KEY
     verification_token_secret = SECRET_KEY
 

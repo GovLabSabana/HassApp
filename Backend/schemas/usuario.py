@@ -6,7 +6,7 @@ from datetime import datetime
 from schemas.tipo_documento import TipoDocumentoRead
 
 
-class UserRead(BaseModel):
+class UsuarioRead(BaseModel):
     id: int
     email: EmailStr
     nombre: Optional[str]
@@ -26,7 +26,7 @@ class UserRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class UserCreate(BaseModel):
+class UsuarioCreate(BaseModel):
     email: EmailStr
     password: str
     nombre: str
@@ -49,7 +49,7 @@ class UserCreate(BaseModel):
         return self.create_update_dict()
 
 
-class UserUpdate(BaseModel):
+class UsuarioUpdate(BaseModel):
     nombre: Optional[str]
     tipo_persona: Optional[str]
     razon_social: Optional[str]
