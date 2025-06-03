@@ -3,11 +3,10 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from api import auth, protegida, predio, usuario
+from api import auth, protegida, predio, usuario, cosecha
 from pydantic import ValidationError
 
 load_dotenv()
-
 app = FastAPI()
 
 
@@ -16,10 +15,12 @@ def read_root():
     return {"Hello": "World"}
 
 
-# Incluye los routers
+# Routers
 app.include_router(usuario.router)
 app.include_router(auth.router)
 app.include_router(predio.router)
+app.include_router(cosecha.router)
+
 # Rutas de prueba, protegidas
 app.include_router(protegida.router, prefix="/api")  #
 

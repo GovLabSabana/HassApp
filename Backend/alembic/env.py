@@ -10,6 +10,9 @@ import models.municipio
 import models.predio
 import models.departamento
 import models.usuario
+import models.cosecha
+import models.calidad
+import models.producto
 
 from alembic import context
 

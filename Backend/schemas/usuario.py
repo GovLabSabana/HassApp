@@ -45,7 +45,6 @@ class UsuarioCreate(BaseModel):
         return self.model_dump(exclude_unset=True)
 
     def create_update_dict_superuser(self):
-        # Puedes devolver lo mismo o agregar campos extra para superuser
         return self.create_update_dict()
 
 

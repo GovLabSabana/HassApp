@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, DECIMAL, CheckConstraint
+from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, DECIMAL
 from sqlalchemy.orm import relationship
 from core.db import Base
-import models.municipio
-import models.usuario
+from models.rompimientos import cosecha_predio_table
+from models.municipio import Municipio
+from models.usuario import Usuario
 
 
 class Predio(Base):
@@ -19,5 +20,10 @@ class Predio(Base):
     vocacion = Column(String(50), nullable=True)
     altitud_promedio = Column(DECIMAL(10, 2))
     tipo_riego = Column(String(50), nullable=True)
+
     municipio = relationship("Municipio", back_populates="predios")
     usuario = relationship("Usuario", back_populates="predios")
+
+    # Nueva relación muchos a muchos
+    cosechas = relationship(
+        "Cosecha", secondary=cosecha_predio_table, back_populates="predios", lazy="selectin")
