@@ -5,6 +5,7 @@ from core.db import Base
 from models.producto import Producto
 from models.calidad import Calidad
 from models.insumo_cosecha import InsumoCosecha
+# from models.exportacion_cosecha import ExportacionCosecha
 
 
 class Cosecha(Base):
@@ -26,3 +27,5 @@ class Cosecha(Base):
     predios = relationship(
         "Predio", secondary=cosecha_predio_table, back_populates="cosechas", lazy="selectin")
     insumos_cosecha = relationship("InsumoCosecha", back_populates="cosecha")
+    # exportaciones = relationship(
+    #     "ExportacionCosecha", back_populates="cosecha")

@@ -6,7 +6,7 @@ from core.db import get_db
 from models.cosecha import Cosecha
 from schemas.cosecha import CosechaCreate, CosechaRead, CosechaUpdate
 from repositories import cosecha as cosecha_repo
-
+from sqlalchemy.orm import selectinload
 from fastapi_users import FastAPIUsers
 from models.usuario import Usuario, get_user_manager
 from core.auth import auth_backend
@@ -27,8 +27,13 @@ async def list_my_cosechas(
     user: Usuario = Depends(current_user)
 ):
     # Suponiendo que quieres filtrar por usuario a través de predios (modifícalo según tu lógica)
+
     result = await db.execute(
         select(Cosecha)
+        .options(
+            selectinload(Cosecha.predios),
+            selectinload(Cosecha.insumos_cosecha)
+        )
     )
     cosechas = result.scalars().all()
     return [CosechaRead.from_orm_with_predios(c) for c in cosechas]
