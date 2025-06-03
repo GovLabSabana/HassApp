@@ -32,14 +32,21 @@
   color: #1e5a2e;
 }
 
+.navbar-menu > li {
+  position: relative;
+}
+
 .dropdown {
   position: absolute;
+  top: 100%;
+  left: 0;
   background: white;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   border-radius: 8px;
   padding: 0.5rem 0;
   list-style: none;
   width: 150px;
+  z-index: 1000;
 }
 
 .dropdown li {
@@ -49,8 +56,18 @@
 .dropdown a {
   color: #333 !important;
   font-weight: normal !important;
+  text-decoration: none;
+  display: block;
 }
 
 .dropdown a:hover {
   color: #2a7f45 !important;
+}
+
+.normal {
+  font-weight: normal;
+}
+
+.bold {
+  font-weight: bold;
 }

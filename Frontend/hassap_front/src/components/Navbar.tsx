@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from "react";
-import './Navbar.css';
+import '../componentsStyles/Navbar.css';
 
 type NavItem = {
   title: string;
@@ -20,7 +20,9 @@ export const Navbar: React.FC = () => {
 
   return (
     <nav className="navbar">
-      <div className="navbar-logo">Corpohass</div>
+      <div className="navbar-logo">
+        <span className="normal">Corpo</span><span className="bold">hass</span>
+      </div>
       <ul className="navbar-menu">
         {navItems.map((item) => (
           <li 

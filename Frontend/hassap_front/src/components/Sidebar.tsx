@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './Sidebar.css';
+import '../componentsStyles/Sidebar.css';
 
 type SidebarItem = {
   label: string;
@@ -9,10 +9,12 @@ type SidebarItem = {
 
 export const Sidebar: React.FC = () => {
   const items: SidebarItem[] = [
-    { label: 'Inicio', active: true },
-    { label: 'Sostenibilidad' },
-    { label: 'Proyectos' },
-    { label: 'Contacto' },
+    { label: 'Inicio', /*active: true*/ },
+    { label: 'Cuenta' },
+    { label: 'Predios' },
+    { label: 'Producción' },
+    { label: 'Exportación' },
+    { label: 'Insumos' },
   ];
 
   return (
