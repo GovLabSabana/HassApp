@@ -9,12 +9,6 @@ from pydantic import ValidationError
 load_dotenv()
 app = FastAPI()
 
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
 # Routers
 app.include_router(usuario.router)
 app.include_router(auth.router)

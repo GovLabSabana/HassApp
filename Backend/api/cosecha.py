@@ -31,7 +31,7 @@ async def list_my_cosechas(
         select(Cosecha)
     )
     cosechas = result.scalars().all()
-    return cosechas
+    return [CosechaRead.from_orm_with_predios(c) for c in cosechas]
 
 
 @router.get("/{cosecha_id}", response_model=CosechaRead)
