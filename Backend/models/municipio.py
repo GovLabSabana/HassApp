@@ -2,6 +2,7 @@ from models.departamento import Departamento
 from sqlalchemy import Column, Integer, String, ForeignKey
 from core.db import Base
 from sqlalchemy.orm import relationship
+from models.proveedor import Proveedor
 
 
 class Municipio(Base):
@@ -13,3 +14,4 @@ class Municipio(Base):
         "departamento.id"))
 
     predios = relationship("Predio", back_populates="municipio")
+    proveedores = relationship("Proveedor", back_populates="municipio")

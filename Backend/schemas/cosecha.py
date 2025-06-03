@@ -3,6 +3,8 @@ from typing import Optional, List
 from datetime import date
 from decimal import Decimal
 
+from schemas.insumo_cosecha import InsumoCosechaCreate, InsumoCosechaRead
+
 
 class CosechaBase(BaseModel):
     fecha: date
@@ -14,6 +16,7 @@ class CosechaBase(BaseModel):
     observaciones: Optional[str] = None
 
     predio_ids: List[int]
+    insumos: List[InsumoCosechaCreate]
 
 
 class CosechaCreate(CosechaBase):
@@ -29,6 +32,7 @@ class CosechaUpdate(BaseModel):
     calibre_promedio: Optional[Decimal] = None
     observaciones: Optional[str] = None
     predio_ids: Optional[List[int]] = None
+    insumos: Optional[List[InsumoCosechaCreate]] = None
 
 
 class CosechaRead(BaseModel):
@@ -41,16 +45,20 @@ class CosechaRead(BaseModel):
     calibre_promedio: Optional[Decimal]
     observaciones: Optional[str]
     predio_ids: Optional[List[int]] = []
+    insumos: Optional[List[InsumoCosechaRead]] = []
 
     model_config = ConfigDict(from_attributes=True)
 
     @classmethod
     def from_orm_with_predios(cls, cosecha_orm):
-        # Extrae solo los IDs de los predios relacionados
         predio_ids = [
             p.id for p in cosecha_orm.predios] if cosecha_orm.predios else []
-        # Crea una instancia del esquema Pydantic
+        insumos = [
+            InsumoCosechaRead.model_validate(i)
+            for i in cosecha_orm.insumos_cosecha
+        ] if cosecha_orm.insumos_cosecha else []
+
         data = cls.from_orm(cosecha_orm)
-        # Sobrescribe el campo predio_ids con la lista calculada
         data.predio_ids = predio_ids
+        data.insumos = insumos
         return data

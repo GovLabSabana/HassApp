@@ -42,7 +42,7 @@ async def get_cosecha_by_id(
     cosecha = await cosecha_repo.get_cosecha(db, cosecha_id)
     if not cosecha:
         raise HTTPException(status_code=404, detail="Cosecha no encontrada")
-    return cosecha
+    return CosechaRead.from_orm_with_predios(cosecha)
 
 
 @router.get("/por-predio/{predio_id}", response_model=List[CosechaRead])
@@ -51,7 +51,7 @@ async def get_cosechas_by_predio_id(
     db: AsyncSession = Depends(get_db)
 ):
     cosechas = await cosecha_repo.get_cosechas_by_predio(db, predio_id)
-    return cosechas
+    return [CosechaRead.from_orm_with_predios(c) for c in cosechas]
 
 
 @router.post("/", response_model=CosechaRead)
