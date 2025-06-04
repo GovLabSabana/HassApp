@@ -8,16 +8,25 @@ import Dashboard from './routes/Dashboard.tsx'
 import Account from './routes/Account.tsx'
 import Properties from './routes/Properties.tsx'
 import ProtectedRoute from './routes/ProtectedRoute.tsx'
+import PublicRoute from './routes/PublicRoute.tsx'
 import GoBack from './routes/GoBack.tsx'
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: (
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
+    ),
   },
   {
     path: "/signup",
-    element: <Signup />,
+    element: (
+      <PublicRoute>
+        <Signup />
+      </PublicRoute>
+    ),
   },
   {
     path: "/",
@@ -37,7 +46,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // Ruta comodín para manejar 404 y volver a la anterior
   {
     path: "*",
     element: <GoBack />,

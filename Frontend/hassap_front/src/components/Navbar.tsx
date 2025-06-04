@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Necesario para redirigir
 import '../componentsStyles/Navbar.css';
 
 type NavItem = {
@@ -17,6 +18,11 @@ export const Navbar: React.FC = () => {
   ];
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+  };
 
   return (
     <nav className="navbar">
@@ -42,6 +48,12 @@ export const Navbar: React.FC = () => {
             )}
           </li>
         ))}
+        {/* Botón de cerrar sesión */}
+        <li>
+          <button className="logout-button" onClick={handleLogout}>
+            Cerrar sesión
+          </button>
+        </li>
       </ul>
     </nav>
   );

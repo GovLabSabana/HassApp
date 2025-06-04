@@ -71,3 +71,18 @@
 .bold {
   font-weight: bold;
 }
+
+.logout-button {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #d62828;
+}
