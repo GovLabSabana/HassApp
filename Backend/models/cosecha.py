@@ -5,7 +5,7 @@ from core.db import Base
 from models.producto import Producto
 from models.calidad import Calidad
 from models.insumo_cosecha import InsumoCosecha
-# from models.exportacion_cosecha import ExportacionCosecha
+from models.exportacion_cosecha import ExportacionCosecha
 
 
 class Cosecha(Base):

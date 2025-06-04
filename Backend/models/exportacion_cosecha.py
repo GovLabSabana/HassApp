@@ -1,8 +1,7 @@
-from sqlalchemy import (
-    Column, Integer, ForeignKey
-)
+from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from core.db import Base
+from models.exportacion import Exportacion
 
 
 class ExportacionCosecha(Base):

@@ -5,14 +5,28 @@ from sqlalchemy import pool
 import os
 from dotenv import load_dotenv
 from core.db import Base
+# Modelos más independientes
 import models.tipo_documento
-import models.municipio
-import models.predio
 import models.departamento
-import models.usuario
-import models.cosecha
-import models.calidad
+import models.municipio
 import models.producto
+import models.calidad
+
+# Modelos que empiezan a depender de los anteriores
+import models.predio
+import models.usuario
+
+# Modelos que dependen de producto, calidad, usuario, predio, etc.
+import models.cosecha
+import models.insumo_cosecha
+
+# Modelos con relaciones cruzadas más complejas
+import models.rompimientos
+
+# Modelos con muchas relaciones cruzadas (exportación <-> cosecha)
+import models.exportacion
+import models.exportacion_cosecha
+
 
 from alembic import context
 

@@ -19,5 +19,5 @@ class Comprador(Base):
     contacto = Column(String(70))
 
     tipo_documento = relationship(
-        "TipoDocumento", back_populates="compradores")
+        "TipoDocumento")
     exportaciones = relationship("Exportacion", back_populates="comprador")
