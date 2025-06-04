@@ -26,7 +26,6 @@ async def list_users(db: AsyncSession = Depends(get_db)):
 
 @router.put("/update/me")
 async def update_me(
-    nombre: str = Form(None),
     tipo_persona: str = Form(None),
     razon_social: str = Form(None),
     telefono: str = Form(None),
@@ -43,7 +42,6 @@ async def update_me(
         user, urls = await update_user_with_files(
             db=db,
             user_id=user.id,
-            nombre=nombre,
             tipo_persona=tipo_persona,
             razon_social=razon_social,
             telefono=telefono,

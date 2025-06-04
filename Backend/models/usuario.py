@@ -22,7 +22,6 @@ class Usuario(SQLAlchemyBaseUserTable[int], Base):
     __tablename__ = "usuario"
 
     id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String(50))
     tipo_persona = Column(String(50))
     razon_social = Column(String(100), nullable=True)
     telefono = Column(String(50))

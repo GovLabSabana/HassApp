@@ -9,7 +9,6 @@ from schemas.tipo_documento import TipoDocumentoRead
 class UsuarioRead(BaseModel):
     id: int
     email: EmailStr
-    nombre: Optional[str]
     tipo_persona: Optional[str]
     razon_social: Optional[str]
     telefono: Optional[str]
@@ -29,7 +28,6 @@ class UsuarioRead(BaseModel):
 class UsuarioCreate(BaseModel):
     email: EmailStr
     password: str
-    nombre: str
     tipo_persona: str
     razon_social: Optional[str]
     telefono: str
@@ -49,7 +47,6 @@ class UsuarioCreate(BaseModel):
 
 
 class UsuarioUpdate(BaseModel):
-    nombre: Optional[str]
     tipo_persona: Optional[str]
     razon_social: Optional[str]
     telefono: Optional[str]

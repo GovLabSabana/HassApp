@@ -13,7 +13,6 @@ custom_router = APIRouter(prefix="/auth/custom", tags=["auth"])
 async def custom_register(
     email: str = Form(...),
     password: str = Form(...),
-    nombre: str = Form(None),
     tipo_persona: str = Form(None),
     razon_social: str = Form(None),
     telefono: str = Form(None),
@@ -29,7 +28,6 @@ async def custom_register(
         user, urls = await create_user_with_files(
             email=email,
             password=password,
-            nombre=nombre,
             tipo_persona=tipo_persona,
             razon_social=razon_social,
             telefono=telefono,

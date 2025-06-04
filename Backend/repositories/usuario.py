@@ -10,7 +10,6 @@ from schemas.usuario import UsuarioCreate
 async def create_user_with_files(
     email: str,
     password: str,
-    nombre: str,
     tipo_persona: str,
     razon_social: str,
     telefono: str,
@@ -41,7 +40,6 @@ async def create_user_with_files(
     user_create_dict = {
         "email": email,
         "password": password,
-        "nombre": nombre,
         "tipo_persona": tipo_persona,
         "razon_social": razon_social,
         "telefono": telefono,
@@ -70,7 +68,6 @@ async def create_user_with_files(
 async def update_user_with_files(
     db: AsyncSession,
     user_id: int,
-    nombre: str = None,
     tipo_persona: str = None,
     razon_social: str = None,
     telefono: str = None,
@@ -90,7 +87,6 @@ async def update_user_with_files(
 
     # Actualizar campos que llegaron
     fields_to_update = {
-        "nombre": nombre,
         "tipo_persona": tipo_persona,
         "razon_social": razon_social,
         "telefono": telefono,
