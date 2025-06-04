@@ -27,5 +27,5 @@ class Cosecha(Base):
     predios = relationship(
         "Predio", secondary=cosecha_predio_table, back_populates="cosechas", lazy="selectin")
     insumos_cosecha = relationship("InsumoCosecha", back_populates="cosecha")
-    # exportaciones = relationship(
-    #     "ExportacionCosecha", back_populates="cosecha")
+    exportaciones = relationship(
+        "ExportacionCosecha", back_populates="cosecha")
