@@ -120,7 +120,7 @@ export default function Signup() {
         render={({ field }) => (
         <Input
             {...field}
-            label="Razón Social *"
+            label="Nombre ó Razón Social *"
             placeholder="Nombre propio o de empresa (si aplica)"
             errorMessage={errors.razon_social?.message}
         />
