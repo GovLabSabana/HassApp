@@ -8,6 +8,7 @@ import Dashboard from './routes/Dashboard.tsx'
 import Account from './routes/Account.tsx'
 import Properties from './routes/Properties.tsx'
 import ProtectedRoute from './routes/ProtectedRoute.tsx'
+import GoBack from './routes/GoBack.tsx'
 
 const router = createBrowserRouter([
   {
@@ -23,18 +24,23 @@ const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: "/dashboard",
+        path: "dashboard",
         element: <Dashboard />,
       },
       {
-        path: "/account",
+        path: "account",
         element: <Account />,
       },
       {
-        path: "/properties",
+        path: "properties",
         element: <Properties />,
       },
     ],
+  },
+  // Ruta comodín para manejar 404 y volver a la anterior
+  {
+    path: "*",
+    element: <GoBack />,
   },
 ]);
 

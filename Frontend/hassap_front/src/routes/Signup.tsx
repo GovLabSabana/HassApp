@@ -66,6 +66,7 @@ export default function Signup() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4">
+      <h1>Signup</h1>
     <Controller
         name="email"
         control={control}

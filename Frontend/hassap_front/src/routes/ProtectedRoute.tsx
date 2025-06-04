@@ -1,8 +1,8 @@
 import { Outlet, Navigate } from "react-router-dom";
 
 export default function ProtectedRoute() {
-  // const [isAuth, setIsAuth] = useState(false);
-  const isAuth = false;
+  const token = localStorage.getItem('access_token');
+  const isAuth = !!token; // Convertir a booleano
 
   return isAuth ? <Outlet /> : <Navigate to="/" />;
 }

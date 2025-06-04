@@ -10,6 +10,7 @@ type InputProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errorMessage?: string;
   ref?: React.Ref<HTMLInputElement>;
+  required?: boolean;
 };
 
 export const Input: React.FC<InputProps> = ({ 
