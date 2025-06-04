@@ -1,24 +1,32 @@
-# main.py
-from fastapi import Request
+from fastapi import Request, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
-from fastapi import FastAPI
-from api import auth, protegida, predio, usuario, cosecha
 from pydantic import ValidationError
+
+from api import auth, protegida, predio, usuario, cosecha
 
 load_dotenv()
 app = FastAPI()
+
+# Habilita CORS
+app.add_middleware(
+    CORSMiddleware,
+    # Cambia esto por una lista de dominios permitidos en producción
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Routers
 app.include_router(usuario.router)
 app.include_router(auth.router)
 app.include_router(predio.router)
 app.include_router(cosecha.router)
+app.include_router(protegida.router, prefix="/api")  # Rutas protegidas
 
-# Rutas de prueba, protegidas
-app.include_router(protegida.router, prefix="/api")  #
-
-# Maneja los errores de validación de Pydantic
+# Manejo de errores de validación
 
 
 @app.exception_handler(ValidationError)

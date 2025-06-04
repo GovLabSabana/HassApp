@@ -1,24 +1,23 @@
-# from sqlalchemy import (
-#     Column, Integer, String, Text, Date, ForeignKey, Numeric
-# )
-# from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy.orm import relationship
+from sqlalchemy import (
+    Column, Integer, ForeignKey, String
+)
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+from core.db import Base
 
-# Base = declarative_base()
 
+class Comprador(Base):
+    __tablename__ = "comprador"
 
-# class Comprador(Base):
-#     __tablename__ = "comprador"
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(70), nullable=False)
+    tipo_doc = Column(Integer, ForeignKey("tipo_documento.id"))
+    num_doc = Column(String(70), nullable=False)
+    ciudad = Column(String(70))
+    pais = Column(String(50))
+    direccion = Column(String(70))
+    contacto = Column(String(70))
 
-#     id = Column(Integer, primary_key=True, index=True)
-#     nombre = Column(Text, nullable=False)
-#     tipo_doc = Column(Integer, ForeignKey("tipo_documento.id"))
-#     num_doc = Column(Text, nullable=False)
-#     ciudad = Column(Text)
-#     pais = Column(Text)
-#     direccion = Column(Text)
-#     contacto = Column(Text)
-
-#     tipo_documento = relationship(
-#         "TipoDocumento", back_populates="compradores")
-#     exportaciones = relationship("Exportacion", back_populates="comprador")
+    tipo_documento = relationship(
+        "TipoDocumento")
+    exportaciones = relationship("Exportacion", back_populates="comprador")
