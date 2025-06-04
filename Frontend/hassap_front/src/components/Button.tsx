@@ -2,7 +2,7 @@ import * as React from 'react';
 import '../componentsStyles/Button.css';
 
 type ButtonProps = {
-  variant?: 'primary' | 'outline';
+  variant?: 'primary' | 'outline' | 'secondary';  // Añadir 'secondary' al tipo
   children: React.ReactNode;
   onClick?: () => void;
   className?: string;
