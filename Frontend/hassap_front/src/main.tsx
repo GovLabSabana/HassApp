@@ -10,6 +10,7 @@ import Properties from './routes/Properties.tsx'
 import ProtectedRoute from './routes/ProtectedRoute.tsx'
 import PublicRoute from './routes/PublicRoute.tsx'
 import GoBack from './routes/GoBack.tsx'
+import './index.css';
 
 const router = createBrowserRouter([
   {

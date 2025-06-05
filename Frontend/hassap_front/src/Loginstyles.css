@@ -1,0 +1,189 @@
+
+/* Contenedor principal del login *********************************************************************************************/
+.login-container {
+  min-height: 100vh;
+  background-image: url("/public/avocadoimg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Wrapper del formulario */
+.login-wrapper {
+  width: 100%;
+  max-width: 28rem;
+}
+
+/* Card principal */
+.login-card {
+  background: rgba(0, 75, 39, 0.712);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(1, 43, 22, 0.712);
+  padding: 2rem;
+}
+
+/* Header del login */
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.login-icon svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.login-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+  color: #ffffff;
+}
+
+/* Mensajes de error */
+.error-message {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Formulario */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Grupos de campos */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+/* Input wrapper con icono */
+.input-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #ffffff;
+}
+
+/* Estilos para inputs */
+.login-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.2s;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.login-input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.login-input::placeholder {
+  color: #ffffff;
+}
+
+/* Botón de submit */
+.login-button {
+  width: 100%;
+  background-color: #B75F0C;
+  color: white;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.login-button:hover {
+  background-color: #ac5a0d;
+}
+
+.login-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(183, 95, 12, 1);
+}
+
+.login-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Footer del login */
+.login-footer {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.login-footer p {
+  color: #ffffff;
+  margin: 0;
+}
+
+.login-footer a {
+  margin-left: 0.5rem;
+  color: #ce6b0f;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.login-footer a:hover {
+  color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 0.5rem;
+  }
+  
+  .login-card {
+    padding: 1.5rem;
+  }
+  
+  .login-title {
+    font-size: 1.5rem;
+  }
+}
