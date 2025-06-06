@@ -3,22 +3,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from pydantic import ValidationError
-
+import os
 from api import auth, protegida, predio, usuario, cosecha, comprador, exportaciones
 
 load_dotenv()
-app = FastAPI()
 
-# Habilita CORS
+app = FastAPI()
+origins = os.getenv("ORIGINS", "")
+origins = [origin.strip() for origin in origins.split(",") if origin]
+print(f"Allowed origins: {origins}")
 app.add_middleware(
     CORSMiddleware,
-    # Cambia esto por una lista de dominios permitidos en producción
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Routers
 app.include_router(usuario.router)
 app.include_router(auth.router)
