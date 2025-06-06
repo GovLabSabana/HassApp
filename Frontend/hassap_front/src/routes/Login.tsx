@@ -10,6 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string>('');  // Para manejar el error
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +30,7 @@ export default function Login() {
       formData.append('client_id', '');
       formData.append('client_secret', '');
 
-      const response = await fetch('https://hassapp-production.up.railway.app/auth/jwt/login', {
+      const response = await fetch(`${API_URL}/auth/jwt/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

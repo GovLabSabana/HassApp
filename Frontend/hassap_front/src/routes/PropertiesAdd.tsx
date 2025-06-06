@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { Navbar } from "../components/Navbar";
-import { Sidebar } from "../components/Sidebar";
 
 export default function PropertiesAdd() {
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token") || "";
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -34,13 +32,20 @@ export default function PropertiesAdd() {
     ].includes(name);
     const parsedValue = isNumericField ? parseFloat(value) : value;
 
-    // Validación en tiempo real para negativos
     if (isNumericField) {
       const numberValue = parseFloat(value);
       if (isNaN(numberValue) || numberValue < 0) {
         setErrors((prev) => ({
           ...prev,
           [name]: "Este valor no puede ser negativo",
+        }));
+      } else if (
+        ["cedula_catastral", "hectareas", "altitud_promedio"].includes(name) &&
+        numberValue === 0
+      ) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: "Este valor no puede ser cero",
         }));
       } else {
         setErrors((prev) => {
@@ -66,11 +71,6 @@ export default function PropertiesAdd() {
         [name]: value,
       }));
     }
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: parsedValue,
-    }));
   };
 
   const validateForm = () => {
@@ -84,18 +84,23 @@ export default function PropertiesAdd() {
 
     for (const field of numericFields) {
       const value = formData[field as keyof typeof formData];
-      if (typeof value === "number" && value < 0) {
-        newErrors[field] = "Este valor no puede ser negativo";
+      if (typeof value === "number") {
+        if (value < 0) {
+          newErrors[field] = "Este valor no puede ser negativo";
+        } else if (
+          ["cedula_catastral", "hectareas", "altitud_promedio"].includes(field) &&
+          value === 0
+        ) {
+          newErrors[field] = "Este valor no puede ser cero";
+        }
       }
     }
 
     if (!formData.nombre.trim()) newErrors.nombre = "El nombre es requerido";
     if (!formData.vereda.trim()) newErrors.vereda = "La vereda es requerida";
-    if (!formData.direccion.trim())
-      newErrors.direccion = "La dirección es requerida";
+    if (!formData.direccion.trim()) newErrors.direccion = "La dirección es requerida";
     if (!formData.vocacion) newErrors.vocacion = "Seleccione una vocación";
-    if (!formData.tipo_riego)
-      newErrors.tipo_riego = "Seleccione un tipo de riego";
+    if (!formData.tipo_riego) newErrors.tipo_riego = "Seleccione un tipo de riego";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -105,31 +110,23 @@ export default function PropertiesAdd() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    console.log("🔐 Token obtenido de localStorage:", token);
-    console.log("📦 Datos del formulario:", formData);
-    console.log("✅ JSON final enviado:", JSON.stringify(formData, null, 2));
-
     try {
-      const res = await fetch(
-        "https://hassapp-production.up.railway.app/predios/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const res = await fetch(`${API_URL}/predios/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
       const data = await res.json();
 
       if (!res.ok) {
         console.error("Error en respuesta:", data);
         throw new Error("Error al agregar el predio");
       }
-      console.log("📤 Header Authorization enviado:", `Bearer ${token}`);
 
-      if (!res.ok) throw new Error("Error al agregar el predio");
+      console.log("✅ Predio creado con éxito.");
       navigate("/properties");
     } catch (error) {
       console.error("❌ Error en la petición:", error);
