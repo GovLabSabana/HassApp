@@ -1,5 +1,5 @@
 # schemas/predio.py
-from pydantic import BaseModel, ConfigDict, constr
+from pydantic import BaseModel, ConfigDict, field_validator
 from typing import Optional
 from decimal import Decimal
 
@@ -14,6 +14,13 @@ class PredioBase(BaseModel):
     vocacion: Optional[str]
     altitud_promedio: Optional[Decimal]
     tipo_riego: Optional[str]
+
+    @field_validator("hectareas", "altitud_promedio", mode="before")
+    @classmethod
+    def convertir_a_decimal(cls, v):
+        if v is None:
+            return v
+        return Decimal(str(v))
 
 
 class PredioCreate(PredioBase):
