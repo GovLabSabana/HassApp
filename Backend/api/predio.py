@@ -34,6 +34,23 @@ async def list_my_predios(
     return predios
 
 
+@router.get("/{predio_id}", response_model=PredioRead)
+async def get_predio_by_id(
+    predio_id: int,
+    db: AsyncSession = Depends(get_db),
+    user: Usuario = Depends(current_user)
+):
+    result = await db.execute(
+        select(Predio).where(Predio.id == predio_id)
+    )
+    predio = result.scalar_one_or_none()
+
+    if predio is None:
+        raise HTTPException(status_code=404, detail="Predio no encontrado")
+
+    return predio
+
+
 # Añadir un nuevo predio para el usuario autenticado
 @router.post("/", response_model=PredioRead)
 async def create_predio(
@@ -71,3 +88,21 @@ async def update_predio(
     await db.commit()
     await db.refresh(predio)
     return predio
+
+
+@router.delete("/{predio_id}", status_code=204)
+async def delete_predio(
+    predio_id: int,
+    db: AsyncSession = Depends(get_db),
+    user: Usuario = Depends(current_user)
+):
+    result = await db.execute(
+        select(Predio).where(Predio.id == predio_id)
+    )
+    predio = result.scalar_one_or_none()
+
+    if predio is None:
+        raise HTTPException(status_code=404, detail="Predio no encontrado")
+
+    await db.delete(predio)
+    await db.commit()
