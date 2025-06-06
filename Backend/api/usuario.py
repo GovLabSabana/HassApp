@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
+from schemas.usuario import UsuarioRead
 from core.db import get_db
 from models.usuario import UserManager, get_user_manager, Usuario
 from repositories.usuario import create_user_with_files, update_user_with_files
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_users import FastAPIUsers
+from sqlalchemy.orm import selectinload
 from core.auth import auth_backend
 
 fastapi_users = FastAPIUsers[Usuario, int](get_user_manager, [auth_backend])
@@ -22,7 +24,25 @@ async def list_users(db: AsyncSession = Depends(get_db)):
     return users
 
 
+@router.get("/me", response_model=UsuarioRead)
+async def get_me(
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(current_user),
+):
+    result = await db.execute(
+        select(Usuario)
+        .options(selectinload(Usuario.tipo_documento))
+        .where(Usuario.id == current_user.id)
+    )
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+    return user
+
 # api/users.py
+
 
 @router.put("/update/me")
 async def update_me(
