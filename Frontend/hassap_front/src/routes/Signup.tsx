@@ -1,8 +1,4 @@
 import { useForm, Controller } from "react-hook-form";
-import { Input } from '../components/Input';
-import { Button } from '../components/Button';
-import { SelectInput } from '../components/SelectInput';
-import { FileInput } from '../components/FileInput';
 import { useNavigate, Link } from 'react-router-dom';
 import '../Signupstyles.css'; // Importar el archivo CSS
 

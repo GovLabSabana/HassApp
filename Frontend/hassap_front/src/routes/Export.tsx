@@ -1,12 +1,12 @@
 import { Navbar } from '../components/Navbar';
 import { Sidebar } from '../components/Sidebar';
 
-export default function Properties() {
+export default function Export() {
     return (
         <form>
             <Navbar />
             <Sidebar />
-          <h1 style={{ textAlign: "center" }}>Predios</h1>
+          <h1 style={{ textAlign: "center" }}>Exportación</h1>
         </form>
       );
 }

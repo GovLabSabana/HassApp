@@ -1,20 +1,23 @@
 import * as React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../componentsStyles/Sidebar.css';
 
 type SidebarItem = {
   label: string;
-  icon?: string;
-  active?: boolean;
+  path: string;
 };
 
 export const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const items: SidebarItem[] = [
-    { label: 'Inicio', /*active: true*/ },
-    { label: 'Cuenta' },
-    { label: 'Predios' },
-    { label: 'Producción' },
-    { label: 'Exportación' },
-    { label: 'Insumos' },
+    { label: 'Inicio', path: '/dashboard' },
+    { label: 'Cuenta', path: '/account' },
+    { label: 'Predios', path: '/properties' },
+    { label: 'Producción', path: '/production' },
+    { label: 'Exportación', path: '/export' },
+    { label: 'Insumos', path: '/inputs' },
   ];
 
   return (
@@ -23,9 +26,10 @@ export const Sidebar: React.FC = () => {
       <ul className="sidebar-menu">
         {items.map((item) => (
           <li key={item.label}>
-            <a 
-              href="#" 
-              className={item.active ? 'active' : ''}
+            <a
+              onClick={() => navigate(item.path)}
+              className={location.pathname === item.path ? 'active' : ''}
+              style={{ cursor: 'pointer' }}
             >
               {item.label}
             </a>
