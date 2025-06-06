@@ -8,7 +8,6 @@ interface Predio {
   nombre: string;
   cedula_catastral: number;
   municipio: string;
-  departamento: string;
   vereda: string;
   direccion: string;
   hectareas: number;
@@ -23,14 +22,15 @@ export default function Properties() {
   const [vocacionFiltro, setVocacionFiltro] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token") || "";
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    fetch("https://hassapp-production.up.railway.app/predios/", {
-      method: "GET",
-      headers: {
+    fetch(`${API_URL}/predios/`, {
+        method: "GET",
+        headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-      },
+        },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -47,7 +47,7 @@ export default function Properties() {
   }, []);
 
   const eliminarPredio = (id: number) => {
-    fetch(`https://hassapp-production.up.railway.app/docs/predios/${id}`, {
+    fetch(`${API_URL}/predios/${id}`, {
       method: "DELETE",
     })
       .then(() => setPredios((prev) => prev.filter((p) => p.id !== id)))
@@ -63,6 +63,7 @@ export default function Properties() {
   return (
     <div className="properties-layout">
       <Navbar />
+      {/* <Sidebar /> */}
       <main className="properties-main">
         <h1 style={{ textAlign: "center" }}>Predios</h1>
 
@@ -90,7 +91,6 @@ export default function Properties() {
               <th>Nombre</th>
               <th>Cédula Catastral</th>
               <th>Municipio</th>
-              <th>Departamento</th>
               <th>Vereda</th>
               <th>Dirección</th>
               <th>Hectáreas</th>
@@ -106,7 +106,6 @@ export default function Properties() {
                 <td>{p.nombre}</td>
                 <td>{p.cedula_catastral}</td>
                 <td>{p.municipio}</td>
-                <td>{p.departamento}</td>
                 <td>{p.vereda}</td>
                 <td>{p.direccion}</td>
                 <td>{p.hectareas}</td>

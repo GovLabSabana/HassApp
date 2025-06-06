@@ -18,6 +18,7 @@ type FormInputs = {
 
 export default function Signup() {
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
   const {
     control,
     handleSubmit,
@@ -65,35 +66,35 @@ export default function Signup() {
     }
 
     try {
-      const response = await fetch("https://hassapp-production.up.railway.app/auth/custom/register", {
-        method: "POST",
-        body: formData,
-      });
+    const response = await fetch(`${API_URL}/auth/custom/register`, {
+      method: "POST",
+      body: formData,
+    });
 
-      if (response.ok) {
-        alert("¡Registro exitoso!");
-        navigate("/");
+    if (response.ok) {
+      alert("¡Registro exitoso!");
+      navigate("/");
+    } else {
+      const errorData = await response.json();
+      console.error("Error response:", errorData);
+
+      if (
+        errorData?.message?.toLowerCase?.().includes("correo") ||
+        errorData?.error?.toLowerCase?.().includes("correo") ||
+        errorData?.email
+      ) {
+        setError("email", {
+          type: "manual",
+          message: "Este correo electrónico ya está registrado.",
+        });
       } else {
-        const errorData = await response.json();
-        console.error("Error response:", errorData);
-
-        if (
-          errorData?.message?.toLowerCase?.().includes("correo") ||
-          errorData?.error?.toLowerCase?.().includes("correo") ||
-          errorData?.email
-        ) {
-          setError("email", {
-            type: "manual",
-            message: "Este correo electrónico ya está registrado.",
-          });
-        } else {
-          alert("Error en el registro: " + JSON.stringify(errorData));
-        }
+        alert("Error en el registro: " + JSON.stringify(errorData));
       }
-    } catch (err) {
-      console.error("Connection error:", err);
-      alert("Error en la conexión: " + err);
     }
+  } catch (err) {
+    console.error("Connection error:", err);
+    alert("Error en la conexión: " + err);
+  }
   };
 
   return (

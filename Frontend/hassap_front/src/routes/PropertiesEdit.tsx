@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Navbar } from '../components/Navbar';
-import { Sidebar } from '../components/Sidebar';
 
 export default function PropertiesEdit() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const predioId = params.get('id');
   const token = localStorage.getItem('access_token') || '';
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -23,14 +22,19 @@ export default function PropertiesEdit() {
 
   useEffect(() => {
     if (!predioId) return;
-    fetch(`https://hassapp-production.up.railway.app/docs/predios/${predioId}`, {
+    fetch(`${API_URL}/predios/${predioId}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
-      .then((data) => setFormData(data))
+      .then((data) =>
+        setFormData((prev) => ({
+            ...prev,
+            ...data,
+        }))
+        )
       .catch((err) => console.error('Error cargando predio:', err));
   }, [predioId]);
 
@@ -47,7 +51,7 @@ export default function PropertiesEdit() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(`https://hassapp-production.up.railway.app/docs/predios/${predioId}`, {
+      const res = await fetch(`${API_URL}/predios/${predioId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -110,6 +114,9 @@ export default function PropertiesEdit() {
           </div>
 
           <button type="submit">Actualizar</button>
+          <button type="button" onClick={() => navigate("/properties")}>
+            Cancelar
+          </button>
         </form>
       </main>
     </div>
