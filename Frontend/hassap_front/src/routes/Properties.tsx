@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Navbar } from '../components/Navbar';
-import { Sidebar } from '../components/Sidebar';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Navbar } from "../components/Navbar";
+import { Sidebar } from "../components/Sidebar";
 
 interface Predio {
   id: number;
@@ -19,32 +19,39 @@ interface Predio {
 
 export default function Properties() {
   const [predios, setPredios] = useState<Predio[]>([]);
-  const [municipioFiltro, setMunicipioFiltro] = useState('');
-  const [vocacionFiltro, setVocacionFiltro] = useState('');
+  const [municipioFiltro, setMunicipioFiltro] = useState("");
+  const [vocacionFiltro, setVocacionFiltro] = useState("");
   const navigate = useNavigate();
+  const token = localStorage.getItem("access_token") || "";
 
   useEffect(() => {
-  fetch('https://hassapp-production.up.railway.app/docs/predios/')
-    .then((res) => res.json())
-    .then((data) => {
-      // Verificamos si la respuesta es un array
-      if (Array.isArray(data)) {
-        setPredios(data);
-      } else if ('data' in data && Array.isArray(data.data)) {
-        setPredios(data.data); // si viene en una propiedad 'data'
-      } else {
-        console.error('Respuesta inesperada de la API:', data);
-      }
+    fetch("https://hassapp-production.up.railway.app/predios/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     })
-    .catch((err) => console.error('Error al cargar predios:', err));
-}, []);
+      .then((res) => res.json())
+      .then((data) => {
+        // Verificamos si la respuesta es un array
+        if (Array.isArray(data)) {
+          setPredios(data);
+        } else if ("data" in data && Array.isArray(data.data)) {
+          setPredios(data.data); // si viene en una propiedad 'data'
+        } else {
+          console.error("Respuesta inesperada de la API:", data);
+        }
+      })
+      .catch((err) => console.error("Error al cargar predios:", err));
+  }, []);
 
   const eliminarPredio = (id: number) => {
     fetch(`https://hassapp-production.up.railway.app/docs/predios/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     })
       .then(() => setPredios((prev) => prev.filter((p) => p.id !== id)))
-      .catch((err) => console.error('Error al eliminar predio:', err));
+      .catch((err) => console.error("Error al eliminar predio:", err));
   };
 
   const prediosFiltrados = predios.filter(
@@ -57,7 +64,7 @@ export default function Properties() {
     <div className="properties-layout">
       <Navbar />
       <main className="properties-main">
-        <h1 style={{ textAlign: 'center' }}>Predios</h1>
+        <h1 style={{ textAlign: "center" }}>Predios</h1>
 
         <div className="filters">
           <input
@@ -65,7 +72,10 @@ export default function Properties() {
             value={municipioFiltro}
             onChange={(e) => setMunicipioFiltro(e.target.value)}
           />
-          <select value={vocacionFiltro} onChange={(e) => setVocacionFiltro(e.target.value)}>
+          <select
+            value={vocacionFiltro}
+            onChange={(e) => setVocacionFiltro(e.target.value)}
+          >
             <option value="">Todas las vocaciones</option>
             <option value="produccion">Producción</option>
             <option value="transformacion">Transformación</option>
@@ -104,7 +114,11 @@ export default function Properties() {
                 <td>{p.altitud_promedio}</td>
                 <td>{p.tipo_riego}</td>
                 <td>
-                  <button onClick={() => navigate(`/properties/edit?id=${p.id}`)}>Editar</button>
+                  <button
+                    onClick={() => navigate(`/properties/edit?id=${p.id}`)}
+                  >
+                    Editar
+                  </button>
                   <button onClick={() => eliminarPredio(p.id)}>Eliminar</button>
                 </td>
               </tr>
@@ -112,8 +126,10 @@ export default function Properties() {
           </tbody>
         </table>
 
-        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-          <button onClick={() => navigate('/properties/add')}>Agregar Predio</button>
+        <div style={{ textAlign: "center", marginTop: "1rem" }}>
+          <button onClick={() => navigate("/properties/add")}>
+            Agregar Predio
+          </button>
         </div>
       </main>
     </div>
