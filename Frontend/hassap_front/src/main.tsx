@@ -10,6 +10,8 @@ import Export from './routes/Export.tsx'
 import Production from './routes/Production.tsx'
 import Inputs from './routes/Inputs.tsx'
 import Properties from './routes/Properties.tsx'
+import PropertiesAdd from './routes/PropertiesAdd.tsx'
+import PropertiesEdit from './routes/PropertiesEdit.tsx'
 import ProtectedRoute from './routes/ProtectedRoute.tsx'
 import PublicRoute from './routes/PublicRoute.tsx'
 import GoBack from './routes/GoBack.tsx'
@@ -47,6 +49,14 @@ const router = createBrowserRouter([
       {
         path: "properties",
         element: <Properties />,
+      },
+      {
+        path: "properties/edit",
+        element: <PropertiesEdit />,
+      },
+      {
+        path: "properties/add",
+        element: <PropertiesAdd />,
       },
       {
         path: "export",
