@@ -1,6 +1,9 @@
 from typing import List, Optional
 from pydantic import BaseModel
+from pydantic.config import ConfigDict
 from datetime import date
+from schemas.cosecha import CosechaRead
+
 
 class ExportacionBase(BaseModel):
     fecha: date
@@ -12,14 +15,18 @@ class ExportacionBase(BaseModel):
     comprador_id: int
 
 class ExportacionCreate(ExportacionBase):
-    cosecha_ids: List[int]  # <- para crear con relaciones
+    cosecha_ids: List[int]  #  para crear con relaciones
 
 class ExportacionUpdate(ExportacionBase):
-    cosecha_ids: Optional[List[int]] = None  # <- para actualizar relaciones
+    cosecha_ids: Optional[List[int]] = None  # para actualizar relaciones
+
 
 class ExportacionOut(ExportacionBase):
     id: int
-    cosecha_ids: List[int]  # <- para ver relaciones en GET
+    cosecha_ids: Optional[List[int]] = []
 
-    class Config:
-        from_attributes = True  # <- reemplaza orm_mode en Pydantic v2
+
+    model_config = ConfigDict(from_attributes=True)
+
+class ExportacionOutWithCosechas(ExportacionOut):
+    cosechas: Optional[List[CosechaRead]] = []

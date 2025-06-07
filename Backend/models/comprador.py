@@ -15,7 +15,7 @@ class Comprador(Base):
     num_doc = Column(String(70), nullable=False)
     ciudad = Column(String(70))
     pais = Column(String(50))
-    direccion = Column(String(70))
+    direccion = Column(String(255))
     contacto = Column(String(70))
 
     tipo_documento = relationship(
