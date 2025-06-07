@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
+import { FiMail, FiLock } from "react-icons/fi";
+import "../Loginstyles.css";
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string>('');  // Para manejar el error
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +30,7 @@ export default function Login() {
       formData.append('client_id', '');
       formData.append('client_secret', '');
 
-      const response = await fetch('https://hassapp-production.up.railway.app/auth/jwt/login', {
+      const response = await fetch(`${API_URL}/auth/jwt/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -56,7 +58,7 @@ export default function Login() {
       localStorage.setItem('access_token', data.access_token);
 
       // Redirigir a dashboard
-      navigate("/dashboard");
+      navigate("/Dashboard");
     } catch (error) {
       // Manejo del error en el catch sin loguearlo en la consola
       setError('Ocurrió un error. Intenta nuevamente más tarde.');
@@ -64,42 +66,83 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <h1>Login</h1>
+    <div className="login-container">
+      <div className="login-wrapper">
+        <div className="login-card">
+          {/* Header */}
+          <div className="login-header">
+            <div className="login-icon">
+              <img src="/logo_hass.svg" alt="Logo de HassApp" className="logo-img" />
+            </div>
+            <h2 className="login-title">Login</h2>
+            <p className="login-subtitle">Accede a tu cuenta</p>
+          </div>
 
-      {/* Mostrar mensaje de error si lo hay */}
-      {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
+          {/* Error Message */}
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
 
-      <Input
-        label="Correo electrónico"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Ingresa tu correo"
-        required
-      />
+          {/* Form */}
+          <form onSubmit={handleLogin} className="login-form">
+            {/* Email Field */}
+            <div className="form-group">
+              <label className="form-label">
+                Correo Electrónico
+              </label>
+              <div className="input-wrapper">
+                <FiMail className="input-icon" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Ingresa tu correo"
+                  required
+                   className="login-input"
+                />
+              </div>
+            </div>
 
-      <Input
-        label="Contraseña"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Ingresa tu contraseña"
-        required
-      />
+            {/* Password Field */}
+            <div className="form-group">
+              <label className="form-label">
+                Contraseña
+              </label>
+              <div className="input-wrapper">
+                <FiLock className="input-icon" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Ingresa tu contraseña"
+                  required
+                  className="login-input"
+                />
+              </div>
+            </div>
 
-      <Button variant="primary" type="submit">
-        Iniciar sesión
-      </Button>
+            {/* Submit Button */}
+            <Button 
+              type="submit"
+              className="login-button"
+            >
+              Iniciar sesión
+            </Button>
+          </form>
 
-      <div>
-        <p>¿No tienes cuenta?</p>
-        <Link to="/signup">
-          <Button variant="secondary">
-            Crear cuenta
-          </Button>
-        </Link>
+          {/* Footer */}
+          <div className="login-footer">
+            <p>
+              ¿No tienes cuenta?
+              <Link to="/Signup" className="signup-link">
+                Crear cuenta
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
-    </form>
+    </div>
   );
 }

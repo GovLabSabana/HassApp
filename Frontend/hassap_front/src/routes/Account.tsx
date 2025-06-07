@@ -1,3 +1,12 @@
+import { Navbar } from '../components/Navbar';
+import { Sidebar } from '../components/Sidebar';
+
 export default function Account() {
-    return <h1>Account</h1>
+    return (
+        <form>
+            <Navbar />
+            <Sidebar />
+          <h1 style={{ textAlign: "center" }}>Cuenta</h1>
+        </form>
+      );
 }

@@ -34,6 +34,7 @@ class Usuario(SQLAlchemyBaseUserTable[int], Base):
         "tipo_documento.id"))
     num_documento = Column(String(50))
 
+    tipo_documento = relationship("TipoDocumento", lazy="joined")
     predios = relationship("Predio", back_populates="usuario")
 
 
