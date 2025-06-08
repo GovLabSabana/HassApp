@@ -2,17 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List
+from utils.current_user import current_user
 from core.db import get_db
 from models.cosecha import Cosecha
 from schemas.cosecha import CosechaCreate, CosechaRead, CosechaUpdate
 from repositories import cosecha as cosecha_repo
 from sqlalchemy.orm import selectinload
-from fastapi_users import FastAPIUsers
-from models.usuario import Usuario, get_user_manager
-from core.auth import auth_backend
+from models.usuario import Usuario
 
-fastapi_users = FastAPIUsers[Usuario, int](get_user_manager, [auth_backend])
-current_user = fastapi_users.current_user()
 
 router = APIRouter(
     prefix="/cosechas",

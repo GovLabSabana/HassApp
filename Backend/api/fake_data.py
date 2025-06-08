@@ -7,9 +7,12 @@ from core.db import get_db
 from faker import Faker
 import random
 from datetime import datetime, timedelta
+from utils.current_user import current_user
 
-router = APIRouter(prefix="/fake", tags=["fake-data"])
+router = APIRouter(
+    prefix="/fake", tags=["fake-data"], dependencies=[Depends(current_user)])
 fake = Faker("es_CO")
+
 
 @router.post("/llenar-db")
 async def fill_database(db: AsyncSession = Depends(get_db)):
@@ -77,9 +80,9 @@ async def fill_database(db: AsyncSession = Depends(get_db)):
             {
                 "id": i,
                 "nombre": fake.company(),
-               
+
                 "municipio_id": random.choice([1, 2, 3]),
-            
+
             },
         )
 
@@ -90,7 +93,7 @@ async def fill_database(db: AsyncSession = Depends(get_db)):
                 "INSERT INTO insumo "
                 "(id, nombre_comercial, unidad, categoria_id, proveedor_id, costo_unitario) "
                 "VALUES (:id, :nc, :u, :cid, :pid, :costo) "
-                
+
             ),
             {
                 "id": i,
@@ -99,7 +102,7 @@ async def fill_database(db: AsyncSession = Depends(get_db)):
                 "cid": random.choice([1, 2, 3]),
                 "pid": random.randint(1, 5),
                 "costo": round(random.uniform(1000, 20000), 2),
-                
+
             },
         )
 
@@ -126,11 +129,11 @@ async def fill_database(db: AsyncSession = Depends(get_db)):
                 "rut": fake.bothify("##.###.###-#"),
                 "logo": fake.image_url(),
                 "hs": True,
-                "is_A": True,        
+                "is_A": True,
                 "is_S": True,
                 "is_V": True,
                 "ca": created_at,
-                
+
             },
         )
 
@@ -208,7 +211,7 @@ async def fill_database(db: AsyncSession = Depends(get_db)):
                     "VALUES  (:cid, :pid)"
                     "ON DUPLICATE KEY UPDATE cosecha_id = VALUES(cosecha_id)"
                 ),
-                { "cid": cosecha_id, "pid": random.randint(1, 5)},
+                {"cid": cosecha_id, "pid": random.randint(1, 5)},
             )
             link_id += 1
 

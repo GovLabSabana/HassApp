@@ -3,8 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.db import get_db
 from schemas.exportaciones import ExportacionCreate, ExportacionUpdate, ExportacionOut
 from repositories import exportaciones as repo
+from utils.current_user import current_user
 
-router = APIRouter(prefix="/exportaciones", tags=["exportaciones"])
+router = APIRouter(prefix="/exportaciones",
+                   tags=["exportaciones"], dependencies=[Depends(current_user)])
 
 
 @router.get("/", response_model=list[ExportacionOut])
@@ -16,7 +18,8 @@ async def get_all(db: AsyncSession = Depends(get_db)):
 async def get_one(exportacion_id: int, db: AsyncSession = Depends(get_db)):
     exportacion = await repo.get_by_id(db, exportacion_id)
     if not exportacion:
-        raise HTTPException(status_code=404, detail="Exportación no encontrada")
+        raise HTTPException(
+            status_code=404, detail="Exportación no encontrada")
     return exportacion
 
 
@@ -35,7 +38,8 @@ async def update(exportacion_id: int, exportacion: ExportacionUpdate, db: AsyncS
     """
     updated = await repo.update(db, exportacion_id, exportacion)
     if not updated:
-        raise HTTPException(status_code=404, detail="Exportación no encontrada")
+        raise HTTPException(
+            status_code=404, detail="Exportación no encontrada")
     return updated
 
 
@@ -46,5 +50,6 @@ async def delete(exportacion_id: int, db: AsyncSession = Depends(get_db)):
     """
     deleted = await repo.delete(db, exportacion_id)
     if not deleted:
-        raise HTTPException(status_code=404, detail="Exportación no encontrada")
+        raise HTTPException(
+            status_code=404, detail="Exportación no encontrada")
     return {"detail": "Exportación eliminada"}

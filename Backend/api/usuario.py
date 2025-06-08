@@ -1,18 +1,12 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
 from schemas.usuario import UsuarioRead
 from core.db import get_db
-from models.usuario import UserManager, get_user_manager, Usuario
-from repositories.usuario import create_user_with_files, update_user_with_files
+from models.usuario import Usuario
+from repositories.usuario import update_user_with_files
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi_users import FastAPIUsers
 from sqlalchemy.orm import selectinload
-from core.auth import auth_backend
-
-fastapi_users = FastAPIUsers[Usuario, int](get_user_manager, [auth_backend])
-
-# Dependency que devuelve el usuario actual autenticado (lanzará 401 si no está autenticado)
-current_user = fastapi_users.current_user()
+from utils.current_user import current_user
 
 router = APIRouter(prefix="/usuarios", tags=["usuarios"])
 

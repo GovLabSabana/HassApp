@@ -6,13 +6,9 @@ from core.db import get_db
 from models.predio import Predio
 from models.usuario import Usuario
 from schemas.predio import PredioCreate, PredioRead, PredioUpdate
-from models.usuario import get_user_manager
-from core.auth import auth_backend
-from fastapi_users import FastAPIUsers
 from sqlalchemy.exc import IntegrityError
+from utils.current_user import current_user
 
-fastapi_users = FastAPIUsers[Usuario, int](get_user_manager, [auth_backend])
-current_user = fastapi_users.current_user()
 
 router = APIRouter(
     prefix="/predios",

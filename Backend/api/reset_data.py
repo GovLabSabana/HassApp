@@ -3,9 +3,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
-from core.db import get_db  # tu función asíncrona que devuelve AsyncSession
+from core.db import get_db
+from utils.current_user import current_user
 
-router = APIRouter(prefix="/fake", tags=["fake-reset"])
+router = APIRouter(
+    prefix="/fake", tags=["fake-reset"], dependencies=[Depends(current_user)])
+
 
 @router.post("/reset-db")
 async def reset_database(db: AsyncSession = Depends(get_db)):
@@ -37,4 +40,3 @@ async def reset_database(db: AsyncSession = Depends(get_db)):
         "mensaje": "Reseteo completo",
         "filas_borradas": resultados
     }
-
