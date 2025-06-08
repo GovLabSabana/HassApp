@@ -16,8 +16,8 @@ class Exportacion(Base):
     # puedes ajustar precisión según necesidad
     toneladas = Column(Numeric(10, 2))
     valor_fob = Column(Numeric(12, 2))
-    puerto_salida = Column(String(70))
-    puerto_llegada = Column(String(70))
+    puerto_salida = Column(String(255))
+    puerto_llegada = Column(String(255))
     comprador_id = Column(Integer, ForeignKey("comprador.id"))
 
     comprador = relationship("Comprador", back_populates="exportaciones")

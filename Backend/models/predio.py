@@ -15,7 +15,7 @@ class Predio(Base):
     municipio_id = Column(Integer, ForeignKey("municipio.id"), nullable=False)
     usuario_id = Column(Integer, ForeignKey("usuario.id"), nullable=False)
     vereda = Column(String(50), nullable=True)
-    direccion = Column(String(100))
+    direccion = Column(String(255))
     hectareas = Column(DECIMAL(10, 2))
     vocacion = Column(String(50), nullable=True)
     altitud_promedio = Column(DECIMAL(10, 2))

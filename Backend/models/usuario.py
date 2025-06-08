@@ -25,7 +25,7 @@ class Usuario(SQLAlchemyBaseUserTable[int], Base):
     tipo_persona = Column(String(50))
     razon_social = Column(String(100), nullable=True)
     telefono = Column(String(50))
-    direccion = Column(String(100), nullable=True)
+    direccion = Column(String(255), nullable=True)
     pagina_web = Column(String(100), nullable=True)
     rut = Column(String(255))
     logo = Column(String(255), nullable=True)
