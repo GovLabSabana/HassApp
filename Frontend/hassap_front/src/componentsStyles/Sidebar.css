@@ -1,40 +1,414 @@
+/* Sidebar Principal */
 .sidebar {
-  width: 250px;
-  background-color: white;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
+  width: 280px;
+  background: rgba(17, 34, 24, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    4px 0 20px rgba(0, 0, 0, 0.15),
+    inset -1px 0 0 rgba(255, 255, 255, 0.1);
+  padding: 0;
   height: 100vh;
   position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+/* Header del Sidebar */
+.sidebar-header {
+  padding: 2rem 1.5rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-icon {
+  width: 1000px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.logo-icon .logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .sidebar-title {
-  color: #2a7f45;
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #eee;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+/* Navegación */
+.sidebar-nav {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex: 1;
+  padding: 0;
+  overflow-y: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-menu {
   list-style: none;
-  padding: 0;
+  padding: 1rem;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
-.sidebar-menu li {
-  margin-bottom: 12px;
+.sidebar-menu-item {
+  margin-bottom: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.sidebar-menu a {
-  color: #333;
+.sidebar-link {
+  color: rgba(196, 195, 195, 0.9);
   text-decoration: none;
-  display: block;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  font-weight: 500;
+  font-size: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  margin: 0;
+  border-color: rgba(183, 95, 12, 1);
 }
 
-.sidebar-menu a:hover, 
-.sidebar-menu a.active {
-  background-color: #e8f5e9;
-  color: #2a7f45;
+.sidebar-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.sidebar-link:hover::before {
+  opacity: 1;
+}
+
+.sidebar-link:hover {
+  color: rgba(36, 71, 51, 1);
+  transform: translateX(2px);
+}
+
+.sidebar-link.active {
+  background:rgba(36, 71, 51, 1);
+  color: #ffffff;
+  font-weight: 600;
+  border-left: 3px solid rgba(183, 95, 12, 1)
+}
+
+.sidebar-link.active .sidebar-indicator {
+  opacity: 1;
+}
+
+.sidebar-icon {
+  font-size: 1.1rem;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-label {
+  flex: 1;
+  font-weight: inherit;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: inherit;
+  line-height: 1.2;
+}
+
+.sidebar-indicator {
+  display: none;
+}
+
+/* Footer del Sidebar */
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+}
+
+.sidebar-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #0f1f17; /* más oscuro que el blanco */
+  padding: 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ccc;
+  margin-bottom: 0.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.user-name {
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+ 
+/* Botón de logout mejorado con diseño moderno */
+.logout-button {
+  /* Gradiente rojo elegante */
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+  color: #ffffff;
+  
+  /* Borde y espaciado */
+  border: 2px solid transparent;
+  padding: 0.75rem 1.5rem;
+  
+  /* Tipografía */
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  
+  /* Efectos visuales */
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 
+    0 4px 6px -1px rgba(220, 38, 38, 0.3),
+    0 2px 4px -1px rgba(220, 38, 38, 0.1);
+  
+  /* Transiciones suaves */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Posición relativa para efectos */
+  position: relative;
+  overflow: hidden;
+  
+  /* Prevenir selección de texto */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Efecto de brillo interno */
+.logout-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+/* Estado hover */
+.logout-button:hover {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 15px -3px rgba(220, 38, 38, 0.4),
+    0 4px 6px -2px rgba(220, 38, 38, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Activar efecto de brillo en hover */
+.logout-button:hover::before {
+  left: 100%;
+}
+
+/* Estado activo/presionado */
+.logout-button:active {
+  transform: translateY(0);
+  box-shadow: 
+    0 2px 4px -1px rgba(220, 38, 38, 0.3),
+    0 1px 2px -1px rgba(220, 38, 38, 0.1);
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 50%, #7f1d1d 100%);
+}
+
+/* Estado focus para accesibilidad */
+.logout-button:focus {
+  outline: none;
+  ring: 3px solid rgba(220, 38, 38, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+
+
+
+.logout-button-minimal {
+  background: rgba(36, 71, 51, 1);
+  border: 2px  rgba(36, 71, 51, 1);
+  padding: 0.5rem 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+
+  display: flex;
+  align-items: center;   
+  justify-content: center; 
+  text-align: center;       
+  line-height: 1; 
+}
+
+.logout-button-minimal:hover {
+  background: #dc2626;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.2);
+}
+
+.logout-button-minimal:active {
+  transform: translateY(0);
+}
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .logout-button {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8rem;
+  }
+  
+  .logout-button-minimal {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .logout-button-danger {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8rem;
+  }
+}
+nav{
+  background-color:  rgba(17, 34, 24, 1);
+}
+
+.user-role {
+  color: rgb(255, 255, 255);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+/* Scrollbar personalizada */
+.sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: rgba(17, 34, 24, 1);
+  border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(17, 34, 24, 1);
+  border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background:rgba(17, 34, 24, 1);
+}
+
+/* Animaciones adicionales */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.sidebar-menu-item {
+  animation: slideIn 0.3s ease forwards;
+}
+
+.sidebar-menu-item:nth-child(1) { animation-delay: 0.1s; }
+.sidebar-menu-item:nth-child(2) { animation-delay: 0.15s; }
+.sidebar-menu-item:nth-child(3) { animation-delay: 0.2s; }
+.sidebar-menu-item:nth-child(4) { animation-delay: 0.25s; }
+.sidebar-menu-item:nth-child(5) { animation-delay: 0.3s; }
+.sidebar-menu-item:nth-child(6) { animation-delay: 0.35s; }
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 70px;
+    padding: 0;
+  }
+  
+  .sidebar:hover {
+    width: 280px;
+  }
+  
+  .sidebar-label,
+  .sidebar-title,
+  .user-info {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .sidebar:hover .sidebar-label,
+  .sidebar:hover .sidebar-title,
+  .sidebar:hover .user-info {
+    opacity: 1;
+    transition-delay: 0.1s;
+  }
 }
