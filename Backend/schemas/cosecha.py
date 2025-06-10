@@ -3,6 +3,7 @@ from typing import Optional, List
 from datetime import date
 from decimal import Decimal
 
+from schemas.predio import PredioNombreOnly
 from schemas.insumo_cosecha import InsumoCosechaCreate, InsumoCosechaRead
 
 
@@ -44,21 +45,24 @@ class CosechaRead(BaseModel):
     hectareas: Decimal
     calibre_promedio: Optional[Decimal]
     observaciones: Optional[str]
-    predio_ids: Optional[List[int]] = []
+    predios: Optional[List[PredioNombreOnly]] = []
     insumos: Optional[List[InsumoCosechaRead]] = []
 
     model_config = ConfigDict(from_attributes=True)
 
     @classmethod
     def from_orm_with_predios(cls, cosecha_orm):
-        predio_ids = [
-            p.id for p in cosecha_orm.predios] if cosecha_orm.predios else []
         insumos = [
-            InsumoCosechaRead.model_validate(i)
-            for i in cosecha_orm.insumos_cosecha
+            InsumoCosechaRead(
+                id=ic.id,
+                insumo_id=ic.insumo_id,
+                cantidad=ic.cantidad,
+                costo_unitario=ic.costo_unitario,
+                nombre_comercial=ic.insumo.nombre_comercial
+            )
+            for ic in cosecha_orm.insumos_cosecha
         ] if cosecha_orm.insumos_cosecha else []
 
         data = cls.from_orm(cosecha_orm)
-        data.predio_ids = predio_ids
         data.insumos = insumos
         return data
