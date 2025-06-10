@@ -1,0 +1,135 @@
+.account-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: rgba(17, 34, 24, 1);
+}
+
+.account-sidebar {
+  width: 16rem;
+  position: fixed;
+  height: 100vh;
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  color: white;
+  z-index: 10;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+  padding: 2rem 1rem;
+}
+
+.account-main {
+  margin-left: 16rem;
+  padding: 2rem;
+  width: 100%;
+  background-color: rgba(17, 34, 24, 1);
+}
+
+.account-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.account-card {
+  background: rgba(36, 71, 51, 1);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+.account-card label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.account-card input,
+.account-card select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: white;
+  background-color: rgba(24, 49, 35, 1);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.account-card input::placeholder {
+  color: #9ca3af;
+}
+
+.account-card button {
+  background: rgba(36, 71, 51, 1);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.account-card button:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.2);
+}
+
+.account-card button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .account-main {
+    margin-left: 0;
+    padding: 1rem;
+  }
+
+  .account-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+
+  .account-container {
+    flex-direction: column;
+  }
+
+  .account-title {
+    font-size: 2rem;
+  }
+
+  .account-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Animaciones */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.account-card {
+  animation: slideIn 0.5s ease-out;
+}
+
+.account-card input:focus,
+.account-card select:focus,
+.account-card button:focus {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
