@@ -9,6 +9,8 @@ import Account from './routes/Account.tsx'
 import AccountEdit from './routes/AccountEdit.tsx'
 import Export from './routes/Export.tsx'
 import Production from './routes/Production.tsx'
+import ProductionAdd from './routes/ProductionAdd.tsx'
+import ProductionEdit from './routes/ProductionEdit.tsx'
 import Inputs from './routes/Inputs.tsx'
 import Properties from './routes/Properties.tsx'
 import PropertiesAdd from './routes/PropertiesAdd.tsx'
@@ -70,6 +72,14 @@ const router = createBrowserRouter([
       {
         path: "production",
         element: <Production />,
+      },
+      {
+        path: "production/add",
+        element: <ProductionAdd />,
+      },
+      {
+        path: "production/edit",
+        element: <ProductionEdit />,
       },
       {
         path: "inputs",
