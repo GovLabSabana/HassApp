@@ -129,15 +129,54 @@ export default function Production() {
         <table className="production-table">
           <thead>
             <tr>
-              <th>Fecha</th><th>Producto</th><th>Calidad</th><th>Toneladas</th><th>Hectáreas</th><th>Calibre Promedio</th><th>Observaciones</th><th>Predios</th><th>Insumos</th><th>Acciones</th>
+              <th>Fecha</th>
+              <th>Producto</th>
+              <th>Calidad</th>
+              <th>Toneladas</th>
+              <th>Hectáreas</th>
+              <th>Calibre Promedio</th>
+              <th>Observaciones</th>
+              <th>Predios</th>
+              <th>Insumos</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map(c =>
+            {filtered.map((c) => (
               <tr key={c.id}>
-                <td>{c.fecha}</td><td>{c.producto? `${c.producto.nombre}-${c.producto.id}`: 'N/A'}</td><td>{c.calidad?.descripcion ?? 'N/A'}</td><td>{c.toneladas}</td><td>{c.hectareas}</td><td>{c.calibre_promedio}</td><td>{c.observaciones}</td><td>{c.predios.map(p => `${p.nombre}-${p.id}`).join(', ')}</td><td>{c.insumos.map(i => <div key={i.insumo_id}>{i.nombre_comercial} — {i.cantidad} — {parseFloat(i.costo_unitario).toLocaleString('es-CO',{style:'currency',currency:'COP'})}</div>)}</td><td><button onClick={() => navigate(`/production/edit?id=${c.id}`)}>Editar</button><button onClick={() => handleDelete(c.id)}>Eliminar</button></td>
+                <td>{c.fecha}</td>
+                <td>
+                  {c.producto ? `${c.producto.nombre}-${c.producto.id}` : "N/A"}
+                </td>
+                <td>{c.calidad?.descripcion ?? "N/A"}</td>
+                <td>{c.toneladas}</td>
+                <td>{c.hectareas}</td>
+                <td>{c.calibre_promedio}</td>
+                <td>{c.observaciones}</td>
+                <td>
+                  {c.predios.map((p) => `${p.nombre}-${p.id}`).join(", ")}
+                </td>
+                <td>
+                  {c.insumos.map((i) => (
+                    <div key={i.insumo_id}>
+                      {i.nombre_comercial} — {i.cantidad} —{" "}
+                      {parseFloat(i.costo_unitario).toLocaleString("es-CO", {
+                        style: "currency",
+                        currency: "COP",
+                      })}
+                    </div>
+                  ))}
+                </td>
+                <td>
+                  <button
+                    onClick={() => navigate(`/production/edit?id=${c.id}`)}
+                  >
+                    Editar
+                  </button>
+                  <button onClick={() => handleDelete(c.id)}>Eliminar</button>
+                </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
 

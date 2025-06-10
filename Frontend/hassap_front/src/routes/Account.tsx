@@ -57,7 +57,9 @@ export default function Account() {
           <Sidebar />
         </div>
         <main className="account-main">
-          <div className="account-loading">Cargando información del usuario...</div>
+          <div className="account-loading">
+            Cargando información del usuario...
+          </div>
         </main>
       </div>
     );
@@ -74,37 +76,56 @@ export default function Account() {
 
         {user ? (
           <div className="account-info">
-            <div className="account-row"><strong>Email:</strong> {user.email}</div>
-            <div className="account-row"><strong>Tipo de persona:</strong> {user.tipo_persona}</div>
-            <div className="account-row"><strong>Razón social:</strong> {user.razon_social}</div>
-            <div className="account-row"><strong>Teléfono:</strong> {user.telefono}</div>
-            <div className="account-row"><strong>Dirección:</strong> {user.direccion}</div>
             <div className="account-row">
-              <strong>Página web:</strong>{' '}
+              <strong>Email:</strong> {user.email}
+            </div>
+            <div className="account-row">
+              <strong>Tipo de persona:</strong> {user.tipo_persona}
+            </div>
+            <div className="account-row">
+              <strong>Razón social:</strong> {user.razon_social}
+            </div>
+            <div className="account-row">
+              <strong>Teléfono:</strong> {user.telefono}
+            </div>
+            <div className="account-row">
+              <strong>Dirección:</strong> {user.direccion}
+            </div>
+            <div className="account-row">
+              <strong>Página web:</strong>{" "}
               {user.pagina_web ? (
-                <a href={user.pagina_web} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={user.pagina_web}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Ver página
                 </a>
               ) : (
-                'No cargado'
+                "No cargado"
               )}
             </div>
             <div className="account-row">
-              <strong>RUT:</strong>{' '}
+              <strong>RUT:</strong>{" "}
               {user.rut ? (
                 <a href={user.rut} target="_blank" rel="noopener noreferrer">
                   Ver documento
                 </a>
               ) : (
-                'No cargado'
+                "No cargado"
               )}
             </div>
-            <div className="account-row"><strong>Tipo de documento:</strong> {user.tipo_documento?.name}</div>
-            <div className="account-row"><strong>Número de documento:</strong> {user.num_documento}</div>
+            <div className="account-row">
+              <strong>Tipo de documento:</strong> {user.tipo_documento?.name}
+            </div>
+            <div className="account-row">
+              <strong>Número de documento:</strong> {user.num_documento}
+            </div>
 
             {user.logo && (
               <div className="account-logo">
-                <strong>Logo:</strong><br />
+                <strong>Logo:</strong>
+                <br />
                 <img src={user.logo} alt="Logo" className="account-logo-img" />
               </div>
             )}
