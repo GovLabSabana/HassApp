@@ -5,7 +5,6 @@ from decimal import Decimal
 class InsumoCosechaBase(BaseModel):
     insumo_id: int
     cantidad: Decimal
-    costo_unitario: Decimal
 
 
 class InsumoCosechaCreate(InsumoCosechaBase):

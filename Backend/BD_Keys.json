@@ -4680,5 +4680,15 @@
       "id": 3,
       "name": "Insecticida"
     }
+  ],
+  "tipo_producto": [
+    {
+      "id": 1,
+      "name": "Aguacate Hass."
+    },
+    {
+      "id": 2,
+      "name": "Aguacate Lamb Hass."
+    }
   ]
 }

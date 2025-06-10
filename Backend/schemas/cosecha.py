@@ -57,7 +57,6 @@ class CosechaRead(BaseModel):
                 id=ic.id,
                 insumo_id=ic.insumo_id,
                 cantidad=ic.cantidad,
-                costo_unitario=ic.costo_unitario,
                 nombre_comercial=ic.insumo.nombre_comercial
             )
             for ic in cosecha_orm.insumos_cosecha

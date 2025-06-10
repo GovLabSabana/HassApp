@@ -1,3 +1,5 @@
+from models.insumo import Insumo
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from fastapi import HTTPException
@@ -8,6 +10,7 @@ from schemas.cosecha import CosechaCreate, CosechaUpdate
 from sqlalchemy.orm import selectinload
 from models.insumo_cosecha import InsumoCosecha
 from schemas.cosecha import CosechaCreate
+from fastapi import HTTPException
 
 
 async def create_cosecha(db: AsyncSession, cosecha_in: CosechaCreate) -> Cosecha:
@@ -29,20 +32,33 @@ async def create_cosecha(db: AsyncSession, cosecha_in: CosechaCreate) -> Cosecha
         predios = result.scalars().all()
         cosecha.predios = predios
 
-    # Asociar insumos (InsumoCosecha)
+    # Asociar insumos (desde insumo_id y cantidad)
     if cosecha_in.insumos:
-        cosecha.insumos_cosecha = [
-            InsumoCosecha(
-                insumo_id=insumo.insumo_id,
-                cantidad=insumo.cantidad,
-                costo_unitario=insumo.costo_unitario
+        # Obtener los insumos para poder acceder a su costo_unitario
+        insumo_ids = [item.insumo_id for item in cosecha_in.insumos]
+        result = await db.execute(
+            select(Insumo).where(Insumo.id.in_(insumo_ids))
+        )
+        insumos = {insumo.id: insumo for insumo in result.scalars().all()}
+
+        insumos_cosecha = []
+        for item in cosecha_in.insumos:
+            insumo = insumos.get(item.insumo_id)
+            if not insumo:
+                raise HTTPException(
+                    status_code=404, detail=f"Insumo {item.insumo_id} no encontrado")
+
+            insumo_cosecha = InsumoCosecha(
+                insumo_id=item.insumo_id,
+                cantidad=item.cantidad,
+                insumo=insumo  # relaciona con el insumo que sí tiene el costo
             )
-            for insumo in cosecha_in.insumos
-        ]
+            insumos_cosecha.append(insumo_cosecha)
+
+        cosecha.insumos_cosecha = insumos_cosecha
 
     db.add(cosecha)
     await db.commit()
-    # Refrescar para asegurar relaciones actualizadas
     await db.refresh(cosecha)
 
     # Recargar con relaciones si lo necesitas en la respuesta
@@ -50,13 +66,12 @@ async def create_cosecha(db: AsyncSession, cosecha_in: CosechaCreate) -> Cosecha
         select(Cosecha)
         .options(
             selectinload(Cosecha.predios),
-            selectinload(Cosecha.insumos_cosecha)
+            selectinload(Cosecha.insumos_cosecha).selectinload(
+                InsumoCosecha.insumo)
         )
         .where(Cosecha.id == cosecha.id)
     )
-    cosecha = result.scalars().first()
-
-    return cosecha
+    return result.scalars().first()
 
 
 async def get_cosechas_by_predio(db: AsyncSession, predio_id: int) -> List[Cosecha]:
@@ -65,7 +80,8 @@ async def get_cosechas_by_predio(db: AsyncSession, predio_id: int) -> List[Cosec
         .join(Cosecha.predios)
         .options(
             selectinload(Cosecha.predios),
-            selectinload(Cosecha.insumos_cosecha)
+            selectinload(Cosecha.insumos_cosecha).selectinload(
+                InsumoCosecha.insumo)
         )
         .where(Predio.id == predio_id)
     )
@@ -77,7 +93,8 @@ async def get_cosecha(db: AsyncSession, cosecha_id: int) -> Optional[Cosecha]:
         select(Cosecha)
         .options(
             selectinload(Cosecha.predios),
-            selectinload(Cosecha.insumos_cosecha)
+            selectinload(Cosecha.insumos_cosecha).selectinload(
+                InsumoCosecha.insumo)
         )
         .where(Cosecha.id == cosecha_id)
     )
@@ -95,7 +112,6 @@ async def update_cosecha(db: AsyncSession, cosecha: Cosecha, cosecha_in: Cosecha
     if cosecha_in.predio_ids is not None:
         await db.refresh(cosecha, ["predios"])
         cosecha.predios.clear()
-
         stmt = select(Predio).where(Predio.id.in_(cosecha_in.predio_ids))
         result = await db.execute(stmt)
         nuevos_predios = result.scalars().all()
@@ -105,20 +121,31 @@ async def update_cosecha(db: AsyncSession, cosecha: Cosecha, cosecha_in: Cosecha
     if cosecha_in.insumos is not None:
         await db.refresh(cosecha, ["insumos_cosecha"])
 
-        # Borrar insumos anteriores
+        # Eliminar insumos anteriores
         for insumo in cosecha.insumos_cosecha:
             await db.delete(insumo)
+        await db.flush()  # aplicar deletes antes de agregar
 
-        # Crear y asociar nuevos insumos
-        nuevos_insumos = [
-            InsumoCosecha(
-                insumo_id=insumo.insumo_id,
-                cantidad=insumo.cantidad,
-                costo_unitario=insumo.costo_unitario,
-                cosecha_id=cosecha.id  # necesario si se crea sin append
+        # Obtener los insumos originales para conocer el costo_unitario
+        insumo_ids = [item.insumo_id for item in cosecha_in.insumos]
+        result = await db.execute(select(Insumo).where(Insumo.id.in_(insumo_ids)))
+        insumos_db = {insumo.id: insumo for insumo in result.scalars().all()}
+
+        nuevos_insumos = []
+        for item in cosecha_in.insumos:
+            insumo_db = insumos_db.get(item.insumo_id)
+            if not insumo_db:
+                raise HTTPException(
+                    status_code=404, detail=f"Insumo {item.insumo_id} no encontrado")
+            nuevos_insumos.append(
+                InsumoCosecha(
+                    insumo_id=item.insumo_id,
+                    cantidad=item.cantidad,
+                    insumo=insumo_db,
+                    cosecha_id=cosecha.id
+                )
             )
-            for insumo in cosecha_in.insumos
-        ]
+
         cosecha.insumos_cosecha = nuevos_insumos
 
     await db.commit()
