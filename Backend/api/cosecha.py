@@ -10,7 +10,9 @@ from repositories import cosecha as cosecha_repo
 from sqlalchemy.orm import selectinload
 from models.usuario import Usuario
 from models.insumo_cosecha import InsumoCosecha
-
+from models.predio import Predio
+from models.rompimientos import cosecha_predio_table
+from sqlalchemy import distinct
 
 router = APIRouter(
     prefix="/cosechas",
@@ -22,14 +24,19 @@ router = APIRouter(
 @router.get("/", response_model=List[CosechaRead])
 async def list_my_cosechas(
     db: AsyncSession = Depends(get_db),
-    user: Usuario = Depends(current_user)
+    user: Usuario = Depends(current_user),
 ):
     result = await db.execute(
         select(Cosecha)
+        .distinct()
+        .join(cosecha_predio_table)
+        .join(Predio, Predio.id == cosecha_predio_table.c.predio_id)
+        .filter(Predio.usuario_id == user.id)
         .options(
             selectinload(Cosecha.predios),
             selectinload(Cosecha.insumos_cosecha).selectinload(
-                InsumoCosecha.insumo)
+                InsumoCosecha.insumo
+            ),
         )
     )
     cosechas = result.scalars().all()
