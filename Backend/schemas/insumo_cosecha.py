@@ -14,5 +14,5 @@ class InsumoCosechaCreate(InsumoCosechaBase):
 
 class InsumoCosechaRead(InsumoCosechaBase):
     id: int
-
+    nombre_comercial: str
     model_config = ConfigDict(from_attributes=True)

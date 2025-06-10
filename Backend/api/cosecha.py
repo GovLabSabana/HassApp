@@ -9,6 +9,7 @@ from schemas.cosecha import CosechaCreate, CosechaRead, CosechaUpdate
 from repositories import cosecha as cosecha_repo
 from sqlalchemy.orm import selectinload
 from models.usuario import Usuario
+from models.insumo_cosecha import InsumoCosecha
 
 
 router = APIRouter(
@@ -23,13 +24,12 @@ async def list_my_cosechas(
     db: AsyncSession = Depends(get_db),
     user: Usuario = Depends(current_user)
 ):
-    # Suponiendo que quieres filtrar por usuario a través de predios (modifícalo según tu lógica)
-
     result = await db.execute(
         select(Cosecha)
         .options(
             selectinload(Cosecha.predios),
-            selectinload(Cosecha.insumos_cosecha)
+            selectinload(Cosecha.insumos_cosecha).selectinload(
+                InsumoCosecha.insumo)
         )
     )
     cosechas = result.scalars().all()

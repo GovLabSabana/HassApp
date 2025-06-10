@@ -1,4 +1,5 @@
 # schemas/predio.py
+from pydantic import BaseModel, ConfigDict
 from pydantic import BaseModel, ConfigDict, field_validator
 from typing import Optional
 from decimal import Decimal
@@ -42,4 +43,11 @@ class PredioUpdate(BaseModel):
 class PredioRead(PredioBase):
     id: int
     usuario_id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PredioNombreOnly(BaseModel):
+    id: int
+    nombre: str
+
     model_config = ConfigDict(from_attributes=True)
