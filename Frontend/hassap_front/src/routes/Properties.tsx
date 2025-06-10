@@ -8,7 +8,7 @@ interface Predio {
   id: number;
   nombre: string;
   cedula_catastral: number;
-  municipio: string;
+  municipio_id: string;
   vereda: string;
   direccion: string;
   hectareas: number;
@@ -62,12 +62,12 @@ export default function Properties() {
     }
   };
 
-  const prediosFiltrados = predios.filter(
-  (p) =>
+  const prediosFiltrados = predios.filter((p) =>
     (!municipioFiltro ||
-      (p.municipio && p.municipio.toLowerCase().includes(municipioFiltro.toLowerCase()))) &&
+      (p.municipio_id !== null &&
+        String(p.municipio_id).includes(municipioFiltro))) &&
     (!vocacionFiltro || p.vocacion === vocacionFiltro)
-);
+  );
 
   if (loading) {
     return (
@@ -152,7 +152,7 @@ export default function Properties() {
                     <tr key={p.id}>
                       <td>{p.nombre}</td>
                       <td>{p.cedula_catastral?.toLocaleString()}</td>
-                      <td>{p.municipio}</td>
+                      <td>{p.municipio_id}</td>
                       <td>{p.vereda}</td>
                       <td>{p.direccion}</td>
                       <td>{p.hectareas?.toLocaleString()} ha</td>
