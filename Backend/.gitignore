@@ -19,3 +19,6 @@ venv/
 # IDEs
 .vscode/
 .idea/
+
+/querie.py
+/rename_municipios.py

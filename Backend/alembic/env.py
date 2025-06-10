@@ -27,6 +27,9 @@ import models.rompimientos
 import models.exportacion
 import models.exportacion_cosecha
 
+# Modelos de sondeo
+import models.pregunta
+import models.respuesta
 
 from alembic import context
 

@@ -6,4 +6,4 @@ class Departamento(Base):
     __tablename__ = "departamento"
     id = Column(Integer, primary_key=True, index=True)
     # Usar unique si quieres que no se repita
-    name = Column(String(50), nullable=False, unique=True)
+    name = Column(String(150), nullable=False, unique=True)

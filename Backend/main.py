@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from pydantic import ValidationError
 import os
-from api import auth, protegida, predio, usuario, cosecha, comprador, exportaciones, reset_data, fake_data
+from api import auth, protegida, predio, usuario, cosecha, comprador, exportaciones, reset_data, fake_data, respuesta, pregunta
 
 load_dotenv()
 
@@ -27,6 +27,8 @@ app.include_router(cosecha.router)
 app.include_router(protegida.router, prefix="/api")  # Rutas protegidas
 app.include_router(comprador.router)
 app.include_router(exportaciones.router)
+app.include_router(respuesta.router)
+app.include_router(pregunta.router)
 app.include_router(reset_data.router)
 app.include_router(fake_data.router)
 
