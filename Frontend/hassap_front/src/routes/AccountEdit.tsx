@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../componentsStyles/AccountEdit.css';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../componentsStyles/Accountedit.css";
 
 export default function AccountEdit() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    tipo_persona: '',
-    razon_social: '',
-    telefono: '',
-    direccion: '',
-    pagina_web: '',
+    tipo_persona: "",
+    razon_social: "",
+    telefono: "",
+    direccion: "",
+    pagina_web: "",
     tipo_documento_id: 0,
-    num_documento: '',
+    num_documento: "",
     rut_document: null as File | null,
     logo_document: null as File | null,
   });
@@ -21,19 +21,19 @@ export default function AccountEdit() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const API_URL = import.meta.env.VITE_API_URL;
-  const token = localStorage.getItem('access_token') || '';
+  const token = localStorage.getItem("access_token") || "";
 
   const tipoDocumentoOpciones = [
-    { id: 1, name: 'Cédula de Ciudadanía' },
-    { id: 2, name: 'NIT' },
-    { id: 3, name: 'Pasaporte' },
-    { id: 4, name: 'Cédula de Extranjería' },
+    { id: 1, name: "Cédula de Ciudadanía" },
+    { id: 2, name: "NIT" },
+    { id: 3, name: "Pasaporte" },
+    { id: 4, name: "Cédula de Extranjería" },
   ];
 
   useEffect(() => {
     const fetchData = async () => {
       if (!token) {
-        navigate('/');
+        navigate("/");
         return;
       }
 
@@ -42,23 +42,23 @@ export default function AccountEdit() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!res.ok) throw new Error('No se pudo obtener usuario');
+        if (!res.ok) throw new Error("No se pudo obtener usuario");
         const data = await res.json();
 
         setFormData({
-          tipo_persona: data.tipo_persona || '',
-          razon_social: data.razon_social || '',
-          telefono: data.telefono || '',
-          direccion: data.direccion || '',
-          pagina_web: data.pagina_web || '',
+          tipo_persona: data.tipo_persona || "",
+          razon_social: data.razon_social || "",
+          telefono: data.telefono || "",
+          direccion: data.direccion || "",
+          pagina_web: data.pagina_web || "",
           tipo_documento_id: data.tipo_documento_id || 0,
-          num_documento: data.num_documento || '',
+          num_documento: data.num_documento || "",
           rut_document: null,
           logo_document: null,
         });
       } catch (err) {
         console.error(err);
-        setError('Error al cargar los datos');
+        setError("Error al cargar los datos");
       } finally {
         setLoading(false);
       }
@@ -67,7 +67,9 @@ export default function AccountEdit() {
     fetchData();
   }, [API_URL, navigate, token]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -82,24 +84,35 @@ export default function AccountEdit() {
     const soloLetras = /^[A-Za-z\s]+$/;
     const soloNumeros = /^\d+$/;
 
-    if (!formData.tipo_persona || !['Natural', 'Jurídica'].includes(formData.tipo_persona)) {
-      errors.tipo_persona = 'Tipo de persona inválido.';
+    if (
+      !formData.tipo_persona ||
+      !["Natural", "Jurídica"].includes(formData.tipo_persona)
+    ) {
+      errors.tipo_persona = "Tipo de persona inválido.";
     }
 
     if (!soloLetras.test(formData.razon_social)) {
-      errors.razon_social = 'La razón social solo debe contener letras.';
+      errors.razon_social = "La razón social solo debe contener letras.";
     }
 
-    if (!soloNumeros.test(formData.telefono) || formData.telefono.length !== 10) {
-      errors.telefono = 'El teléfono debe tener exactamente 10 dígitos numéricos.';
+    if (
+      !soloNumeros.test(formData.telefono) ||
+      formData.telefono.length !== 10
+    ) {
+      errors.telefono =
+        "El teléfono debe tener exactamente 10 dígitos numéricos.";
     }
 
-    if (!formData.tipo_documento_id || isNaN(Number(formData.tipo_documento_id))) {
-      errors.tipo_documento_id = 'Debes seleccionar un tipo de documento.';
+    if (
+      !formData.tipo_documento_id ||
+      isNaN(Number(formData.tipo_documento_id))
+    ) {
+      errors.tipo_documento_id = "Debes seleccionar un tipo de documento.";
     }
 
     if (!soloNumeros.test(formData.num_documento)) {
-      errors.num_documento = 'El número de documento debe contener solo números.';
+      errors.num_documento =
+        "El número de documento debe contener solo números.";
     }
 
     setFieldErrors(errors);
@@ -111,29 +124,29 @@ export default function AccountEdit() {
 
     if (!validarCampos()) return;
     if (!token) {
-      navigate('/');
+      navigate("/");
       return;
     }
 
     try {
       const formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
+        if (value !== undefined && value !== null && value !== "") {
           formDataToSend.append(key, value as string | Blob);
         }
       });
 
       const res = await fetch(`${API_URL}/usuarios/update/me`, {
-        method: 'PUT',
+        method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: formDataToSend,
       });
 
-      if (!res.ok) throw new Error('Error al actualizar usuario');
-      navigate('/account');
+      if (!res.ok) throw new Error("Error al actualizar usuario");
+      navigate("/account");
     } catch (err) {
       console.error(err);
-      setError('Error al actualizar los datos');
+      setError("Error al actualizar los datos");
     }
   };
 
@@ -146,12 +159,18 @@ export default function AccountEdit() {
       <form onSubmit={handleSubmit} className="account-edit-form">
         <div className="form-group">
           <label>Tipo de Persona:</label>
-          <select name="tipo_persona" value={formData.tipo_persona} onChange={handleChange}>
+          <select
+            name="tipo_persona"
+            value={formData.tipo_persona}
+            onChange={handleChange}
+          >
             <option value="">Selecciona</option>
             <option value="Natural">Natural</option>
             <option value="Jurídica">Jurídica</option>
           </select>
-          {fieldErrors.tipo_persona && <span className="error">{fieldErrors.tipo_persona}</span>}
+          {fieldErrors.tipo_persona && (
+            <span className="error">{fieldErrors.tipo_persona}</span>
+          )}
         </div>
 
         <div className="form-group">
@@ -162,7 +181,9 @@ export default function AccountEdit() {
             value={formData.razon_social}
             onChange={handleChange}
           />
-          {fieldErrors.razon_social && <span className="error">{fieldErrors.razon_social}</span>}
+          {fieldErrors.razon_social && (
+            <span className="error">{fieldErrors.razon_social}</span>
+          )}
         </div>
 
         <div className="form-group">
@@ -173,7 +194,9 @@ export default function AccountEdit() {
             value={formData.telefono}
             onChange={handleChange}
           />
-          {fieldErrors.telefono && <span className="error">{fieldErrors.telefono}</span>}
+          {fieldErrors.telefono && (
+            <span className="error">{fieldErrors.telefono}</span>
+          )}
         </div>
 
         <div className="form-group">
@@ -210,7 +233,9 @@ export default function AccountEdit() {
               </option>
             ))}
           </select>
-          {fieldErrors.tipo_documento_id && <span className="error">{fieldErrors.tipo_documento_id}</span>}
+          {fieldErrors.tipo_documento_id && (
+            <span className="error">{fieldErrors.tipo_documento_id}</span>
+          )}
         </div>
 
         <div className="form-group">
@@ -221,7 +246,9 @@ export default function AccountEdit() {
             value={formData.num_documento}
             onChange={handleChange}
           />
-          {fieldErrors.num_documento && <span className="error">{fieldErrors.num_documento}</span>}
+          {fieldErrors.num_documento && (
+            <span className="error">{fieldErrors.num_documento}</span>
+          )}
         </div>
 
         <div className="form-group">
@@ -248,11 +275,11 @@ export default function AccountEdit() {
           Guardar Cambios
         </button>
         <button
-        type="button"
-        className="cancel-button"
-        onClick={() => navigate('/account')}
+          type="button"
+          className="cancel-button"
+          onClick={() => navigate("/account")}
         >
-        Cancelar
+          Cancelar
         </button>
       </form>
     </div>
