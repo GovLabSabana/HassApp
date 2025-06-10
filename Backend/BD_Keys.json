@@ -4666,5 +4666,19 @@
       "id": 99,
       "name": "VICHADA"
     }
+  ],
+  "categoria_insumo": [
+    {
+      "id": 1,
+      "name": "Fertilizante"
+    },
+    {
+      "id": 2,
+      "name": "Fungicida"
+    },
+    {
+      "id": 3,
+      "name": "Insecticida"
+    }
   ]
 }
