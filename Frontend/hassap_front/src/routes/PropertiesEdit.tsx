@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import '../componentsStyles/Prediosadd.css';
 
 export default function PropertiesEdit() {
   const navigate = useNavigate();
@@ -67,10 +68,10 @@ export default function PropertiesEdit() {
   };
 
   return (
-    <div className="properties-layout">
-      <main className="properties-main">
+    <div className="add-properties-layout ">
+      <main className="add-properties-main">
         <h1>Editar Predio</h1>
-        <form onSubmit={handleSubmit} className="form">
+        <form onSubmit={handleSubmit} className="add-form">
           {[
             ['Nombre', 'nombre'],
             ['Cédula Catastral', 'cedula_catastral'],

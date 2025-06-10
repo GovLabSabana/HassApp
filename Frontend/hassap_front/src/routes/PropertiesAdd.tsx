@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import '../componentsStyles/Prediosadd.css';
 
 export default function PropertiesAdd() {
   const navigate = useNavigate();
@@ -126,10 +127,10 @@ export default function PropertiesAdd() {
         throw new Error("Error al agregar el predio");
       }
 
-      console.log("✅ Predio creado con éxito.");
-      navigate("/properties");
+      alert("Predio creado con éxito.");
+      navigate("/Properties");
     } catch (error) {
-      console.error("❌ Error en la petición:", error);
+      alert("Error en la petición:");
     }
   };
 
@@ -158,10 +159,10 @@ export default function PropertiesAdd() {
   );
 
   return (
-    <div className="properties-layout">
-      <main className="properties-main">
+    <div className="add-properties-layout ">
+      <main className="add-properties-main">
         <h1>Agregar Predio</h1>
-        <form onSubmit={handleSubmit} className="form">
+        <form onSubmit={handleSubmit} className="add-form ">
           {[
             ["Nombre", "nombre"],
             ["Cédula Catastral", "cedula_catastral"],
@@ -212,8 +213,8 @@ export default function PropertiesAdd() {
             </select>
           </div>
 
-          <button type="submit">Guardar</button>
-          <button type="button" onClick={() => navigate("/properties")}>
+          <button type="submit"onClick={() => navigate("/Properties")}>Guardar</button>
+          <button type="button" onClick={() => navigate("/Properties")}>
             Cancelar
           </button>
         </form>
