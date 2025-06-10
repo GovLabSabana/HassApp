@@ -1,0 +1,9 @@
+.error-text {
+  color: red;
+  font-size: 0.9em;
+  margin-bottom: 4px;
+}
+
+.form-actions button {
+  margin-right: 8px;
+}
