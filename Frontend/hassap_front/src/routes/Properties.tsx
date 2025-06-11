@@ -185,7 +185,7 @@ export default function Properties() {
           </div>
         )}
 
-        {/* Botón agregar */}
+        {}
         <div className="properties-add-container">
           <button
             className="properties-btn-add"
