@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import data from "../../../BD_Keys.json";
 
 const municipios = data.municipios;
@@ -28,6 +28,16 @@ const MunicipioSelector: React.FC<MunicipioSelectorProps> = ({
     setOpen(false);
     onSelect(municipio.id); // <-- Aquí enviamos solo el ID al padre
   };
+
+  useEffect(() => {
+    if (value) {
+      const found = municipios.find((m) => m.id === value);
+      if (found) {
+        setSelected(found);
+        setSearch(found.name);
+      }
+    }
+  }, [value]);
 
   return (
     <div

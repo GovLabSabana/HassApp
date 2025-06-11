@@ -26,8 +26,7 @@ export default function AccountEdit() {
   const tipoDocumentoOpciones = [
     { id: 1, name: "Cédula de Ciudadanía" },
     { id: 2, name: "NIT" },
-    { id: 3, name: "Pasaporte" },
-    { id: 4, name: "Cédula de Extranjería" },
+    { id: 3, name: "Cédula de Extranjería" },
   ];
 
   useEffect(() => {
@@ -105,7 +104,8 @@ export default function AccountEdit() {
 
     if (
       !formData.tipo_documento_id ||
-      isNaN(Number(formData.tipo_documento_id))
+      isNaN(Number(formData.tipo_documento_id)) ||
+      Number(formData.tipo_documento_id) === 0
     ) {
       errors.tipo_documento_id = "Debes seleccionar un tipo de documento.";
     }

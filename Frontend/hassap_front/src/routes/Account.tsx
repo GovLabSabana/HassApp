@@ -81,24 +81,24 @@ export default function Account() {
                 <h2 className="account-section-title">Información Personal</h2>
 
                 <div className="account-field">
-                  <label>Name</label>
+                  <label>Nombre/Razón Social</label>
                   <div className="account-field-value">
                     {user.razon_social || 'No especificado'}
                   </div>
                 </div>
 
                 <div className="account-field">
-                  <label>Email</label>
+                  <label>Correo</label>
                   <div className="account-field-value">{user.email}</div>
                 </div>
 
                 <div className="account-field">
-                  <label>Phone</label>
+                  <label>Teléfono</label>
                   <div className="account-field-value">{user.telefono || 'No especificado'}</div>
                 </div>
 
                 <div className="account-field">
-                  <label>Address</label>
+                  <label>Dirección</label>
                   <div className="account-field-value">{user.direccion || 'No especificado'}</div>
                 </div>
 
