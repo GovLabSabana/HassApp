@@ -1,7 +1,6 @@
 import "../componentsStyles/Produccionadd.css";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import MunicipioSelector from "../components/forms/SelectMunicipio";
 
 interface Insumo {
   insumo_id: number;
@@ -156,7 +155,6 @@ export default function ProductionAdd() {
             onChange={(e) => setProductoId(+e.target.value)}
           />
         </div>
-        <MunicipioSelector />
         <div>
           <label>Calidad* (1-5)</label>
           {errors.calidadId && (
