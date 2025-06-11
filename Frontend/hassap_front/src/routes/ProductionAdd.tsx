@@ -15,7 +15,6 @@ export default function ProductionAdd() {
   const [calidadId, setCalidadId] = useState<number>(1);
   const [toneladas, setToneladas] = useState<number>(0);
   const [hectareas, setHectareas] = useState<number>(0);
-  const [calibre, setCalibre] = useState<number>(0);
   const [observaciones, setObservaciones] = useState("");
   const [predios, setPredios] = useState<number[]>([0]);
   const [insumos, setInsumos] = useState<Insumo[]>([
@@ -26,7 +25,7 @@ export default function ProductionAdd() {
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
 
-  const validate = (): boolean => {
+  const validate = async (): Promise<boolean> => {
     const errs: Record<string, string> = {};
     const today = new Date().toISOString().split("T")[0];
 
@@ -38,55 +37,77 @@ export default function ProductionAdd() {
     if (calidadId < 1 || calidadId > 5)
       errs.calidadId = "Calidad debe ser entre 1 y 5.";
     if (toneladas <= 0) errs.toneladas = "Toneladas debe ser > 0.";
-    if (!observaciones.trim())
-      errs.observaciones = "Las observaciones son obligatorias.";
     if (hectareas <= 0) errs.hectareas = "Hectáreas debe ser > 0.";
-    if (calibre <= 0) errs.calibre = "Calibre promedio debe ser > 0.";
 
-    if (predios.length === 0 || predios.some((id) => id <= 0))
-      errs.predios = "Debes agregar al menos un Predio ID válido.";
+    if (predios.length === 0 || predios.some((id) => id <= 0)) {
+        errs.predios = "Debes agregar al menos un Predio ID válido.";
+    } else {
+        const prediosValidos = await fetchPrediosValidos();
+        const prediosInvalidos = predios.filter((id) => !prediosValidos.includes(id));
+        if (prediosInvalidos.length > 0) {
+        errs.predios = `Los siguientes IDs de predio no existen: ${prediosInvalidos.join(", ")}`;
+        }
+    }
 
     if (
-      insumos.length === 0 ||
-      insumos.some((i) => i.insumo_id <= 0 || i.cantidad <= 0)
+        insumos.length === 0 ||
+        insumos.some((i) => i.insumo_id <= 0 || i.cantidad <= 0)
     )
-      errs.insumos = "Debes agregar al menos un Insumo con ID y cantidad > 0.";
+        errs.insumos = "Debes agregar al menos un Insumo con ID y cantidad > 0.";
 
     setErrors(errs);
     return Object.keys(errs).length === 0;
-  };
-
-  const handleAdd = async () => {
-    if (!validate()) return;
-
-    const body = {
-      fecha,
-      producto_id: productoId,
-      calidad_id: calidadId,
-      toneladas,
-      hectareas,
-      calibre_promedio: calibre,
-      observaciones,
-      predio_ids: predios,
-      insumos,
     };
 
+  const fetchPrediosValidos = async (): Promise<number[]> => {
     try {
-      const res = await fetch(`${API_URL}/cosechas/`, {
+        const res = await fetch(`${API_URL}/predios/`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        });
+        if (!res.ok) throw new Error("No se pudieron obtener los predios.");
+        const data = await res.json();
+        return data.map((p: { id: number }) => p.id); // Ajusta si el backend retorna otra estructura
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+    };
+
+  const handleAdd = async () => {
+    const isValid = await validate();
+    if (!isValid) return;
+
+    const body = {
+        fecha,
+        producto_id: productoId,
+        calidad_id: calidadId,
+        toneladas,
+        hectareas,
+        observaciones,
+        predio_ids: predios,
+        insumos,
+    };
+
+    console.log("JSON a enviar:", JSON.stringify(body, null, 2));
+
+    try {
+        const res = await fetch(`${API_URL}/cosechas/`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(body),
-      });
-      if (!res.ok) throw new Error("Error al crear producción");
-      navigate("/production");
+        });
+        if (!res.ok) throw new Error("Error al crear producción");
+        navigate("/production");
     } catch (err) {
-      console.error(err);
-      setErrors({ general: "No fue posible crear la producción." });
+        console.error(err);
+        setErrors({ general: "No fue posible crear la producción." });
     }
-  };
+    };
 
   const addPredioField = () => setPredios((prev) => [...prev, 0]);
   const removePredioField = (idx: number) =>
@@ -177,22 +198,10 @@ export default function ProductionAdd() {
         </div>
 
         <div>
-          <label>Calibre Promedio*</label>
-          {errors.calibre && <div className="error-text">{errors.calibre}</div>}
-          <input
-            type="number"
-            value={calibre}
-            min={1}
-            onChange={(e) => setCalibre(+e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label>Observaciones*</label>
+          <label>Observaciones</label>
           <textarea
             value={observaciones}
             onChange={(e) => setObservaciones(e.target.value)}
-            required
           />
         </div>
 
