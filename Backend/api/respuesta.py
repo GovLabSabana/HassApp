@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from models.respuesta import Respuesta
 from core.db import get_db
 from schemas.respuesta import RespuestaCreate, RespuestaOut
 from repositories import respuesta as repo
 from utils.current_user import current_user
+from models.usuario import Usuario
 
 router = APIRouter(
     prefix="/respuestas",
@@ -25,9 +27,10 @@ async def get_one(respuesta_id: int, db: AsyncSession = Depends(get_db)):
     return respuesta
 
 
-@router.post("/", response_model=RespuestaOut)
-async def create(respuesta: RespuestaCreate, db: AsyncSession = Depends(get_db)):
-    return await repo.create(db, respuesta)
+@router.post("/", response_model=RespuestaOut, )
+async def create(respuesta: RespuestaCreate, db: AsyncSession = Depends(get_db), user: Usuario = Depends(current_user)):
+    respuesta_data = Respuesta(**respuesta.dict(), usuario_id=user.id)
+    return await repo.create(db, respuesta_data)
 
 
 @router.delete("/{respuesta_id}")
