@@ -38,7 +38,7 @@
 }
 
 .add-form {
-    background:  rgba(36, 71, 51, 1);
+    background: rgba(17, 34, 24, 1);
   padding: 2rem;
   display: grid;
   gap: 1.5rem;
@@ -62,26 +62,26 @@
 
 .add-form input,
 .add-form select {
+    background-color: rgba(36, 71, 51, 1);
+  border: 2px solid rgba(36, 71, 51, 1);
+  color: #ffffff;
   padding: 0.875rem 1rem;
-  border: 2px solid #e0e0e0;
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background: white;
   font-family: inherit;
 }
 
 .add-form input:focus,
 .add-form select:focus {
   outline: none;
-  border-color: #4CAF50;
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
   transform: translateY(-1px);
 }
 
 .add-form input:hover,
 .add-form select:hover {
-  border-color: #c0c0c0;
+  border-color:  rgba(36, 71, 51, 1);
 }
 
 .add-form input[type="number"] {
@@ -90,6 +90,7 @@
 
 .add-form input[type="number"]::-webkit-outer-spin-button,
 .add-form input[type="number"]::-webkit-inner-spin-button {
+  background-color:rgba(36, 71, 51, 1) ;
   -webkit-appearance: none;
   margin: 0;
 }
@@ -129,7 +130,7 @@
 }
 
 .add-form button[type="submit"] {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: rgba(36, 71, 51, 1);
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -145,8 +146,9 @@
 }
 
 .add-form button[type="submit"]:hover {
+  background-color: rgba(183, 95, 12, 1);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  box-shadow: 0 6px 20px rgba(52, 105, 53, 0.4);
 }
 
 .add-form button[type="submit"]:active {
