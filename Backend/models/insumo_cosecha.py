@@ -11,7 +11,6 @@ class InsumoCosecha(Base):
     insumo_id = Column(Integer, ForeignKey("insumo.id"), nullable=False)
     cosecha_id = Column(Integer, ForeignKey("cosecha.id"), nullable=False)
     cantidad = Column(DECIMAL(10, 2), nullable=False)
-    costo_unitario = Column(DECIMAL(10, 2), nullable=False)
 
     insumo = relationship("Insumo", back_populates="insumos_cosecha")
     cosecha = relationship("Cosecha", back_populates="insumos_cosecha")

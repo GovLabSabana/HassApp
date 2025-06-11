@@ -132,11 +132,11 @@ export default function Production() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map(c =>
+            {filtered.map((c) => (
               <tr key={c.id}>
                 <td>{c.id}</td><td>{c.fecha}</td><td>{c.producto? `${c.producto.nombre}-${c.producto.id}`: 'N/A'}</td><td>{c.calidad?.id ?? 'N/A'}</td><td>{c.toneladas}</td><td>{c.hectareas}</td><td>{c.observaciones}</td><td>{c.predios.map(p => `${p.nombre}-${p.id}`).join(', ')}</td><td>{c.insumos.map(i => <div key={i.insumo_id}>{i.nombre_comercial} — {i.cantidad}</div>)}</td><td><button onClick={() => navigate(`/production/edit?id=${c.id}`)}>Editar</button><button onClick={() => handleDelete(c.id)}>Eliminar</button></td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
 

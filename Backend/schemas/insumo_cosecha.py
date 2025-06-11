@@ -5,7 +5,6 @@ from decimal import Decimal
 class InsumoCosechaBase(BaseModel):
     insumo_id: int
     cantidad: Decimal
-    costo_unitario: Decimal
 
 
 class InsumoCosechaCreate(InsumoCosechaBase):
@@ -15,4 +14,5 @@ class InsumoCosechaCreate(InsumoCosechaBase):
 class InsumoCosechaRead(InsumoCosechaBase):
     id: int
     nombre_comercial: str
+    costo_unitario: Decimal
     model_config = ConfigDict(from_attributes=True)

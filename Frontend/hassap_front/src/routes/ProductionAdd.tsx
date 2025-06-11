@@ -1,6 +1,7 @@
 import "../componentsStyles/Produccionadd.css";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import MunicipioSelector from "../components/forms/SelectMunicipio";
 
 interface Insumo {
   insumo_id: number;
@@ -16,7 +17,9 @@ export default function ProductionAdd() {
   const [hectareas, setHectareas] = useState<number>(0);
   const [observaciones, setObservaciones] = useState("");
   const [predios, setPredios] = useState<number[]>([0]);
-  const [insumos, setInsumos] = useState<Insumo[]>([{ insumo_id: 0, cantidad: 0 }]);
+  const [insumos, setInsumos] = useState<Insumo[]>([
+    { insumo_id: 0, cantidad: 0 },
+  ]);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const token = localStorage.getItem("access_token") || "";
@@ -27,10 +30,12 @@ export default function ProductionAdd() {
     const today = new Date().toISOString().split("T")[0];
 
     if (!fecha) errs.fecha = "Fecha es requerida.";
-    else if (fecha > today) errs.fecha = "La fecha no puede ser mayor a la actual.";
+    else if (fecha > today)
+      errs.fecha = "La fecha no puede ser mayor a la actual.";
 
     if (productoId <= 0) errs.productoId = "Producto ID debe ser > 0.";
-    if (calidadId < 1 || calidadId > 5) errs.calidadId = "Calidad debe ser entre 1 y 5.";
+    if (calidadId < 1 || calidadId > 5)
+      errs.calidadId = "Calidad debe ser entre 1 y 5.";
     if (toneladas <= 0) errs.toneladas = "Toneladas debe ser > 0.";
     if (hectareas <= 0) errs.hectareas = "Hectáreas debe ser > 0.";
 
@@ -141,7 +146,9 @@ export default function ProductionAdd() {
 
         <div>
           <label>Producto ID*</label>
-          {errors.productoId && <div className="error-text">{errors.productoId}</div>}
+          {errors.productoId && (
+            <div className="error-text">{errors.productoId}</div>
+          )}
           <input
             type="number"
             value={productoId}
@@ -149,10 +156,12 @@ export default function ProductionAdd() {
             onChange={(e) => setProductoId(+e.target.value)}
           />
         </div>
-
+        <MunicipioSelector />
         <div>
           <label>Calidad* (1-5)</label>
-          {errors.calidadId && <div className="error-text">{errors.calidadId}</div>}
+          {errors.calidadId && (
+            <div className="error-text">{errors.calidadId}</div>
+          )}
           <input
             type="number"
             value={calidadId}
@@ -164,7 +173,9 @@ export default function ProductionAdd() {
 
         <div>
           <label>Toneladas*</label>
-          {errors.toneladas && <div className="error-text">{errors.toneladas}</div>}
+          {errors.toneladas && (
+            <div className="error-text">{errors.toneladas}</div>
+          )}
           <input
             type="number"
             value={toneladas}
@@ -175,7 +186,9 @@ export default function ProductionAdd() {
 
         <div>
           <label>Hectáreas*</label>
-          {errors.hectareas && <div className="error-text">{errors.hectareas}</div>}
+          {errors.hectareas && (
+            <div className="error-text">{errors.hectareas}</div>
+          )}
           <input
             type="number"
             value={hectareas}
@@ -196,7 +209,10 @@ export default function ProductionAdd() {
           <label>Predio IDs*</label>
           {errors.predios && <div className="error-text">{errors.predios}</div>}
           {predios.map((id, idx) => (
-            <div key={idx} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <div
+              key={idx}
+              style={{ display: "flex", gap: 8, alignItems: "center" }}
+            >
               <input
                 type="number"
                 value={id}

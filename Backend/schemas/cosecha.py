@@ -57,12 +57,12 @@ class CosechaRead(BaseModel):
                 id=ic.id,
                 insumo_id=ic.insumo_id,
                 cantidad=ic.cantidad,
-                costo_unitario=ic.costo_unitario,
-                nombre_comercial=ic.insumo.nombre_comercial
+                nombre_comercial=ic.insumo.nombre_comercial,
+                costo_unitario=ic.insumo.costo_unitario
             )
-            for ic in cosecha_orm.insumos_cosecha
-        ] if cosecha_orm.insumos_cosecha else []
+            for ic in cosecha_orm.insumos_cosecha or []
+        ]
 
-        data = cls.from_orm(cosecha_orm)
+        data = cls.model_validate(cosecha_orm)
         data.insumos = insumos
         return data
