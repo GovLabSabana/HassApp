@@ -150,138 +150,192 @@ export default function AccountEdit() {
     }
   };
 
-  if (loading) return <div className="loading">Cargando...</div>;
+  if (loading) return <div className="account-loading">Cargando...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="account-edit-container">
-      <h2>Editar Cuenta</h2>
-      <form onSubmit={handleSubmit} className="account-edit-form">
-        <div className="form-group">
-          <label>Tipo de Persona:</label>
-          <select
-            name="tipo_persona"
-            value={formData.tipo_persona}
-            onChange={handleChange}
+    <div className="account-main">
+      <div className="account-content-wrapper">
+        <h2 className="account-title">Editar Cuenta</h2>
+        <form onSubmit={handleSubmit} className="account-info">
+          {/* Tipo de Persona */}
+          <div className="account-section">
+            <label className="account-field">
+              Tipo de Persona:
+              <select
+                name="tipo_persona"
+                value={formData.tipo_persona}
+                onChange={handleChange}
+                className="account-field-value"
+              >
+                <option value="">Selecciona</option>
+                <option value="Natural">Natural</option>
+                <option value="Jurídica">Jurídica</option>
+              </select>
+              {fieldErrors.tipo_persona && (
+                <span className="error">{fieldErrors.tipo_persona}</span>
+              )}
+            </label>
+          </div>
+
+          {/* Razón Social */}
+          <div className="account-section">
+            <label className="account-field">
+              Razón Social:
+              <input
+                type="text"
+                name="razon_social"
+                value={formData.razon_social}
+                onChange={handleChange}
+                className="account-field-value"
+              />
+              {fieldErrors.razon_social && (
+                <span className="error">{fieldErrors.razon_social}</span>
+              )}
+            </label>
+          </div>
+
+          {/* Teléfono */}
+          <div className="account-section">
+            <label className="account-field">
+              Teléfono:
+              <input
+                type="text"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleChange}
+                className="account-field-value"
+              />
+              {fieldErrors.telefono && (
+                <span className="error">{fieldErrors.telefono}</span>
+              )}
+            </label>
+          </div>
+
+          {/* Dirección */}
+          <div className="account-section">
+            <label className="account-field">
+              Dirección:
+              <input
+                type="text"
+                name="direccion"
+                value={formData.direccion}
+                onChange={handleChange}
+                className="account-field-value"
+              />
+            </label>
+          </div>
+
+          {/* Página Web */}
+          <div className="account-section">
+            <label className="account-field">
+              Página Web:
+              <input
+                type="text"
+                name="pagina_web"
+                value={formData.pagina_web}
+                onChange={handleChange}
+                className="account-field-value"
+              />
+            </label>
+          </div>
+
+          {/* Tipo de Documento */}
+          <div className="account-section">
+            <label className="account-field">
+              Tipo de Documento:
+              <select
+                name="tipo_documento_id"
+                value={formData.tipo_documento_id}
+                onChange={handleChange}
+                className="account-field-value"
+              >
+                <option value={0}>Selecciona</option>
+                {tipoDocumentoOpciones.map((tipo) => (
+                  <option key={tipo.id} value={tipo.id}>
+                    {tipo.name}
+                  </option>
+                ))}
+              </select>
+              {fieldErrors.tipo_documento_id && (
+                <span className="error">{fieldErrors.tipo_documento_id}</span>
+              )}
+            </label>
+          </div>
+
+          {/* Número de Documento */}
+          <div className="account-section">
+            <label className="account-field">
+              Número de Documento:
+              <input
+                type="text"
+                name="num_documento"
+                value={formData.num_documento}
+                onChange={handleChange}
+                className="account-field-value"
+              />
+              {fieldErrors.num_documento && (
+                <span className="error">{fieldErrors.num_documento}</span>
+              )}
+            </label>
+          </div>
+
+          {/* Documento RUT */}
+          <div className="account-section">
+            <label className="account-field">
+              Documento RUT (PDF):
+              <input
+                type="file"
+                id="rut_document"
+                name="rut_document"
+                accept=".pdf"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+              <label htmlFor="rut_document" className="account-file-btn">
+                Seleccionar archivo
+              </label>
+              {formData.rut_document && (
+                <div className="account-file-name">{formData.rut_document.name}</div>
+              )}
+            </label>
+          </div>
+
+          {/* Logo de la Empresa */}
+          <div className="account-section">
+            <label className="account-field">
+              Logo de la Empresa (Imagen):
+              <input
+                type="file"
+                id="logo_document"
+                name="logo_document"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+              <label htmlFor="logo_document" className="account-file-btn">
+                Seleccionar archivo
+              </label>
+              {formData.logo_document && (
+                <div className="account-file-name">{formData.logo_document.name}</div>
+              )}
+            </label>
+          </div>
+
+          {/* Botones */}
+          <button type="submit" className="account-edit-btn">
+            Guardar Cambios
+          </button>
+          <button
+            type="button"
+            className="account-edit-btn"
+            style={{ marginLeft: "10px", backgroundColor: "#666" }}
+            onClick={() => navigate("/account")}
           >
-            <option value="">Selecciona</option>
-            <option value="Natural">Natural</option>
-            <option value="Jurídica">Jurídica</option>
-          </select>
-          {fieldErrors.tipo_persona && (
-            <span className="error">{fieldErrors.tipo_persona}</span>
-          )}
-        </div>
-
-        <div className="form-group">
-          <label>Razón Social:</label>
-          <input
-            type="text"
-            name="razon_social"
-            value={formData.razon_social}
-            onChange={handleChange}
-          />
-          {fieldErrors.razon_social && (
-            <span className="error">{fieldErrors.razon_social}</span>
-          )}
-        </div>
-
-        <div className="form-group">
-          <label>Teléfono:</label>
-          <input
-            type="text"
-            name="telefono"
-            value={formData.telefono}
-            onChange={handleChange}
-          />
-          {fieldErrors.telefono && (
-            <span className="error">{fieldErrors.telefono}</span>
-          )}
-        </div>
-
-        <div className="form-group">
-          <label>Dirección:</label>
-          <input
-            type="text"
-            name="direccion"
-            value={formData.direccion}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Página Web:</label>
-          <input
-            type="text"
-            name="pagina_web"
-            value={formData.pagina_web}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Tipo de Documento:</label>
-          <select
-            name="tipo_documento_id"
-            value={formData.tipo_documento_id}
-            onChange={handleChange}
-          >
-            <option value={0}>Selecciona</option>
-            {tipoDocumentoOpciones.map((tipo) => (
-              <option key={tipo.id} value={tipo.id}>
-                {tipo.name}
-              </option>
-            ))}
-          </select>
-          {fieldErrors.tipo_documento_id && (
-            <span className="error">{fieldErrors.tipo_documento_id}</span>
-          )}
-        </div>
-
-        <div className="form-group">
-          <label>Número de Documento:</label>
-          <input
-            type="text"
-            name="num_documento"
-            value={formData.num_documento}
-            onChange={handleChange}
-          />
-          {fieldErrors.num_documento && (
-            <span className="error">{fieldErrors.num_documento}</span>
-          )}
-        </div>
-
-        <div className="form-group">
-          <label>Documento RUT (PDF):</label>
-          <input
-            type="file"
-            name="rut_document"
-            accept=".pdf"
-            onChange={handleFileChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Logo de la Empresa (Imagen):</label>
-          <input
-            type="file"
-            name="logo_document"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-        </div>
-
-        <button type="submit" className="submit-button">
-          Guardar Cambios
-        </button>
-        <button
-          type="button"
-          className="cancel-button"
-          onClick={() => navigate("/account")}
-        >
-          Cancelar
-        </button>
-      </form>
+            Cancelar
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
