@@ -16,7 +16,7 @@ async def get_by_id(db: AsyncSession, respuesta_id: int):
 
 
 async def create(db: AsyncSession, respuesta: RespuestaCreate):
-    new_respuesta = Respuesta(**respuesta.dict())
+    new_respuesta = respuesta
     db.add(new_respuesta)
     await db.commit()
     await db.refresh(new_respuesta)
