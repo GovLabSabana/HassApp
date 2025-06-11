@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
-import "../componentsStyles/Account.css"; // Asegúrate de tener estilos
+import "../componentsStyles/Account.css";
 
 interface User {
   id: number;
@@ -72,74 +72,96 @@ export default function Account() {
       </div>
 
       <main className="account-main">
-        <h1 className="account-title">Mi Perfil</h1>
+        <div className="account-content-wrapper">
+          <h1 className="account-title">Cuenta</h1>
 
-        {user ? (
-          <div className="account-info">
-            <div className="account-row">
-              <strong>Email:</strong> {user.email}
-            </div>
-            <div className="account-row">
-              <strong>Tipo de persona:</strong> {user.tipo_persona}
-            </div>
-            <div className="account-row">
-              <strong>Razón social:</strong> {user.razon_social}
-            </div>
-            <div className="account-row">
-              <strong>Teléfono:</strong> {user.telefono}
-            </div>
-            <div className="account-row">
-              <strong>Dirección:</strong> {user.direccion}
-            </div>
-            <div className="account-row">
-              <strong>Página web:</strong>{" "}
-              {user.pagina_web ? (
-                <a
-                  href={user.pagina_web}
-                  target="_blank"
-                  rel="noopener noreferrer"
+          {user ? (
+            <div className="account-info">
+              <div className="account-section">
+                <h2 className="account-section-title">Información Personal</h2>
+
+                <div className="account-field">
+                  <label>Name</label>
+                  <div className="account-field-value">
+                    {user.razon_social || 'No especificado'}
+                  </div>
+                </div>
+
+                <div className="account-field">
+                  <label>Email</label>
+                  <div className="account-field-value">{user.email}</div>
+                </div>
+
+                <div className="account-field">
+                  <label>Phone</label>
+                  <div className="account-field-value">{user.telefono || 'No especificado'}</div>
+                </div>
+
+                <div className="account-field">
+                  <label>Address</label>
+                  <div className="account-field-value">{user.direccion || 'No especificado'}</div>
+                </div>
+
+                <div className="account-field">
+                  <label>Tipo de persona</label>
+                  <div className="account-field-value">{user.tipo_persona}</div>
+                </div>
+
+                <div className="account-field">
+                  <label>Página web</label>
+                  <div className="account-field-value">
+                    {user.pagina_web ? (
+                      <a href={user.pagina_web} target="_blank" rel="noopener noreferrer">
+                        {user.pagina_web}
+                      </a>
+                    ) : (
+                      'No cargado'
+                    )}
+                  </div>
+                </div>
+
+                <div className="account-field">
+                  <label>RUT</label>
+                  <div className="account-field-value">
+                    {user.rut ? (
+                      <a href={user.rut} target="_blank" rel="noopener noreferrer">
+                        Ver documento
+                      </a>
+                    ) : (
+                      'No cargado'
+                    )}
+                  </div>
+                </div>
+
+                <div className="account-field">
+                  <label>Tipo de documento</label>
+                  <div className="account-field-value">{user.tipo_documento?.name || 'No especificado'}</div>
+                </div>
+
+                <div className="account-field">
+                  <label>Número de documento</label>
+                  <div className="account-field-value">{user.num_documento || 'No especificado'}</div>
+                </div>
+
+                {user.logo && (
+                  <div className="account-logo">
+                    <strong>Logo:</strong>
+                    <img src={user.logo} alt="Logo" className="account-logo-img" />
+                  </div>
+                )}
+
+                <button
+                  onClick={() => navigate("/account/edit")}
+                  className="account-edit-btn"
                 >
-                  Ver página
-                </a>
-              ) : (
-                "No cargado"
-              )}
-            </div>
-            <div className="account-row">
-              <strong>RUT:</strong>{" "}
-              {user.rut ? (
-                <a href={user.rut} target="_blank" rel="noopener noreferrer">
-                  Ver documento
-                </a>
-              ) : (
-                "No cargado"
-              )}
-            </div>
-            <div className="account-row">
-              <strong>Tipo de documento:</strong> {user.tipo_documento?.name}
-            </div>
-            <div className="account-row">
-              <strong>Número de documento:</strong> {user.num_documento}
-            </div>
-
-            {user.logo && (
-              <div className="account-logo">
-                <strong>Logo:</strong>
-                <br />
-                <img src={user.logo} alt="Logo" className="account-logo-img" />
+                  Editar Perfil
+                </button>
               </div>
-            )}
-
-            <button
-              onClick={() => navigate("/account/edit")}
-              className="account-edit-btn"
-            >
-              Editar Perfil
-            </button>
-          </div>
-        ) : (
-          <div>No se encontró información del usuario.</div>
-        )}
+            </div>
+          ) : (
+            <div>No se encontró información del usuario.</div>
+          )}
+        </div>
       </main>
     </div>
   );
