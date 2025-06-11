@@ -135,6 +135,7 @@ export default function Properties() {
               <table className="properties-table">
                 <thead className="properties-table-header">
                   <tr>
+                    <th>Id</th>
                     <th>Nombre</th>
                     <th>Cédula Catastral</th>
                     <th>Municipio</th>
@@ -150,6 +151,7 @@ export default function Properties() {
                 <tbody className="properties-table-body">
                   {prediosFiltrados.map((p) => (
                     <tr key={p.id}>
+                      <td>{p.id}</td>
                       <td>{p.nombre}</td>
                       <td>{p.cedula_catastral?.toLocaleString()}</td>
                       <td>{p.municipio_id}</td>

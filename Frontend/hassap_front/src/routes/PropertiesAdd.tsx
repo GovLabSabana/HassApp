@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../componentsStyles/Prediosadd.css';
+import "../componentsStyles/Prediosadd.css";
+import MunicipioSelector from "../components/forms/SelectMunicipio";
 
 export default function PropertiesAdd() {
   const navigate = useNavigate();
@@ -89,7 +90,9 @@ export default function PropertiesAdd() {
         if (value < 0) {
           newErrors[field] = "Este valor no puede ser negativo";
         } else if (
-          ["cedula_catastral", "hectareas", "altitud_promedio"].includes(field) &&
+          ["cedula_catastral", "hectareas", "altitud_promedio"].includes(
+            field
+          ) &&
           value === 0
         ) {
           newErrors[field] = "Este valor no puede ser cero";
@@ -99,9 +102,11 @@ export default function PropertiesAdd() {
 
     if (!formData.nombre.trim()) newErrors.nombre = "El nombre es requerido";
     if (!formData.vereda.trim()) newErrors.vereda = "La vereda es requerida";
-    if (!formData.direccion.trim()) newErrors.direccion = "La dirección es requerida";
+    if (!formData.direccion.trim())
+      newErrors.direccion = "La dirección es requerida";
     if (!formData.vocacion) newErrors.vocacion = "Seleccione una vocación";
-    if (!formData.tipo_riego) newErrors.tipo_riego = "Seleccione un tipo de riego";
+    if (!formData.tipo_riego)
+      newErrors.tipo_riego = "Seleccione un tipo de riego";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -166,12 +171,30 @@ export default function PropertiesAdd() {
           {[
             ["Nombre", "nombre"],
             ["Cédula Catastral", "cedula_catastral"],
-            ["Municipio ID", "municipio_id"],
             ["Vereda", "vereda"],
             ["Dirección", "direccion"],
             ["Hectáreas", "hectareas"],
             ["Altitud Promedio", "altitud_promedio"],
           ].map(([label, name]) => renderInput(label, name))}
+          <div style={{ marginBottom: "1rem" }}>
+            {errors.municipio_id && (
+              <div style={{ color: "red", fontSize: "0.9rem" }}>
+                {errors.municipio_id}
+              </div>
+            )}
+            <label>Municipio</label>
+            <MunicipioSelector
+              value={formData.municipio_id}
+              onSelect={(id) => {
+                setFormData((prev) => ({ ...prev, municipio_id: id }));
+                setErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.municipio_id;
+                  return newErrors;
+                });
+              }}
+            />
+          </div>
 
           <div style={{ marginBottom: "1rem" }}>
             {errors.vocacion && (
@@ -213,7 +236,9 @@ export default function PropertiesAdd() {
             </select>
           </div>
 
-          <button type="submit"onClick={() => navigate("/Properties")}>Guardar</button>
+          <button type="submit" onClick={() => navigate("/Properties")}>
+            Guardar
+          </button>
           <button type="button" onClick={() => navigate("/Properties")}>
             Cancelar
           </button>

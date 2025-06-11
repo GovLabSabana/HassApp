@@ -22,7 +22,7 @@ interface Producto {
 
 interface Calidad {
   id: number;
-  descripcion: string;
+  name: string;
 }
 
 interface Cosecha {
@@ -32,7 +32,6 @@ interface Cosecha {
   calidad: Calidad;
   toneladas: string;
   hectareas: string;
-  calibre_promedio: string;
   observaciones: string;
   predios: Predio[];
   insumos: Insumo[];
@@ -129,15 +128,15 @@ export default function Production() {
         <table className="production-table">
           <thead>
             <tr>
-              <th>Fecha</th><th>Producto</th><th>Calidad</th><th>Toneladas</th><th>Hectáreas</th><th>Calibre Promedio</th><th>Observaciones</th><th>Predios</th><th>Insumos</th><th>Acciones</th>
+              <th>Id</th><th>Fecha</th><th>Producto</th><th>Calidad</th><th>Toneladas</th><th>Hectáreas</th><th>Observaciones</th><th>Predios(nombre-id)</th><th>Insumos(nombre-cantidad)</th><th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map(c =>
+            {filtered.map((c) => (
               <tr key={c.id}>
-                <td>{c.fecha}</td><td>{c.producto? `${c.producto.nombre}-${c.producto.id}`: 'N/A'}</td><td>{c.calidad?.descripcion ?? 'N/A'}</td><td>{c.toneladas}</td><td>{c.hectareas}</td><td>{c.calibre_promedio}</td><td>{c.observaciones}</td><td>{c.predios.map(p => `${p.nombre}-${p.id}`).join(', ')}</td><td>{c.insumos.map(i => <div key={i.insumo_id}>{i.nombre_comercial} — {i.cantidad} — {parseFloat(i.costo_unitario).toLocaleString('es-CO',{style:'currency',currency:'COP'})}</div>)}</td><td><button onClick={() => navigate(`/production/edit?id=${c.id}`)}>Editar</button><button onClick={() => handleDelete(c.id)}>Eliminar</button></td>
+                <td>{c.id}</td><td>{c.fecha}</td><td>{c.producto? `${c.producto.nombre}-${c.producto.id}`: 'N/A'}</td><td>{c.calidad?.id ?? 'N/A'}</td><td>{c.toneladas}</td><td>{c.hectareas}</td><td>{c.observaciones}</td><td>{c.predios.map(p => `${p.nombre}-${p.id}`).join(', ')}</td><td>{c.insumos.map(i => <div key={i.insumo_id}>{i.nombre_comercial} — {i.cantidad}</div>)}</td><td><button onClick={() => navigate(`/production/edit?id=${c.id}`)}>Editar</button><button onClick={() => handleDelete(c.id)}>Eliminar</button></td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
 

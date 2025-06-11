@@ -57,7 +57,9 @@ export default function Account() {
           <Sidebar />
         </div>
         <main className="account-main">
-          <div className="account-loading">Cargando información del usuario...</div>
+          <div className="account-loading">
+            Cargando información del usuario...
+          </div>
         </main>
       </div>
     );

@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import '../componentsStyles/Sidebar.css';
+import * as React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import "../componentsStyles/Sidebar.css";
 
 type SidebarItem = {
   label: string;
@@ -11,18 +11,19 @@ export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [username, setUsername] = React.useState<string>("");
-  
+
   const items: SidebarItem[] = [
-    { label: 'Inicio', path: '/dashboard'},
-    { label: 'Cuenta', path: '/account'},
-    { label: 'Predios', path: '/properties'},
-    { label: 'Producción', path: '/production'},
-    { label: 'Exportación', path: '/export'},
-    { label: 'Insumos', path: '/inputs'},
+    { label: "Inicio", path: "/dashboard" },
+    { label: "Cuenta", path: "/account" },
+    { label: "Predios", path: "/properties" },
+    { label: "Producción", path: "/production" },
+    { label: "Exportación", path: "/export" },
+    { label: "Insumos", path: "/inputs" },
+    { label: "Sondeo", path: "/sondeo" },
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem("access_token");
   };
 
   return (
@@ -30,18 +31,20 @@ export const Sidebar: React.FC = () => {
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <div className="logo-icon">
-            <img src="/logo_hass.svg" alt="logoapp" className='logo' />
+            <img src="/logo_hass.svg" alt="logoapp" className="logo" />
           </div>
         </div>
       </div>
-      
+
       <nav className="sidebar-nav">
         <ul className="sidebar-menu">
           {items.map((item) => (
             <li key={item.label} className="sidebar-menu-item">
               <a
                 onClick={() => navigate(item.path)}
-                className={`sidebar-link ${location.pathname === item.path ? 'active' : ''}`}
+                className={`sidebar-link ${
+                  location.pathname === item.path ? "active" : ""
+                }`}
               >
                 <span className="sidebar-label">{item.label}</span>
                 <div className="sidebar-indicator"></div>
@@ -50,7 +53,7 @@ export const Sidebar: React.FC = () => {
           ))}
         </ul>
       </nav>
-      
+
       <div className="sidebar-footer">
         <button className="logout-button-minimal" onClick={handleLogout}>
           <div className="user-info">
