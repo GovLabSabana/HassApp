@@ -160,7 +160,7 @@ export default function Properties() {
                 <tbody className="properties-table-body">
                   {prediosFiltrados.map((p) => (
                     <tr key={p.id}>
-                      <td>{p.id}</td>
+                      <td className="id-column">{p.id}</td>
                       <td>{p.nombre}</td>
                       <td>{p.cedula_catastral?.toLocaleString()}</td>
                       <td>{getNombreMunicipio(p.municipio_id)}</td>
