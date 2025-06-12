@@ -47,7 +47,6 @@ class CosechaRead(BaseModel):
     calibre_promedio: Optional[Decimal]
     observaciones: Optional[str]
     predios: Optional[List[PredioNombreOnly]] = []
-    predios: Optional[List[PredioNombreOnly]] = []
     insumos: Optional[List[InsumoCosechaRead]] = []
 
     model_config = ConfigDict(from_attributes=True)
