@@ -4,6 +4,7 @@ from datetime import date
 from decimal import Decimal
 
 from schemas.predio import PredioNombreOnly
+from schemas.predio import PredioNombreOnly
 from schemas.insumo_cosecha import InsumoCosechaCreate, InsumoCosechaRead
 
 
@@ -55,6 +56,7 @@ class CosechaRead(BaseModel):
         insumos = [
             InsumoCosechaRead(
                 id=ic.id,
+                cosecha_id=ic.cosecha_id,
                 insumo_id=ic.insumo_id,
                 cantidad=ic.cantidad,
                 nombre_comercial=ic.insumo.nombre_comercial,
@@ -63,6 +65,7 @@ class CosechaRead(BaseModel):
             for ic in cosecha_orm.insumos_cosecha or []
         ]
 
+        data = cls.model_validate(cosecha_orm)
         data = cls.model_validate(cosecha_orm)
         data.insumos = insumos
         return data

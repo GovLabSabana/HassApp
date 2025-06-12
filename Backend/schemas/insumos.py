@@ -1,0 +1,24 @@
+from pydantic import BaseModel, ConfigDict
+from decimal import Decimal
+
+class InsumoBase(BaseModel):
+    nombre_comercial: str
+    unidad: str
+    categoria_id: int
+    proveedor_id: int
+    costo_unitario: Decimal
+
+class InsumoCreate(InsumoBase):
+    pass
+
+class InsumoUpdate(BaseModel):
+    nombre_comercial: str | None = None
+    unidad: str | None = None
+    categoria_id: int | None = None
+    proveedor_id: int | None = None
+    costo_unitario: Decimal | None = None
+
+class InsumoRead(InsumoBase):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)

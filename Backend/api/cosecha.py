@@ -13,6 +13,8 @@ from models.insumo_cosecha import InsumoCosecha
 from models.predio import Predio
 from models.rompimientos import cosecha_predio_table
 from sqlalchemy import distinct
+from fastapi.encoders import jsonable_encoder
+from decimal import Decimal
 
 router = APIRouter(
     prefix="/cosechas",
@@ -40,7 +42,12 @@ async def list_my_cosechas(
         )
     )
     cosechas = result.scalars().all()
-    return [CosechaRead.from_orm_with_predios(c) for c in cosechas]
+
+    # Usa jsonable_encoder con encoder explícito para Decimal
+    return jsonable_encoder(
+        [CosechaRead.from_orm_with_predios(c) for c in cosechas],
+        custom_encoder={Decimal: float}
+    )
 
 
 @router.get("/{cosecha_id}", response_model=CosechaRead)
