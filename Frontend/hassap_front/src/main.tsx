@@ -20,6 +20,7 @@ import PublicRoute from "./routes/PublicRoute.tsx";
 import GoBack from "./routes/GoBack.tsx";
 import "./index.css";
 import Main from "./routes/sondeo/Main.tsx";
+import ResetPassword from "./routes/Reset.tsx";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
     element: (
       <PublicRoute>
         <Signup />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/reset",
+    element: (
+      <PublicRoute>
+        <ResetPassword />
       </PublicRoute>
     ),
   },
