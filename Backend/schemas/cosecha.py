@@ -55,6 +55,7 @@ class CosechaRead(BaseModel):
         insumos = [
             InsumoCosechaRead(
                 id=ic.id,
+                cosecha_id=ic.cosecha_id,
                 insumo_id=ic.insumo_id,
                 cantidad=ic.cantidad,
                 nombre_comercial=ic.insumo.nombre_comercial,
