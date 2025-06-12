@@ -8,7 +8,7 @@ import "../Loginstyles.css";
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string>('');  // Para manejar el error
+  const [error, setError] = useState<React.ReactNode>('');
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -42,12 +42,24 @@ export default function Login() {
       if (!response.ok) {
         const errorText = await response.text();
         const errorData = JSON.parse(errorText);
+
+        let errorMessage = 'Login fallido. Revisa tus credenciales.';
+
         // Mostrar un mensaje de error específico si lo proporciona el servidor
         if (errorData.detail && errorData.detail[0] && errorData.detail[0].msg) {
-          setError(errorData.detail[0].msg); // Mostrar el mensaje específico de error (por ejemplo, "Invalid credentials")
-        } else {
-          setError('Login fallido. Revisa tus credenciales.');
+          errorMessage = errorData.detail[0].msg;
         }
+
+        // Agrega el texto con el link a recuperación
+        setError(
+          <>
+            {errorMessage}
+            <br />
+            <Link to="/recovery" className="forgot-link">
+              ¿Olvidó su contraseña?
+            </Link>
+          </>
+        );
         return;
       }
 

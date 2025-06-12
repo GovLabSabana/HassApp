@@ -39,6 +39,14 @@
   margin-bottom: 1rem;
 }
 
+.forgot-link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
 .login-icon svg {
   width: 2rem;
   height: 2rem;
