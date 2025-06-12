@@ -1,8 +1,8 @@
-
 import '../componentsStyles/Predios.css';
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
+import data from "../../BD_Keys.json"; 
 
 interface Predio {
   id: number;
@@ -25,6 +25,12 @@ export default function Properties() {
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
+  const municipios = data.municipios;
+
+  const getNombreMunicipio = (id: string | number): string => {
+    const found = municipios.find((m) => String(m.id) === String(id));
+    return found ? found.name : "Desconocido";
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -62,12 +68,15 @@ export default function Properties() {
     }
   };
 
-  const prediosFiltrados = predios.filter((p) =>
-    (!municipioFiltro ||
-      (p.municipio_id !== null &&
-        String(p.municipio_id).includes(municipioFiltro))) &&
-    (!vocacionFiltro || p.vocacion === vocacionFiltro)
-  );
+  const prediosFiltrados = predios.filter((p) => {
+    const municipioNombre = getNombreMunicipio(p.municipio_id).toLowerCase();
+    const filtroMunicipio = municipioFiltro.toLowerCase();
+
+    return (
+      (!municipioFiltro || municipioNombre.includes(filtroMunicipio)) &&
+      (!vocacionFiltro || p.vocacion === vocacionFiltro)
+    );
+  });
 
   if (loading) {
     return (
@@ -151,11 +160,11 @@ export default function Properties() {
                 <tbody className="properties-table-body">
                   {prediosFiltrados.map((p) => (
                     <tr key={p.id}>
-                      <td>{p.id}</td>
+                      <td className="id-column">{p.id}</td>
                       <td>{p.nombre}</td>
                       <td>{p.cedula_catastral?.toLocaleString()}</td>
-                      <td>{p.municipio_id}</td>
-                      <td>{p.vereda}</td>
+                      <td>{getNombreMunicipio(p.municipio_id)}</td>
+                      <td>{p.vereda?.trim() ? p.vereda : "No especificada"}</td>
                       <td>{p.direccion}</td>
                       <td>{p.hectareas?.toLocaleString()} ha</td>
                       <td style={{ textTransform: 'capitalize' }}>{p.vocacion}</td>

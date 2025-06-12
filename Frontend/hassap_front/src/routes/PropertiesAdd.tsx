@@ -36,18 +36,10 @@ export default function PropertiesAdd() {
 
     if (isNumericField) {
       const numberValue = parseFloat(value);
-      if (isNaN(numberValue) || numberValue < 0) {
+      if (isNaN(numberValue) || numberValue <= 0) {
         setErrors((prev) => ({
           ...prev,
-          [name]: "Este valor no puede ser negativo",
-        }));
-      } else if (
-        ["cedula_catastral", "hectareas", "altitud_promedio"].includes(name) &&
-        numberValue === 0
-      ) {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "Este valor no puede ser cero",
+          [name]: "Este valor debe ser mayor que cero",
         }));
       } else {
         setErrors((prev) => {
@@ -77,36 +69,29 @@ export default function PropertiesAdd() {
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
-    const numericFields = [
+    const requiredFields = [
+      "nombre",
       "cedula_catastral",
       "municipio_id",
+      "direccion",
       "hectareas",
+      "vocacion",
       "altitud_promedio",
+      "tipo_riego",
     ];
 
-    for (const field of numericFields) {
+    for (const field of requiredFields) {
       const value = formData[field as keyof typeof formData];
-      if (typeof value === "number") {
-        if (value < 0) {
-          newErrors[field] = "Este valor no puede ser negativo";
-        } else if (
-          ["cedula_catastral", "hectareas", "altitud_promedio"].includes(
-            field
-          ) &&
-          value === 0
-        ) {
-          newErrors[field] = "Este valor no puede ser cero";
-        }
+      if (
+        value === "" ||
+        (typeof value === "number" && (value <= 0 || isNaN(value)))
+      ) {
+        newErrors[field] =
+          typeof value === "number"
+            ? "Este valor debe ser mayor que cero"
+            : "Este campo es requerido";
       }
     }
-
-    if (!formData.nombre.trim()) newErrors.nombre = "El nombre es requerido";
-    if (!formData.vereda.trim()) newErrors.vereda = "La vereda es requerida";
-    if (!formData.direccion.trim())
-      newErrors.direccion = "La dirección es requerida";
-    if (!formData.vocacion) newErrors.vocacion = "Seleccione una vocación";
-    if (!formData.tipo_riego)
-      newErrors.tipo_riego = "Seleccione un tipo de riego";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -114,7 +99,8 @@ export default function PropertiesAdd() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    const isValid = validateForm();
+    if (!isValid) return;
 
     try {
       const res = await fetch(`${API_URL}/predios/`, {
@@ -125,17 +111,32 @@ export default function PropertiesAdd() {
         },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
 
       if (!res.ok) {
-        console.error("Error en respuesta:", data);
-        throw new Error("Error al agregar el predio");
+        const newErrors: { [key: string]: string } = {};
+
+        if (res.status === 422 && Array.isArray(data.detail)) {
+          data.detail.forEach((error: any) => {
+            const field = error.loc?.[error.loc.length - 1];
+            const msg = error.msg || "Error en el campo";
+            if (typeof field === "string") {
+              newErrors[field] = msg;
+            }
+          });
+        } else {
+          alert(data.detail || "Error al agregar el predio.");
+        }
+
+        setErrors((prev) => ({ ...prev, ...newErrors }));
+        return;
       }
 
       alert("Predio creado con éxito.");
       navigate("/Properties");
     } catch (error) {
-      alert("Error en la petición:");
+      alert("Error en la petición");
     }
   };
 
@@ -164,18 +165,19 @@ export default function PropertiesAdd() {
   );
 
   return (
-    <div className="add-properties-layout ">
+    <div className="add-properties-layout">
       <main className="add-properties-main">
         <h1>Agregar Predio</h1>
-        <form onSubmit={handleSubmit} className="add-form ">
+        <form onSubmit={handleSubmit} className="add-form">
           {[
             ["Nombre", "nombre"],
             ["Cédula Catastral", "cedula_catastral"],
-            ["Vereda", "vereda"],
+            ["Vereda (opcional)", "vereda"],
             ["Dirección", "direccion"],
             ["Hectáreas", "hectareas"],
             ["Altitud Promedio", "altitud_promedio"],
           ].map(([label, name]) => renderInput(label, name))}
+
           <div style={{ marginBottom: "1rem" }}>
             {errors.municipio_id && (
               <div style={{ color: "red", fontSize: "0.9rem" }}>
@@ -236,9 +238,7 @@ export default function PropertiesAdd() {
             </select>
           </div>
 
-          <button type="submit" onClick={() => navigate("/Properties")}>
-            Guardar
-          </button>
+          <button type="submit">Guardar</button>
           <button type="button" onClick={() => navigate("/Properties")}>
             Cancelar
           </button>

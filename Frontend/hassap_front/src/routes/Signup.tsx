@@ -281,9 +281,8 @@ export default function Signup() {
                   <select {...field} className="form-select document-type-select">
                     <option value="">Seleccionar...</option>
                     <option value={1}>Cédula de Ciudadanía</option>
-                    <option value={2}>Cédula de Extranjería</option>
-                    <option value={3}>Pasaporte</option>
-                    <option value={4}>NIT</option>
+                    <option value={2}>NIT</option>
+                    <option value={3}>Cédula de Extranjería</option>
                   </select>
                   {errors.tipo_documento_id && (
                     <div className="error-message">
