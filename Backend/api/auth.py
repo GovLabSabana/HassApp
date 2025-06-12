@@ -1,8 +1,15 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
-from schemas.usuario import UsuarioRead, UsuarioCreate
+from models.usuario import Usuario
+from fastapi import Body
+from fastapi_users import BaseUserManager, exceptions
+from fastapi_users.password import PasswordHelper
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
+from schemas.usuario import UsuarioRead, UsuarioCreate, UsuarioUpdate
 from core.auth import auth_backend, fastapi_users
 from models.usuario import UserManager, get_user_manager
 from repositories.usuario import create_user_with_files
+from utils.current_user import current_user
+from fastapi_users.schemas import BaseUserUpdate
 
 router = APIRouter()
 
@@ -49,8 +56,47 @@ async def custom_register(
         "logo_url": urls.get("logo"),
     }
 
+password_helper = PasswordHelper()
+
+
+@custom_router.post("/change-password")
+async def change_password(
+    old_password: str = Body(...),
+    new_password: str = Body(...),
+    user: Usuario = Depends(current_user),
+    user_manager=Depends(get_user_manager),
+):
+    is_valid, _ = password_helper.verify_and_update(
+        old_password, user.hashed_password)
+
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Contraseña actual incorrecta",
+        )
+
+    try:
+
+        user_db = await user_manager.get(user.id)
+        user_update = BaseUserUpdate(password=new_password)
+
+        await user_manager.update(
+            user=user_db,
+            user_update=user_update,
+            safe=True,
+            request=None,
+        )
+
+    except exceptions.UserAlreadyExists:
+        raise HTTPException(status_code=400, detail="El usuario ya existe")
+
+    return {"message": "Contraseña actualizada exitosamente"}
+
+router = APIRouter()
+
 
 router.include_router(custom_router)
+
 
 # Rutas estándar de autenticación
 router.include_router(
@@ -67,6 +113,11 @@ router.include_router(
 
 router.include_router(
     fastapi_users.get_verify_router(UsuarioRead),
+    prefix="/auth",
+    tags=["auth"],
+)
+router.include_router(
+    fastapi_users.get_reset_password_router(),
     prefix="/auth",
     tags=["auth"],
 )

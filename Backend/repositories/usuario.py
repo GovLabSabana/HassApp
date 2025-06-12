@@ -5,6 +5,12 @@ from fastapi import HTTPException
 import uuid
 from core.s3 import upload_file_to_s3
 from schemas.usuario import UsuarioCreate
+from typing import Optional
+
+
+async def get_user_by_email(db: AsyncSession, email: str) -> Optional[Usuario]:
+    result = await db.execute(select(Usuario).where(Usuario.email == email))
+    return result.scalar_one_or_none()
 
 
 async def create_user_with_files(

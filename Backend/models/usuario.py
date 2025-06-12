@@ -13,6 +13,7 @@ from core.db import get_db
 from models.tipo_documento import TipoDocumento
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from services.email_service import on_after_register, on_after_forgot_password
 
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -49,6 +50,12 @@ class UserManager(IntegerIDMixin, BaseUserManager[Usuario, int]):
 
     def __init__(self, user_db):
         super().__init__(user_db)
+
+    async def on_after_register(self, user: Usuario, request=None):
+        await on_after_register(user, request)
+
+    async def on_after_forgot_password(self, user: Usuario, token: str, request=None):
+        await on_after_forgot_password(user, token, request)
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
