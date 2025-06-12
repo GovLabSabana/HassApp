@@ -20,6 +20,7 @@ export const Sidebar: React.FC = () => {
     { label: "Exportación", path: "/export" },
     { label: "Insumos", path: "/inputs" },
     { label: "Sondeo", path: "/sondeo" },
+    { label: "Desarrolladores", path: "/Developer" },
   ];
 
   const handleLogout = () => {

@@ -1,0 +1,328 @@
+.creators-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #112218;
+}
+
+.creators-sidebar {
+  width: 16rem;
+  position: fixed;
+  height: 100vh;
+  background: #2d5a3d;
+  color: white;
+  z-index: 10;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+}
+
+.creators-main {
+  margin-left: 16rem;
+  padding: 2rem;
+  width: 100%;
+  background-color: #112218;
+}
+
+.creators-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.creators-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(189, 189, 189, 0.1);
+}
+
+
+
+.creators-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.creator-card {
+  background: #243a2e;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid #3a5a47;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.creator-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(140, 143, 141, 0.1);
+  border-color: #4ade80;
+}
+
+.creator-image-container {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+}
+
+.creator-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+   object-position: center center;
+  transition: transform 0.3s ease;
+}
+
+.oscar-image {
+  object-position: center top;
+}
+
+.creator-card:hover .creator-image {
+  transform: scale(1.05);
+}
+
+.creators-grid:has(.creator-card:last-child:nth-child(odd)) {
+  justify-content: center;
+}
+
+.creator-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.8), rgba(34, 197, 94, 0.8));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.creator-card:hover .creator-overlay {
+  opacity: 1;
+}
+
+.creator-social {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.social-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.creator-content {
+  padding: 2rem;
+}
+
+.creator-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.creator-role {
+  font-size: 1rem;
+  color: #4ade80;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.creator-description {
+  color: #d1d5db;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.creator-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  background: rgba(74, 222, 128, 0.1);
+  color: #4ade80;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  transition: all 0.3s ease;
+}
+
+.skill-tag:hover {
+  background: rgba(74, 222, 128, 0.2);
+  border-color: #4ade80;
+  transform: translateY(-2px);
+}
+
+.creators-footer {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 2px solid #3a5a47;
+}
+
+.team-stats {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  margin-bottom: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-item h4 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #4ade80;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.stat-item p {
+  color: #9ca3af;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .creators-main {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .creators-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+  
+  .creators-container {
+    flex-direction: column;
+  }
+  
+  .creators-title {
+    font-size: 2rem;
+  }
+  
+  .creators-subtitle {
+    font-size: 1rem;
+  }
+  
+  .creators-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .creator-image-container {
+    height: 250px;
+  }
+  
+  .creator-content {
+    padding: 1.5rem;
+  }
+  
+  .team-stats {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .stat-item h4 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .creators-main {
+    padding: 0.5rem;
+  }
+  
+  .creators-title {
+    font-size: 1.8rem;
+  }
+  
+  .creator-image-container {
+    height: 200px;
+  }
+  
+  .creator-content {
+    padding: 1rem;
+  }
+  
+  .creator-name {
+    font-size: 1.3rem;
+  }
+  
+  .creator-description {
+    font-size: 0.9rem;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.creator-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.creator-card:nth-child(1) { animation-delay: 0.1s; }
+.creator-card:nth-child(2) { animation-delay: 0.2s; }
+.creator-card:nth-child(3) { animation-delay: 0.3s; }
+.creator-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Efectos adicionales */
+.creator-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4ade80, #22c55e);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.creator-card:hover::before {
+  opacity: 1;
+}
