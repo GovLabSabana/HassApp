@@ -156,6 +156,12 @@ export default function Account() {
                 >
                   Editar Perfil
                 </button>
+                <button
+                  onClick={() => navigate("/account/change")}
+                  className="account-edit-btn"
+                >
+                  Cambiar contraseña
+                </button>
               </div>
             </div>
           ) : (

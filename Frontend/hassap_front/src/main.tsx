@@ -6,6 +6,7 @@ import Login from "./routes/Login.tsx";
 import Signup from "./routes/Signup.tsx";
 import Dashboard from "./routes/Dashboard.tsx";
 import Account from "./routes/Account.tsx";
+import ChangePass from "./routes/ChangePass.tsx";
 import AccountEdit from "./routes/AccountEdit.tsx";
 import Export from "./routes/Export.tsx";
 import Production from "./routes/Production.tsx";
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
       {
         path: "account",
         element: <Account />,
+      },
+      {
+        path: "account/change",
+        element: <ChangePass />,
       },
       {
         path: "account/edit",
