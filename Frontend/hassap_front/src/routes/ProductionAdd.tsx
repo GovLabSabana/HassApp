@@ -25,10 +25,10 @@ export default function ProductionAdd() {
   const [predios, setPredios] = useState<number[]>([0]);
   const [prediosDisponibles, setPrediosDisponibles] = useState<Predio[]>([]);
   const [successMessage, setSuccessMessage] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [insumos, setInsumos] = useState<Insumo[]>([
     { insumo_id: 0, cantidad: 0 },
   ]);
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
@@ -52,32 +52,29 @@ export default function ProductionAdd() {
     }
   };
 
-  const validate = async (): Promise<boolean> => {
+  const validate = (): boolean => {
     const errs: Record<string, string> = {};
-    const today = new Date().toISOString().split("T")[0];
+    const todayStr = new Date().toISOString().split("T")[0];
 
     if (!fecha) errs.fecha = "Fecha es requerida.";
-    else if (fecha > today)
-      errs.fecha = "La fecha no puede ser mayor a la actual.";
+    else if (fecha > todayStr) errs.fecha = "La fecha no puede ser futura.";
 
-    if (productoId <= 0) errs.productoId = "Producto ID debe ser > 0.";
-    if (calidadId < 1 || calidadId > 5)
-      errs.calidadId = "Calidad debe ser entre 1 y 5.";
-    if (toneladas <= 0) errs.toneladas = "Toneladas debe ser > 0.";
-    if (hectareas <= 0) errs.hectareas = "Hectáreas debe ser > 0.";
+    if (productoId <= 0) errs.productoId = "Debes seleccionar un producto.";
+    if (calidadId <= 0) errs.calidadId = "Debes seleccionar una calidad.";
+    if (toneladas <= 0) errs.toneladas = "Toneladas debe ser mayor a 0.";
+    if (hectareas <= 0) errs.hectareas = "Hectáreas debe ser mayor a 0.";
 
-    const uniquePredios = new Set(predios);
-    if (predios.length === 0 || predios.some((id) => id <= 0)) {
-      errs.predios = "Debes seleccionar al menos un Predio válido.";
-    } else if (uniquePredios.size !== predios.length) {
-      errs.predios = "No se pueden seleccionar predios duplicados.";
-    }
+    const setPred = new Set(predios);
+    if (predios.some((id) => id <= 0) || predios.length === 0)
+      errs.predios = "Agregar por lo menos un predio válido.";
+    else if (setPred.size !== predios.length)
+      errs.predios = "Predios duplicados no permitidos.";
 
-    if (
-      insumos.length === 0 ||
-      insumos.some((i) => i.insumo_id <= 0 || i.cantidad <= 0)
-    )
-      errs.insumos = "Debes agregar al menos un Insumo con ID y cantidad > 0.";
+    const setIns = new Set(insumos.map((i) => i.insumo_id));
+    if (insumos.some((i) => i.insumo_id <= 0 || i.cantidad <= 0))
+      errs.insumos = "Cada insumo debe tener ID y cantidad > 0.";
+    else if (setIns.size !== insumos.length)
+      errs.insumos = "Insumos duplicados no permitidos.";
 
     setErrors(errs);
     return Object.keys(errs).length === 0;
