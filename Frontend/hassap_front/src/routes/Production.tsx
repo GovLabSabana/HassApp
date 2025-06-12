@@ -217,8 +217,8 @@ export default function Production() {
                   <th>Toneladas</th>
                   <th>Hectáreas</th>
                   <th>Observaciones</th>
-                  <th>Predios</th>
-                  <th>Insumos</th>
+                  <th>Predios(nombre(id))</th>
+                  <th>Insumos(nombre:cantidad)</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
