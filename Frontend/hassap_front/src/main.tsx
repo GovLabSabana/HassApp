@@ -20,6 +20,7 @@ import PublicRoute from "./routes/PublicRoute.tsx";
 import GoBack from "./routes/GoBack.tsx";
 import "./index.css";
 import Main from "./routes/sondeo/Main.tsx";
+import Developers from "./routes/Developers.tsx";
 
 const router = createBrowserRouter([
   {
@@ -89,6 +90,10 @@ const router = createBrowserRouter([
       {
         path: "sondeo",
         element: <Main />,
+      },
+       {
+        path: "Developer",
+        element: <Developers/>,
       },
     ],
   },
