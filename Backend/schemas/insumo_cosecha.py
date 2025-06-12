@@ -3,7 +3,7 @@ from decimal import Decimal
 
 
 class InsumoCosechaBase(BaseModel):
-    cosecha_id: int
+    insumo_id: int
     cantidad: Decimal
 
 
