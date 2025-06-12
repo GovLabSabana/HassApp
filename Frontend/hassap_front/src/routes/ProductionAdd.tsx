@@ -1,5 +1,7 @@
 import "../componentsStyles/Produccionadd.css";
-import React, { useState } from "react";
+import ProductoSelector from "../components/forms/SelectProducto";
+import CalidadSelector from "../components/forms/SelectCalidad";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface Insumo {
@@ -7,15 +9,22 @@ interface Insumo {
   cantidad: number;
 }
 
+interface Predio {
+  id: number;
+  nombre: string;
+}
+
 export default function ProductionAdd() {
   const navigate = useNavigate();
   const [fecha, setFecha] = useState("");
   const [productoId, setProductoId] = useState<number>(0);
-  const [calidadId, setCalidadId] = useState<number>(1);
+  const [calidadId, setCalidadId] = useState<number>(0);
   const [toneladas, setToneladas] = useState<number>(0);
   const [hectareas, setHectareas] = useState<number>(0);
   const [observaciones, setObservaciones] = useState("");
   const [predios, setPredios] = useState<number[]>([0]);
+  const [prediosDisponibles, setPrediosDisponibles] = useState<Predio[]>([]);
+  const [successMessage, setSuccessMessage] = useState("");
   const [insumos, setInsumos] = useState<Insumo[]>([
     { insumo_id: 0, cantidad: 0 },
   ]);
@@ -23,6 +32,25 @@ export default function ProductionAdd() {
 
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
+
+  useEffect(() => {
+    fetchPrediosValidos();
+  }, []);
+
+  const fetchPrediosValidos = async () => {
+    try {
+      const res = await fetch(`${API_URL}/predios/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error("No se pudieron obtener los predios.");
+      const data = await res.json();
+      setPrediosDisponibles(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const validate = async (): Promise<boolean> => {
     const errs: Record<string, string> = {};
@@ -38,81 +66,65 @@ export default function ProductionAdd() {
     if (toneladas <= 0) errs.toneladas = "Toneladas debe ser > 0.";
     if (hectareas <= 0) errs.hectareas = "Hectáreas debe ser > 0.";
 
+    const uniquePredios = new Set(predios);
     if (predios.length === 0 || predios.some((id) => id <= 0)) {
-        errs.predios = "Debes agregar al menos un Predio ID válido.";
-    } else {
-        const prediosValidos = await fetchPrediosValidos();
-        const prediosInvalidos = predios.filter((id) => !prediosValidos.includes(id));
-        if (prediosInvalidos.length > 0) {
-        errs.predios = `Los siguientes IDs de predio no existen: ${prediosInvalidos.join(", ")}`;
-        }
+      errs.predios = "Debes seleccionar al menos un Predio válido.";
+    } else if (uniquePredios.size !== predios.length) {
+      errs.predios = "No se pueden seleccionar predios duplicados.";
     }
 
     if (
-        insumos.length === 0 ||
-        insumos.some((i) => i.insumo_id <= 0 || i.cantidad <= 0)
+      insumos.length === 0 ||
+      insumos.some((i) => i.insumo_id <= 0 || i.cantidad <= 0)
     )
-        errs.insumos = "Debes agregar al menos un Insumo con ID y cantidad > 0.";
+      errs.insumos = "Debes agregar al menos un Insumo con ID y cantidad > 0.";
 
     setErrors(errs);
     return Object.keys(errs).length === 0;
-    };
-
-  const fetchPrediosValidos = async (): Promise<number[]> => {
-    try {
-        const res = await fetch(`${API_URL}/predios/`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-        });
-        if (!res.ok) throw new Error("No se pudieron obtener los predios.");
-        const data = await res.json();
-        return data.map((p: { id: number }) => p.id); // Ajusta si el backend retorna otra estructura
-    } catch (err) {
-        console.error(err);
-        return [];
-    }
-    };
+  };
 
   const handleAdd = async () => {
     const isValid = await validate();
     if (!isValid) return;
 
     const body = {
-        fecha,
-        producto_id: productoId,
-        calidad_id: calidadId,
-        toneladas,
-        hectareas,
-        observaciones,
-        predio_ids: predios,
-        insumos,
+      fecha,
+      producto_id: productoId,
+      calidad_id: calidadId,
+      toneladas,
+      hectareas,
+      observaciones,
+      predio_ids: predios,
+      insumos,
     };
 
     console.log("JSON a enviar:", JSON.stringify(body, null, 2));
 
     try {
-        const res = await fetch(`${API_URL}/cosechas/`, {
+      const res = await fetch(`${API_URL}/cosechas/`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(body),
-        });
-        if (!res.ok) throw new Error("Error al crear producción");
-        navigate("/production");
+      });
+      if (!res.ok) throw new Error("Error al crear producción");
+      setSuccessMessage("Producción guardada correctamente.");
+      setTimeout(() => navigate("/production"), 1500);
     } catch (err) {
-        console.error(err);
-        setErrors({ general: "No fue posible crear la producción." });
+      console.error(err);
+      setErrors({ general: "No fue posible crear la producción." });
     }
-    };
+  };
 
   const addPredioField = () => setPredios((prev) => [...prev, 0]);
   const removePredioField = (idx: number) =>
     setPredios((prev) => prev.filter((_, i) => i !== idx));
   const updatePredio = (idx: number, value: number) =>
-    setPredios((prev) => prev.map((v, i) => (i === idx ? value : v)));
+    setPredios((prev) =>
+      prev.map((v, i) => (i === idx ? value : v))
+    );
 
   const addInsumoField = () =>
     setInsumos((prev) => [...prev, { insumo_id: 0, cantidad: 0 }]);
@@ -126,6 +138,7 @@ export default function ProductionAdd() {
   return (
     <div className="production-container">
       <h1>Agregar Producción</h1>
+      {successMessage && <div className="success-text">{successMessage}</div>}
       {errors.general && <div className="error-text">{errors.general}</div>}
       <form
         onSubmit={(e) => {
@@ -144,29 +157,18 @@ export default function ProductionAdd() {
         </div>
 
         <div>
-          <label>Producto ID*</label>
+          <label>Producto*</label>
           {errors.productoId && (
             <div className="error-text">{errors.productoId}</div>
           )}
-          <input
-            type="number"
-            value={productoId}
-            min={1}
-            onChange={(e) => setProductoId(+e.target.value)}
-          />
+          <ProductoSelector value={productoId} onSelect={setProductoId} />
         </div>
         <div>
-          <label>Calidad* (1-5)</label>
+          <label>Calidad*</label>
           {errors.calidadId && (
             <div className="error-text">{errors.calidadId}</div>
           )}
-          <input
-            type="number"
-            value={calidadId}
-            min={1}
-            max={5}
-            onChange={(e) => setCalidadId(+e.target.value)}
-          />
+          <CalidadSelector value={calidadId} onSelect={setCalidadId}/>
         </div>
 
         <div>
@@ -204,19 +206,23 @@ export default function ProductionAdd() {
         </div>
 
         <div>
-          <label>Predio IDs*</label>
+          <label>Predios*</label>
           {errors.predios && <div className="error-text">{errors.predios}</div>}
           {predios.map((id, idx) => (
-            <div
-              key={idx}
-              style={{ display: "flex", gap: 8, alignItems: "center" }}
-            >
-              <input
-                type="number"
+            <div key={idx} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <select
                 value={id}
-                min={1}
                 onChange={(e) => updatePredio(idx, Number(e.target.value))}
-              />
+              >
+                <option value={0}>Seleccione un predio</option>
+                {prediosDisponibles
+                  .filter((p) => p.id === id || !predios.includes(p.id))
+                  .map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.nombre}
+                    </option>
+                  ))}
+              </select>
               {idx > 0 && (
                 <button type="button" onClick={() => removePredioField(idx)}>
                   –
