@@ -5,8 +5,9 @@ from schemas.comprador import CompradorCreate, CompradorOut, CompradorUpdate
 from repositories import comprador as comprador_repo
 from utils.current_user import current_user
 
-router = APIRouter(prefix="/compradores",
-                   tags=["compradores"], dependencies=[Depends(current_user)])
+router = APIRouter(prefix="/compradores", tags=["compradores"])
+"""router = APIRouter(prefix="/compradores",
+                   tags=["compradores"], dependencies=[Depends(current_user)])"""
 
 
 @router.get("/", response_model=list[CompradorOut])

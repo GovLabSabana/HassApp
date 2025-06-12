@@ -6,6 +6,9 @@ from sqlalchemy import text
 from core.db import get_db
 from utils.current_user import current_user
 
+
+
+
 router = APIRouter(
     prefix="/fake", tags=["fake-reset"], dependencies=[Depends(current_user)])
 

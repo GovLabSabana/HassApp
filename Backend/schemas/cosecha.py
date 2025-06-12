@@ -4,6 +4,7 @@ from datetime import date
 from decimal import Decimal
 
 from schemas.predio import PredioNombreOnly
+from schemas.predio import PredioNombreOnly
 from schemas.insumo_cosecha import InsumoCosechaCreate, InsumoCosechaRead
 
 
@@ -46,6 +47,7 @@ class CosechaRead(BaseModel):
     calibre_promedio: Optional[Decimal]
     observaciones: Optional[str]
     predios: Optional[List[PredioNombreOnly]] = []
+    predios: Optional[List[PredioNombreOnly]] = []
     insumos: Optional[List[InsumoCosechaRead]] = []
 
     model_config = ConfigDict(from_attributes=True)
@@ -63,6 +65,7 @@ class CosechaRead(BaseModel):
             for ic in cosecha_orm.insumos_cosecha or []
         ]
 
+        data = cls.model_validate(cosecha_orm)
         data = cls.model_validate(cosecha_orm)
         data.insumos = insumos
         return data

@@ -6,23 +6,30 @@ from models.exportacion_cosecha import ExportacionCosecha
 from models.cosecha import Cosecha
 from schemas.exportaciones import ExportacionCreate, ExportacionUpdate, ExportacionOut
 from schemas.cosecha import CosechaRead
-
+from sqlalchemy.orm import joinedload
 
 async def get_all(db: AsyncSession):
-    result = await db.execute(select(Exportacion))
+    result = await db.execute(select(Exportacion).options(
+        joinedload(Exportacion.cosechas).joinedload(Cosecha.insumos_cosecha)
+    ))
     exportaciones = result.scalars().all()
 
     for export in exportaciones:
-        cosechas_result = await db.execute(
-            select(Cosecha).join(ExportacionCosecha).where(
-                ExportacionCosecha.exportacion_id == export.id
-            )
-        )
-        cosechas = cosechas_result.scalars().all()
-        export.cosechas = [CosechaRead.from_orm_with_predios(c) for c in cosechas]
+        export.cosechas = [CosechaRead.from_orm_with_predios(c) for c in export.cosechas]
 
     return exportaciones
 
+
+async def get_all(db: AsyncSession):
+    result = await db.execute(select(Exportacion).options(
+        joinedload(Exportacion.cosechas).joinedload(Cosecha.insumos_cosecha)
+    ))
+    exportaciones = result.scalars().all()
+
+    for export in exportaciones:
+        export.cosechas = [CosechaRead.from_orm_with_predios(c) for c in export.cosechas]
+
+    return exportaciones
 
 async def get_by_id(db: AsyncSession, exportacion_id: int):
     result = await db.execute(select(Exportacion).where(Exportacion.id == exportacion_id))

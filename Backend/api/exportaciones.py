@@ -5,8 +5,10 @@ from schemas.exportaciones import ExportacionCreate, ExportacionUpdate, Exportac
 from repositories import exportaciones as repo
 from utils.current_user import current_user
 
-router = APIRouter(prefix="/exportaciones",
-                   tags=["exportaciones"], dependencies=[Depends(current_user)])
+
+router = APIRouter(prefix="/exportaciones", tags=["exportaciones"])
+"""router = APIRouter(prefix="/exportaciones",
+                   tags=["exportaciones"], dependencies=[Depends(current_user)])"""
 
 
 @router.get("/", response_model=list[ExportacionOut])

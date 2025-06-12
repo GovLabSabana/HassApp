@@ -9,6 +9,7 @@ import random
 from datetime import datetime, timedelta
 from utils.current_user import current_user
 
+
 router = APIRouter(
     prefix="/fake", tags=["fake-data"], dependencies=[Depends(current_user)])
 fake = Faker("es_CO")
@@ -36,7 +37,7 @@ async def fill_database(db: AsyncSession = Depends(get_db)):
         )
 
     # 3) municipio
-    municipios = [
+    """municipios = [
         (1, "Socha", 15),
         (2, "La_Peña", 25),
         (3, "Dibulla", 44),
@@ -51,7 +52,7 @@ async def fill_database(db: AsyncSession = Depends(get_db)):
             ),
             {"id": id_, "name": name, "departamento_id": departamento_id},
         )
-
+    """
     # 4) categoria_insumo
     categorias = [
         (1, "Fertilizante"),
