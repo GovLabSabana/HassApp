@@ -29,7 +29,7 @@ def send_email(subject: str, to: str, plain_body: str, html_body: str):
 
 
 async def on_after_register(user: UserProtocol, request=None):
-    plain_body = "Gracias por registrarte. Pronto recibirás más información."
+    plain_body = "Gracias por registrarte. Pronto recibirás más información"
     html_body = f"""
     <html>
         <body>
