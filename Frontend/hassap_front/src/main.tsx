@@ -6,6 +6,7 @@ import Login from "./routes/Login.tsx";
 import Signup from "./routes/Signup.tsx";
 import Dashboard from "./routes/Dashboard.tsx";
 import Account from "./routes/Account.tsx";
+import ChangePass from "./routes/ChangePass.tsx";
 import AccountEdit from "./routes/AccountEdit.tsx";
 import Export from "./routes/Export.tsx";
 import Production from "./routes/Production.tsx";
@@ -20,6 +21,7 @@ import PublicRoute from "./routes/PublicRoute.tsx";
 import GoBack from "./routes/GoBack.tsx";
 import "./index.css";
 import Main from "./routes/sondeo/Main.tsx";
+import ResetPassword from "./routes/Reset.tsx";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,14 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/reset",
+    element: (
+      <PublicRoute>
+        <ResetPassword />
+      </PublicRoute>
+    ),
+  },
+  {
     path: "/",
     element: <ProtectedRoute />,
     children: [
@@ -49,6 +59,10 @@ const router = createBrowserRouter([
       {
         path: "account",
         element: <Account />,
+      },
+      {
+        path: "account/change",
+        element: <ChangePass />,
       },
       {
         path: "account/edit",

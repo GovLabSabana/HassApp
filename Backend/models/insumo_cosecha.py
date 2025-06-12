@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, DECIMAL
 from sqlalchemy.orm import relationship
 from core.db import Base
 from models.insumo import Insumo
+from decimal import Decimal        
 
 
 class InsumoCosecha(Base):
@@ -14,3 +15,11 @@ class InsumoCosecha(Base):
 
     insumo = relationship("Insumo", back_populates="insumos_cosecha")
     cosecha = relationship("Cosecha", back_populates="insumos_cosecha")
+
+    @property
+    def nombre_comercial(self) -> str:
+        return self.insumo.nombre_comercial
+
+    @property
+    def costo_unitario(self) -> Decimal:
+        return self.insumo.costo_unitario

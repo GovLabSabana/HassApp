@@ -26,6 +26,12 @@ class Cosecha(Base):
     # Nueva relación muchos a muchos
     predios = relationship(
         "Predio", secondary=cosecha_predio_table, back_populates="cosechas", lazy="selectin")
-    insumos_cosecha = relationship("InsumoCosecha", back_populates="cosecha")
+    insumos_cosecha = relationship(
+        "InsumoCosecha",
+        back_populates="cosecha",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+
     exportaciones = relationship(
         "ExportacionCosecha", back_populates="cosecha")

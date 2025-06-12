@@ -15,6 +15,9 @@ class InsumoCosechaUpdate(BaseModel):
 
 class InsumoCosechaRead(InsumoCosechaBase):
     id: int
+    insumo_id: int
+    cosecha_id: int
+    cantidad: Decimal
     nombre_comercial: str
     costo_unitario: Decimal
 
