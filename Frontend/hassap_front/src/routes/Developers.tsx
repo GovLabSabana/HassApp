@@ -45,9 +45,9 @@ const creatorsData: Creator[] = [
     name: "Johan Jiménez",
     role: "Full-stack Developer",
     github: "https://github.com/Jhojan-Jimenez",
-    linkedin: "",
+    linkedin: "https://www.linkedin.com/in/jhojan-jimenez-dev/",
     email: "jhojanjiam@unisabana.edu.co",
-    image: ""
+    image: "/JhojanJimenez.jpeg"
   },
   {
     id: 5,
