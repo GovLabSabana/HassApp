@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
 import "../componentsStyles/Production.css";
+import data from "../../BD_Keys.json";
+
+const productosMap = new Map<number, string>(
+  data.tipo_producto.map(p => [p.id, p.name])
+);
+const calidadesMap = new Map<number, string>(
+  data.calidad.map(c => [c.id, c.name])
+);
 
 interface Predio {
   id: number;
@@ -16,21 +24,11 @@ interface Insumo {
   nombre_comercial: string;
 }
 
-interface Producto {
-  id: number;
-  nombre: string;
-}
-
-interface Calidad {
-  id: number;
-  name: string;
-}
-
 interface Cosecha {
   id: number;
   fecha: string;
-  producto: Producto | null;
-  calidad: Calidad | null;
+  producto_id: number;
+  calidad_id: number;
   toneladas: string;
   hectareas: string;
   observaciones: string;
@@ -43,10 +41,11 @@ export default function Production() {
   const [list, setList] = useState<Cosecha[]>([]);
   const [fechaDesde, setFechaDesde] = useState("");
   const [fechaHasta, setFechaHasta] = useState("");
-  const [predioId, setPredioId] = useState("");
-  const [productoId, setProductoId] = useState("");
+  const [predioFiltro, setPredioFiltro] = useState("");
+  const [productoFiltro, setProductoFiltro] = useState("");
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -55,95 +54,76 @@ export default function Production() {
   }, []);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const res = await fetch(`${API_URL}/cosechas/`, {
-        method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-      
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      
+      if (!res.ok) throw new Error(`Error ${res.status}`);
       const data: Cosecha[] = await res.json();
-      // Asegurar que los datos sean un array
       setList(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error("Error al cargar las cosechas", err);
-      setList([]); // Set empty array on error
+      console.error("Error al cargar cosechas", err);
+      setList([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("¿Está seguro de que desea eliminar esta producción?")) return;
-    
+    const cosecha = list.find(c => c.id === id);
+    const mensaje = cosecha
+      ? `¿Estás seguro de eliminar la producción con ID ${id} del producto "${productosMap.get(cosecha.producto_id)}"? Esta acción es irreversible.`
+      : `¿Eliminar esta producción con ID ${id}?`;
+
+    if (!confirm(mensaje)) return;
+
     setDeletingId(id);
     try {
-      const response = await fetch(`${API_URL}/cosechas/${id}`, {
+      const res = await fetch(`${API_URL}/cosechas/${id}`, {
         method: "DELETE",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` 
+          Authorization: `Bearer ${token}`,
         },
       });
-      
-      console.log(`Eliminando cosecha con ID: ${id}`);
-      console.log(`URL: ${API_URL}/cosechas/${id}`);
-      console.log(`Response status: ${response.status}`);
-      
-      if (response.ok) {
-        console.log("Cosecha eliminada exitosamente");
-        // Actualizar la lista localmente para feedback inmediato
-        setList(prevList => prevList.filter(item => item.id !== id));
-        // También hacer fetch para asegurar sincronización
-        await fetchData();
-      } else {
-        const errorText = await response.text();
-        console.error(`Error al eliminar: ${response.status} - ${errorText}`);
-        alert(`Error al eliminar la producción: ${response.status} - ${errorText}`);
+
+      if (!res.ok) {
+        const errorMsg = await res.text(); // Captura error del backend
+        throw new Error(errorMsg || `Error ${res.status}`);
       }
-    } catch (err) {
-      console.error("Error al eliminar cosecha", err);
-      alert("Error de conexión al eliminar la producción. Intente nuevamente.");
+
+      // Eliminar de la lista local
+      setList(prev => prev.filter(c => c.id !== id));
+    } catch (err: any) {
+      console.error("Error al eliminar", err);
+      alert("No se pudo eliminar la producción.\n" + (err.message || ""));
     } finally {
       setDeletingId(null);
     }
   };
 
-  const filtered = list.filter((c) => {
-  const fechaCosecha = new Date(c.fecha);
-
-  if (fechaDesde) {
-    const desde = new Date(fechaDesde);
-    if (fechaCosecha < desde) return false;
-  }
-
-  if (fechaHasta) {
-    const hasta = new Date(fechaHasta);
-    if (fechaCosecha > hasta) return false;
-  }
-
-  if (predioId.trim() !== "") {
-    const predioExiste = c.predios?.some((p) =>
-      p.id.toString().includes(predioId.trim())
-    );
-    if (!predioExiste) return false;
-  }
-
-  if (productoId.trim() !== "") {
-    if (!c.producto || !c.producto.id.toString().includes(productoId.trim())) {
-      return false;
+  // Filtrado por nombres en lugar de id
+  const filtered = list.filter(c => {
+    const date = new Date(c.fecha);
+    if (fechaDesde && date < new Date(fechaDesde)) return false;
+    if (fechaHasta && date > new Date(fechaHasta)) return false;
+    if (predioFiltro) {
+      const match = c.predios.some(p =>
+        p.nombre.toLowerCase().includes(predioFiltro.toLowerCase())
+      );
+      if (!match) return false;
     }
-  }
-
-  return true;
-});
+    if (productoFiltro) {
+      const prodName = productosMap.get(c.producto_id) || "";
+      if (!prodName.toLowerCase().includes(productoFiltro.toLowerCase()))
+        return false;
+    }
+    return true;
+  });
 
   return (
     <div className="production-container">
@@ -153,7 +133,6 @@ export default function Production() {
           <h1 className="production-title">Producción</h1>
         </div>
 
-        {/* Sección de Filtros */}
         <div className="filters-section">
           <h3 className="filters-title">Filtros de Búsqueda</h3>
           <div className="filters-grid">
@@ -163,7 +142,7 @@ export default function Production() {
                 type="date"
                 className="filter-input"
                 value={fechaDesde}
-                onChange={(e) => setFechaDesde(e.target.value)}
+                onChange={e => setFechaDesde(e.target.value)}
               />
             </div>
             <div className="filter-group">
@@ -172,39 +151,38 @@ export default function Production() {
                 type="date"
                 className="filter-input"
                 value={fechaHasta}
-                onChange={(e) => setFechaHasta(e.target.value)}
+                onChange={e => setFechaHasta(e.target.value)}
               />
             </div>
             <div className="filter-group">
-              <label className="filter-label">ID Predio</label>
+              <label className="filter-label">Predio (nombre)</label>
               <input
                 type="text"
                 className="filter-input"
-                placeholder="Buscar por ID de predio..."
-                value={predioId}
-                onChange={(e) => setPredioId(e.target.value)}
+                placeholder="Buscar por nombre de predio..."
+                value={predioFiltro}
+                onChange={e => setPredioFiltro(e.target.value)}
               />
             </div>
             <div className="filter-group">
-              <label className="filter-label">ID Producto</label>
+              <label className="filter-label">Producto (nombre)</label>
               <input
                 type="text"
                 className="filter-input"
-                placeholder="Buscar por ID de producto..."
-                value={productoId}
-                onChange={(e) => setProductoId(e.target.value)}
+                placeholder="Buscar por nombre de producto..."
+                value={productoFiltro}
+                onChange={e => setProductoFiltro(e.target.value)}
               />
             </div>
           </div>
         </div>
 
-        {/* Tabla de Producción */}
         <div className="table-container">
           {loading ? (
-            <div className="loading">Cargando datos de producción...</div>
+            <div className="loading">Cargando producciones...</div>
           ) : filtered.length === 0 ? (
             <div className="no-data">
-              No se encontraron registros de producción con los filtros aplicados.
+              No se encontraron registros con los filtros aplicados.
             </div>
           ) : (
             <table className="production-table">
@@ -217,53 +195,45 @@ export default function Production() {
                   <th>Toneladas</th>
                   <th>Hectáreas</th>
                   <th>Observaciones</th>
-                  <th>Predios(nombre(id))</th>
+                  <th>Predios</th>
                   <th>Insumos(nombre:cantidad)</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((c) => (
+                {filtered.map(c => (
                   <tr key={c.id}>
                     <td>{c.id}</td>
-                    <td>{new Date(c.fecha).toLocaleDateString('es-ES')}</td>
-                    <td>
-                      {c.producto 
-                        ? `${c.producto.nombre} (ID: ${c.producto.id})` 
-                        : 'N/A'
-                      }
-                    </td>
-                    <td>{c.calidad?.name ?? 'N/A'}</td>
+                    <td>{new Date(c.fecha).toLocaleDateString("es-ES")}</td>
+                    <td>{productosMap.get(c.producto_id) || "Desconocido"}</td>
+                    <td>{calidadesMap.get(c.calidad_id) || "Desconocido"}</td>
                     <td>{c.toneladas} t</td>
                     <td>{c.hectareas} ha</td>
-                    <td>{c.observaciones || 'Sin observaciones'}</td>
+                    <td>{c.observaciones || "Sin observaciones"}</td>
                     <td className="predios-cell">
-                      {c.predios.length > 0 
-                        ? c.predios.map(p => `${p.nombre} (${p.id})`).join(', ')
-                        : 'Sin predios'
-                      }
+                      {c.predios.length > 0
+                        ? c.predios.map(p => `${p.nombre}`).join(", ")
+                        : "Sin predios"}
                     </td>
                     <td className="insumos-cell">
-                      {c.insumos.length > 0 ? (
-                        c.insumos.map(i => (
-                          <div key={i.insumo_id} className="insumo-item">
-                            {i.nombre_comercial}: {i.cantidad}
-                          </div>
-                        ))
-                      ) : (
-                        'Sin insumos'
-                      )}
+                      {c.insumos.length > 0
+                        ? c.insumos.map(i => (
+                            <div key={i.insumo_id} className="insumo-item">
+                              {i.nombre_comercial}: {i.cantidad}
+                            </div>
+                          ))
+                        : "Sin insumos"}
                     </td>
                     <td>
                       <div className="action-buttons">
-                        <button 
+                        <button
                           className="btn btn-edit"
                           onClick={() => navigate(`/production/edit?id=${c.id}`)}
                           title="Editar producción"
                         >
                           Editar
                         </button>
-                        <button 
+                        <button
                           className="btn btn-delete"
                           onClick={() => handleDelete(c.id)}
                           disabled={deletingId === c.id}
@@ -280,9 +250,8 @@ export default function Production() {
           )}
         </div>
 
-        {/* Botón Agregar centrado */}
         <div className="add-button-container">
-          <button 
+          <button
             className="btn btn-add"
             onClick={() => navigate("/production/add")}
           >
