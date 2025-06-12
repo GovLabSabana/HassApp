@@ -54,7 +54,6 @@ const Main = () => {
   const closeModal = () => {
     setSelectedPregunta(null);
   };
-  if (loading) return <p>Cargando preguntas...</p>;
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
@@ -63,8 +62,8 @@ const Main = () => {
         <Sidebar />
       </div>
 
-      <main className="account-main">
-        <h1 className="account-title">Sondeo</h1>
+      <main className="sondeo-main">
+        <h1 className="sondeo-title">Sondeo</h1>
 
         <div className="grid-container">
           {preguntas.map((pregunta) => (
