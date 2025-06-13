@@ -1,0 +1,173 @@
+.input-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #1a2e1a;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  padding: 2rem;
+}
+
+.input-main {
+  background-color: #112218;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.input-title {
+  font-size: 2rem;
+  font-weight: 300;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.input-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-label {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.input-field,
+.input-select,
+.input-textarea {
+  background-color: #244733;
+  border: 2px solid #244733;
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus,
+.input-select:focus,
+.input-textarea:focus {
+  outline: none;
+  border-color: #66cc66;
+  box-shadow: 0 0 0 3px rgba(102, 204, 102, 0.2);
+}
+
+.input-field::placeholder,
+.input-textarea::placeholder {
+  color: #b0d0b0;
+}
+
+.input-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,<svg fill='white' height='24' width='24' viewBox='0 0 24 24'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+.input-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.input-field-error,
+.input-select-error,
+.input-textarea-error {
+  border-color: #e74c3c;
+}
+
+.input-error-message {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+.input-submit-button {
+  background-color: #244733;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-submit-button:hover {
+  background-color: #B75F0C;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.input-submit-button:disabled {
+  background-color: #7a9a7a;
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .input-title {
+    font-size: 1.75rem;
+  }
+
+  .input-container {
+    padding: 1rem;
+  }
+
+  .input-main {
+    padding: 1rem;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.input-container > * {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Scrollbar personalizada */
+.input-main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.input-main::-webkit-scrollbar-track {
+  background: #2d4a2d;
+}
+
+.input-main::-webkit-scrollbar-thumb {
+  background: #4a7a4a;
+  border-radius: 4px;
+}
+
+.input-main::-webkit-scrollbar-thumb:hover {
+  background: #5a8a5a;
+}

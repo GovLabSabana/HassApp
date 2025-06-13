@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import data from "../../../BD_Keys.json";
 
-const proveedores = data.proveedor;
+const proveedoresOriginal = data.proveedor;
+const defaultOption = { id: 0, name: "Todos los proveedores" };
+const proveedores = [defaultOption, ...proveedoresOriginal];
 
 interface ProveedorSelectorProps {
-  onSelect: (id: number) => void;
-  value?: number;
+  onSelect: (id: number | null) => void;
+  value?: number | null;
 }
 
 const ProveedorSelector: React.FC<ProveedorSelectorProps> = ({
@@ -13,8 +15,8 @@ const ProveedorSelector: React.FC<ProveedorSelectorProps> = ({
   value,
 }) => {
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<{ id: number; name: string } | null>(
-    proveedores.find((p) => p.id === value) || null
+  const [selected, setSelected] = useState<{ id: number; name: string }>(
+    proveedores.find((p) => p.id === value) || defaultOption
   );
   const [open, setOpen] = useState(false);
 
@@ -24,13 +26,16 @@ const ProveedorSelector: React.FC<ProveedorSelectorProps> = ({
 
   const handleSelect = (proveedor: { id: number; name: string }) => {
     setSelected(proveedor);
-    setSearch(proveedor.name);
+    setSearch(proveedor.id === 0 ? "" : proveedor.name);
     setOpen(false);
-    onSelect(proveedor.id);
+    onSelect(proveedor.id === 0 ? null : proveedor.id);
   };
 
   useEffect(() => {
-    if (value) {
+    if (value === undefined || value === null) {
+      setSelected(defaultOption);
+      setSearch("");
+    } else {
       const found = proveedores.find((p) => p.id === value);
       if (found) {
         setSelected(found);

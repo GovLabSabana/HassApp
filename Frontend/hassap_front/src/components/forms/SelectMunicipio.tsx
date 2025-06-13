@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import data from "../../../BD_Keys.json";
 
-const municipios = data.municipios;
+const municipiosOriginal = data.municipios;
+const defaultOption = { id: 0, name: "Todos los municipios" };
+const municipios = [defaultOption, ...municipiosOriginal];
 
 interface MunicipioSelectorProps {
-  onSelect: (id: number) => void;
-  value?: number;
+  onSelect: (id: number | null) => void;
+  value?: number | null;
 }
 
 const MunicipioSelector: React.FC<MunicipioSelectorProps> = ({
@@ -13,8 +15,8 @@ const MunicipioSelector: React.FC<MunicipioSelectorProps> = ({
   value,
 }) => {
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<{ id: number; name: string } | null>(
-    municipios.find((m) => m.id === value) || null
+  const [selected, setSelected] = useState<{ id: number; name: string }>(
+    municipios.find((m) => m.id === value) || defaultOption
   );
   const [open, setOpen] = useState(false);
 
@@ -24,13 +26,16 @@ const MunicipioSelector: React.FC<MunicipioSelectorProps> = ({
 
   const handleSelect = (municipio: { id: number; name: string }) => {
     setSelected(municipio);
-    setSearch(municipio.name);
+    setSearch(municipio.id === 0 ? "" : municipio.name);
     setOpen(false);
-    onSelect(municipio.id); // <-- Aquí enviamos solo el ID al padre
+    onSelect(municipio.id === 0 ? null : municipio.id);
   };
 
   useEffect(() => {
-    if (value) {
+    if (value === undefined || value === null) {
+      setSelected(defaultOption);
+      setSearch("");
+    } else {
       const found = municipios.find((m) => m.id === value);
       if (found) {
         setSelected(found);
@@ -58,6 +63,8 @@ const MunicipioSelector: React.FC<MunicipioSelectorProps> = ({
           boxSizing: "border-box",
           borderRadius: "4px",
           border: "1px solid #ccc",
+          color: "black",
+          backgroundColor: "white",
         }}
       />
 
@@ -89,10 +96,17 @@ const MunicipioSelector: React.FC<MunicipioSelectorProps> = ({
               style={{
                 padding: "8px",
                 cursor: "pointer",
-                backgroundColor:
-                  selected?.id === m.id ? "#f0f0f0" : "transparent",
+                backgroundColor: selected?.id === m.id ? "#f0f0f0" : "transparent",
+                color: "black",
               }}
               onMouseDown={(e) => e.preventDefault()}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#f2f2f2")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  selected?.id === m.id ? "#f0f0f0" : "transparent")
+              }
             >
               {m.name}
             </li>

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import data from "../../../BD_Keys.json";
 
-const calidades = data.calidad;
+const calidadesOriginal = data.calidad;
+const defaultOption = { id: 0, name: "Todas las calidades" };
+const calidades = [defaultOption, ...calidadesOriginal];
 
 interface CalidadSelectorProps {
-  onSelect: (id: number) => void;
-  value?: number;
+  onSelect: (id: number | null) => void;
+  value?: number | null;
 }
 
 const CalidadSelector: React.FC<CalidadSelectorProps> = ({
@@ -13,8 +15,8 @@ const CalidadSelector: React.FC<CalidadSelectorProps> = ({
   value,
 }) => {
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<{ id: number; name: string } | null>(
-    calidades.find((c) => c.id === value) || null
+  const [selected, setSelected] = useState<{ id: number; name: string }>(
+    calidades.find((c) => c.id === value) || defaultOption
   );
   const [open, setOpen] = useState(false);
 
@@ -24,13 +26,16 @@ const CalidadSelector: React.FC<CalidadSelectorProps> = ({
 
   const handleSelect = (calidad: { id: number; name: string }) => {
     setSelected(calidad);
-    setSearch(calidad.name);
+    setSearch(calidad.id === 0 ? "" : calidad.name);
     setOpen(false);
-    onSelect(calidad.id);
+    onSelect(calidad.id === 0 ? null : calidad.id);
   };
 
   useEffect(() => {
-    if (value) {
+    if (value === undefined || value === null) {
+      setSelected(defaultOption);
+      setSearch("");
+    } else {
       const found = calidades.find((c) => c.id === value);
       if (found) {
         setSelected(found);

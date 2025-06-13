@@ -13,24 +13,30 @@ const CategoriaInsumoSelector: React.FC<CategoriaInsumoSelectorProps> = ({
   value,
 }) => {
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<{ id: number; name: string } | null>(
-    categorias.find((c) => c.id === value) || null
+  const defaultOption = { id: 0, name: "Todas las categorías" };
+  const categoriasConDefault = [defaultOption, ...categorias];
+
+  const [selected, setSelected] = useState<{ id: number; name: string }>(
+    categoriasConDefault.find((c) => c.id === value) || defaultOption
   );
   const [open, setOpen] = useState(false);
 
-  const filtered = categorias.filter((c) =>
+  const filtered = categoriasConDefault.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleSelect = (categoria: { id: number; name: string }) => {
     setSelected(categoria);
-    setSearch(categoria.name);
+    setSearch(categoria.id === 0 ? "" : categoria.name);
     setOpen(false);
-    onSelect(categoria.id);
+    onSelect(categoria.id === 0 ? null : categoria.id);
   };
 
   useEffect(() => {
-    if (value) {
+    if (value === undefined || value === null) {
+      setSelected(defaultOption);
+      setSearch("");
+    } else {
       const found = categorias.find((c) => c.id === value);
       if (found) {
         setSelected(found);

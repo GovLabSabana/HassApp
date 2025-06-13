@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import data from "../../../BD_Keys.json";
 
-const productos = data.tipo_producto;
+const productosOriginal = data.tipo_producto;
+const defaultOption = { id: 0, name: "Todos los productos" };
+const productos = [defaultOption, ...productosOriginal];
 
 interface ProductoSelectorProps {
-  onSelect: (id: number) => void;
-  value?: number;
+  onSelect: (id: number | null) => void;
+  value?: number | null;
 }
 
 const ProductoSelector: React.FC<ProductoSelectorProps> = ({
@@ -13,8 +15,8 @@ const ProductoSelector: React.FC<ProductoSelectorProps> = ({
   value,
 }) => {
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<{ id: number; name: string } | null>(
-    productos.find((p) => p.id === value) || null
+  const [selected, setSelected] = useState<{ id: number; name: string }>(
+    productos.find((p) => p.id === value) || defaultOption
   );
   const [open, setOpen] = useState(false);
 
@@ -24,13 +26,16 @@ const ProductoSelector: React.FC<ProductoSelectorProps> = ({
 
   const handleSelect = (producto: { id: number; name: string }) => {
     setSelected(producto);
-    setSearch(producto.name);
+    setSearch(producto.id === 0 ? "" : producto.name);
     setOpen(false);
-    onSelect(producto.id);
+    onSelect(producto.id === 0 ? null : producto.id);
   };
 
   useEffect(() => {
-    if (value) {
+    if (value === undefined || value === null) {
+      setSelected(defaultOption);
+      setSearch("");
+    } else {
       const found = productos.find((p) => p.id === value);
       if (found) {
         setSelected(found);
@@ -82,23 +87,25 @@ const ProductoSelector: React.FC<ProductoSelectorProps> = ({
           )}
           {filtered.map((p) => (
             <li
-                key={p.id}
-                onClick={() => handleSelect(p)}
-                style={{
+              key={p.id}
+              onClick={() => handleSelect(p)}
+              style={{
                 padding: "8px",
                 cursor: "pointer",
-                color: "#000", // Color del texto negro
+                color: "#000",
                 backgroundColor:
-                    selected?.id === p.id ? "#e6e6e6" : "transparent", // Fondo más claro
-                }}
-                onMouseDown={(e) => e.preventDefault()}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f2f2f2")}
-                onMouseLeave={(e) =>
+                  selected?.id === p.id ? "#e6e6e6" : "transparent",
+              }}
+              onMouseDown={(e) => e.preventDefault()}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#f2f2f2")
+              }
+              onMouseLeave={(e) =>
                 (e.currentTarget.style.backgroundColor =
-                    selected?.id === p.id ? "#e6e6e6" : "transparent")
-                }
+                  selected?.id === p.id ? "#e6e6e6" : "transparent")
+              }
             >
-                {p.name}
+              {p.name}
             </li>
           ))}
         </ul>
