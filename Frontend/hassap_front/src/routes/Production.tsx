@@ -204,7 +204,7 @@ export default function Production() {
                 {filtered.map(c => (
                   <tr key={c.id}>
                     <td>{c.id}</td>
-                    <td>{new Date(c.fecha).toLocaleDateString("es-ES")}</td>
+                    <td>{c.fecha.split("T")[0]}</td>
                     <td>{productosMap.get(c.producto_id) || "Desconocido"}</td>
                     <td>{calidadesMap.get(c.calidad_id) || "Desconocido"}</td>
                     <td>{c.toneladas} t</td>

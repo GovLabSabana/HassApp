@@ -22,12 +22,14 @@ const Modal: React.FC<ModalProps> = ({ pregunta, onClose, API_URL, token }) => {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = () => {
-    if (!respuesta) {
+    if (!respuesta.trim()) {
       setError("Debe seleccionar o ingresar una respuesta.");
       return;
     }
 
+    setError(null);
     setEnviando(true);
+    
     fetch(`${API_URL}/respuestas/`, {
       method: "POST",
       headers: {
@@ -45,62 +47,89 @@ const Modal: React.FC<ModalProps> = ({ pregunta, onClose, API_URL, token }) => {
       })
       .then(() => {
         alert("✅ Respuesta enviada con éxito");
-        onClose(); // cerrar modal si se envió bien
+        onClose();
       })
       .catch((err) => {
         console.error(err);
-        setError("No se pudo enviar la respuesta.");
+        setError("No se pudo enviar la respuesta. Inténtalo de nuevo.");
       })
       .finally(() => setEnviando(false));
   };
 
-  return (
-    <div className="modal-overlay">
-      <div className="modal-box">
-        <h3>{pregunta.texto}</h3>
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
-        {pregunta.tipo === "opcion" && pregunta.opciones ? (
-          <div style={{ marginTop: "12px" }}>
-            {pregunta.opciones.map((op, idx) => (
-              <label
-                key={idx}
-                style={{ display: "block", marginBottom: "8px" }}
-              >
-                <input
-                  type="radio"
-                  name="respuesta"
-                  value={op}
-                  checked={respuesta === op}
-                  onChange={() => setRespuesta(op)}
-                  style={{ marginRight: "8px" }}
-                />
-                {op}
-              </label>
-            ))}
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  };
+
+  return (
+    <div 
+      className="modal-overlay" 
+      onClick={handleOverlayClick}
+      onKeyDown={handleKeyDown}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div className="modal-box">
+        <h3 id="modal-title">{pregunta.texto}</h3>
+
+        <div className="modal-form-group">
+          {pregunta.tipo === "opcion" && pregunta.opciones ? (
+            <div className="modal-options">
+              {pregunta.opciones.map((opcion, idx) => (
+                <div key={idx} className="modal-option">
+                  <input
+                    type="radio"
+                    id={`opcion-${idx}`}
+                    name="respuesta"
+                    value={opcion}
+                    checked={respuesta === opcion}
+                    onChange={() => setRespuesta(opcion)}
+                  />
+                  <label htmlFor={`opcion-${idx}`}>{opcion}</label>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <input
+              type="number"
+              value={respuesta}
+              onChange={(e) => setRespuesta(e.target.value)}
+              placeholder="Ingrese su respuesta"
+              className="modal-input"
+              aria-label="Respuesta numérica"
+            />
+          )}
+        </div>
+
+        {error && (
+          <div className="error-message" role="alert">
+            {error}
           </div>
-        ) : (
-          <input
-            type="number"
-            value={respuesta}
-            onChange={(e) => setRespuesta(e.target.value)}
-            placeholder="Ingrese su respuesta"
-            style={{ width: "95%", padding: "8px", marginTop: "12px" }}
-          />
         )}
 
-        {error && <p style={{ color: "red", marginTop: "8px" }}>{error}</p>}
-
-        <div
-          style={{
-            marginTop: "16px",
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <button onClick={onClose} disabled={enviando}>
+        <div className="modal-actions">
+          <button 
+            onClick={onClose} 
+            disabled={enviando}
+            className="btn btn-secondary"
+            type="button"
+          >
             Cancelar
           </button>
-          <button onClick={handleSubmit} disabled={enviando}>
+          <button 
+            onClick={handleSubmit} 
+            disabled={enviando}
+            className={`btn btn-primary ${enviando ? 'btn-loading' : ''}`}
+            type="button"
+          >
             {enviando ? "Enviando..." : "Enviar"}
           </button>
         </div>

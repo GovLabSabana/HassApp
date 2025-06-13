@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./routes/Login.tsx";
+import ForgotPass from "./routes/ForgotPass.tsx";
 import Signup from "./routes/Signup.tsx";
 import Dashboard from "./routes/Dashboard.tsx";
 import Account from "./routes/Account.tsx";
@@ -37,6 +38,14 @@ const router = createBrowserRouter([
     element: (
       <PublicRoute>
         <Signup />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/recovery",
+    element: (
+      <PublicRoute>
+        <ForgotPass />
       </PublicRoute>
     ),
   },
