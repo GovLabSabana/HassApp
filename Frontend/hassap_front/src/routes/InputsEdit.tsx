@@ -13,6 +13,7 @@ interface InsumoForm {
 
 export default function InputsEdit() {
   const [searchParams] = useSearchParams();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const id = searchParams.get("id");
   const isEdit = !!id;
   const navigate = useNavigate();
@@ -58,16 +59,31 @@ export default function InputsEdit() {
 
   const handleSubmit = async () => {
     if (!validate()) return;
+
     const method = isEdit ? "PUT" : "POST";
     const url = isEdit
       ? `${API_URL}/insumos/${id}`
       : `${API_URL}/insumos/`;
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    navigate("/inputs");
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!response.ok) throw new Error("Error al guardar el insumo");
+
+      setSuccessMessage(isEdit ? "¡Insumo editado correctamente!" : "¡Insumo creado correctamente!");
+
+      setTimeout(() => {
+        navigate("/inputs");
+      }, 2000); // Redirige luego de 2 segundos
+
+    } catch (err) {
+      console.error(err);
+      setSuccessMessage(null); // Evita mostrar el mensaje si ocurre error
+    }
   };
 
   return (
@@ -119,6 +135,10 @@ export default function InputsEdit() {
         <button onClick={handleSubmit}>{isEdit ? "Guardar cambios" : "Crear"}</button>
         <button onClick={() => navigate("/inputs")}>Cancelar</button>
       </div>
+
+      {successMessage && (
+        <div style={{ color: "green", marginTop: 10 }}>{successMessage}</div>
+      )}
     </div>
   );
 }

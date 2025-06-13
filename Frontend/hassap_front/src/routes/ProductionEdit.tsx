@@ -26,6 +26,9 @@ export default function ProductionEdit() {
   const [observaciones, setObservaciones] = useState("");
   const [predios, setPredios] = useState<number[]>([]);
   const [prediosDisponibles, setPrediosDisponibles] = useState<Predio[]>([]);
+  const [insumosDisponibles, setInsumosDisponibles] = useState<
+    { id: number; nombre_comercial: string }[]
+  >([]);
   const [insumos, setInsumos] = useState<Insumo[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -37,11 +40,25 @@ export default function ProductionEdit() {
 
     const loadData = async () => {
       await fetchPrediosValidos();
+      await fetchInsumosDisponibles();
       await fetchCosecha();
     };
 
     loadData();
   }, [cosechaId]);
+
+  const fetchInsumosDisponibles = async () => {
+    try {
+      const res = await fetch(`${API_URL}/insumos/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("No se pudieron obtener los insumos.");
+      const data = await res.json();
+      setInsumosDisponibles(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchPrediosValidos = async () => {
     try {
@@ -230,21 +247,36 @@ export default function ProductionEdit() {
         <div>
           <label>Insumos*</label>
           {errors.insumos && <div className="error-text">{errors.insumos}</div>}
-          {insumos.map((ins, idx) => (
-            <div key={idx} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 8, alignItems: "center", marginBottom: 8 }}>
-              <div>
-                <label>ID</label>
-                <input type="number" min="1" value={ins.insumo_id} onChange={(e) => updateInsumo(idx, "insumo_id", +e.target.value)} />
+          {insumos.map((ins, idx) => {
+            const usados = new Set(insumos.map((i, iidx) => iidx !== idx ? i.insumo_id : null));
+            const disponibles = insumosDisponibles.filter(i => !usados.has(i.id) || i.id === ins.insumo_id);
+
+            return (
+              <div key={idx} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 8, alignItems: "center", marginBottom: 8 }}>
+                <div>
+                  <label>ID</label>
+                  <select
+                    value={ins.insumo_id}
+                    onChange={(e) => updateInsumo(idx, "insumo_id", +e.target.value)}
+                  >
+                    <option value={0}>Seleccione un insumo</option>
+                    {disponibles.map((i) => (
+                      <option key={i.id} value={i.id}>
+                        {i.nombre_comercial}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label>Cantidad</label>
+                  <input type="number" min="1" value={ins.cantidad} onChange={(e) => updateInsumo(idx, "cantidad", +e.target.value)} />
+                </div>
+                {idx > 0 && (
+                  <button type="button" onClick={() => removeInsumoField(idx)}>–</button>
+                )}
               </div>
-              <div>
-                <label>Cantidad</label>
-                <input type="number" min="1" value={ins.cantidad} onChange={(e) => updateInsumo(idx, "cantidad", +e.target.value)} />
-              </div>
-              {idx > 0 && (
-                <button type="button" onClick={() => removeInsumoField(idx)}>–</button>
-              )}
-            </div>
-          ))}
+            );
+          })}
           <button type="button" onClick={addInsumoField}>+ Agregar Insumo</button>
         </div>
 

@@ -24,6 +24,7 @@ export default function InputsAdd() {
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof InsumoForm, string>>>({});
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const validate = () => {
     const errs: typeof errors = {};
@@ -39,12 +40,26 @@ export default function InputsAdd() {
 
   const handleCreate = async () => {
     if (!validate()) return;
-    await fetch(`${API_URL}/insumos/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    navigate("/inputs");
+
+    try {
+      const response = await fetch(`${API_URL}/insumos/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!response.ok) throw new Error("Error al crear insumo");
+
+      setSuccessMessage("¡Insumo creado correctamente!");
+
+      setTimeout(() => {
+        navigate("/inputs");
+      }, 2000); // Espera 2 segundos antes de redirigir
+
+    } catch (err) {
+      console.error(err);
+      setSuccessMessage(null); // Asegúrate de no mostrar el mensaje si falla
+    }
   };
 
   return (
@@ -101,6 +116,10 @@ export default function InputsAdd() {
         <button onClick={handleCreate}>Crear</button>
         <button onClick={() => navigate("/inputs")}>Cancelar</button>
       </div>
+
+      {successMessage && (
+        <div style={{ color: "green", marginTop: 10 }}>{successMessage}</div>
+      )}
     </div>
   );
 }

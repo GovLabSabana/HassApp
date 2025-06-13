@@ -9,6 +9,11 @@ interface Insumo {
   cantidad: number;
 }
 
+interface InsumoDisponible {
+  id: number;
+  nombre_comercial: string;
+}
+
 interface Predio {
   id: number;
   nombre: string;
@@ -18,6 +23,7 @@ export default function ProductionAdd() {
   const navigate = useNavigate();
   const [fecha, setFecha] = useState("");
   const [productoId, setProductoId] = useState<number>(0);
+  const [insumosDisponibles, setInsumosDisponibles] = useState<InsumoDisponible[]>([]);
   const [calidadId, setCalidadId] = useState<number>(0);
   const [toneladas, setToneladas] = useState<number>(0);
   const [hectareas, setHectareas] = useState<number>(0);
@@ -35,7 +41,23 @@ export default function ProductionAdd() {
 
   useEffect(() => {
     fetchPrediosValidos();
+    fetchInsumosDisponibles();
   }, []);
+
+  const fetchInsumosDisponibles = async () => {
+    try {
+      const res = await fetch(`${API_URL}/insumos/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error("No se pudieron obtener los insumos.");
+      const data = await res.json();
+      setInsumosDisponibles(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchPrediosValidos = async () => {
     try {
@@ -235,6 +257,7 @@ export default function ProductionAdd() {
         <div>
           <label>Insumos*</label>
           {errors.insumos && <div className="error-text">{errors.insumos}</div>}
+
           {insumos.map((ins, idx) => (
             <div
               key={idx}
@@ -247,17 +270,28 @@ export default function ProductionAdd() {
               }}
             >
               <div>
-                <label>ID</label>
-                <input
-                  type="number"
-                  placeholder="ID"
+                <label>Insumo</label>
+                <select
                   value={ins.insumo_id}
-                  min={1}
                   onChange={(e) =>
                     updateInsumo(idx, "insumo_id", Number(e.target.value))
                   }
-                />
+                >
+                  <option value={0}>Seleccione un insumo</option>
+                  {insumosDisponibles
+                    .filter(
+                      (i) =>
+                        ins.insumo_id === i.id ||
+                        !insumos.some((sel) => sel.insumo_id === i.id)
+                    )
+                    .map((i) => (
+                      <option key={i.id} value={i.id}>
+                        {i.nombre_comercial}
+                      </option>
+                    ))}
+                </select>
               </div>
+
               <div>
                 <label>Cantidad</label>
                 <input
@@ -270,13 +304,22 @@ export default function ProductionAdd() {
                   }
                 />
               </div>
-              {idx > 0 && (
-                <button type="button" onClick={() => removeInsumoField(idx)}>
-                  –
-                </button>
-              )}
+
+              <button
+                type="button"
+                onClick={() => removeInsumoField(idx)}
+                disabled={insumos.length === 1}
+                title={
+                  insumos.length === 1
+                    ? "Debe haber al menos un insumo"
+                    : "Eliminar insumo"
+                }
+              >
+                –
+              </button>
             </div>
           ))}
+
           <button type="button" onClick={addInsumoField}>
             + Agregar Insumo
           </button>
