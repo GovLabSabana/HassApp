@@ -51,12 +51,12 @@ const creatorsData: Creator[] = [
   },
   {
     id: 5,
-    name: "Daniel Santiago Ramirez",
+    name: "Daniel Ramirez",
     role: "Full-stack Developer",
     github: "https://github.com/Santii08",
     linkedin: "https://www.linkedin.com/in/daniel-santiago-ramirez-chinchilla-a235aa25a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
     email: "danielrach@unisabana.edu.co",
-    image: ""
+    image: "/daniel.jpg"
   }
 ];
 

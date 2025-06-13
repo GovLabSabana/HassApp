@@ -34,34 +34,44 @@
   text-shadow: 0 2px 4px rgba(189, 189, 189, 0.1);
 }
 
-
-
+/* Contenedor de las cartas en línea horizontal */
 .creators-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 4rem;
+  padding: 2rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
+/* Estilo de las cartas */
 .creator-card {
   background: #243a2e;
   border-radius: 20px;
   overflow: hidden;
-  transition: all 0.3s ease;
   border: 1px solid #3a5a47;
-  position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 280px;
+  height: 380px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  transform-origin: center center;
+  flex-shrink: 0;
 }
 
+/* Efecto hover - zoom y elevación */
 .creator-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(140, 143, 141, 0.1);
+  transform: translateY(-20px) scale(1.1);
+  z-index: 10;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
   border-color: #4ade80;
 }
 
 .creator-image-container {
   position: relative;
-  height: 300px;
+  height: 200px;
   overflow: hidden;
 }
 
@@ -69,8 +79,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-   object-position: center center;
-  transition: transform 0.3s ease;
+  object-position: center center;
+  transition: transform 0.5s ease;
 }
 
 .oscar-image {
@@ -78,11 +88,7 @@
 }
 
 .creator-card:hover .creator-image {
-  transform: scale(1.05);
-}
-
-.creators-grid:has(.creator-card:last-child:nth-child(odd)) {
-  justify-content: center;
+  transform: scale(1.1);
 }
 
 .creator-overlay {
@@ -91,7 +97,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(74, 222, 128, 0.8), rgba(34, 197, 94, 0.8));
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.9), rgba(34, 197, 94, 0.9));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,18 +139,22 @@
 }
 
 .creator-content {
-  padding: 2rem;
+  padding: 1.2rem;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .creator-name {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #ffffff;
   margin-bottom: 0.5rem;
 }
 
 .creator-role {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #4ade80;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -154,23 +164,24 @@
 
 .creator-description {
   color: #d1d5db;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  flex-grow: 1;
 }
 
 .creator-skills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .skill-tag {
   background: rgba(74, 222, 128, 0.1);
   color: #4ade80;
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
   font-weight: 500;
   border: 1px solid rgba(74, 222, 128, 0.3);
   transition: all 0.3s ease;
@@ -216,6 +227,22 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .creator-card {
+    width: 250px;
+    height: 350px;
+  }
+  
+  .creator-image-container {
+    height: 180px;
+  }
+  
+  .creator-content {
+    padding: 1rem;
+    height: 170px;
+  }
+}
+
 @media (max-width: 768px) {
   .creators-main {
     margin-left: 0;
@@ -236,21 +263,29 @@
     font-size: 2rem;
   }
   
-  .creators-subtitle {
-    font-size: 1rem;
+  .creators-grid {
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-x: visible;
   }
   
-  .creators-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+  .creator-card {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+  }
+  
+  .creator-card:hover {
+    transform: scale(1.02);
   }
   
   .creator-image-container {
-    height: 250px;
+    height: 200px;
   }
   
   .creator-content {
     padding: 1.5rem;
+    height: auto;
   }
   
   .team-stats {
@@ -273,7 +308,7 @@
   }
   
   .creator-image-container {
-    height: 200px;
+    height: 180px;
   }
   
   .creator-content {
@@ -281,15 +316,15 @@
   }
   
   .creator-name {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
   
   .creator-description {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 }
 
-/* Animaciones */
+/* Animaciones de entrada */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -309,6 +344,7 @@
 .creator-card:nth-child(2) { animation-delay: 0.2s; }
 .creator-card:nth-child(3) { animation-delay: 0.3s; }
 .creator-card:nth-child(4) { animation-delay: 0.4s; }
+.creator-card:nth-child(5) { animation-delay: 0.5s; }
 
 /* Efectos adicionales */
 .creator-card::before {
@@ -321,8 +357,41 @@
   background: linear-gradient(90deg, #4ade80, #22c55e);
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 1;
 }
 
 .creator-card:hover::before {
   opacity: 1;
+}
+
+/* Efecto de brillo en las cartas */
+.creator-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: rotate(45deg);
+  transition: all 0.6s;
+  opacity: 0;
+}
+
+.creator-card:hover::after {
+  animation: shimmer 0.6s ease-in-out;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+    opacity: 0;
+  }
 }
