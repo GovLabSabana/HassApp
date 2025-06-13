@@ -14,6 +14,9 @@ import Production from "./routes/Production.tsx";
 import ProductionAdd from "./routes/ProductionAdd.tsx";
 import ProductionEdit from "./routes/ProductionEdit.tsx";
 import Inputs from "./routes/Inputs.tsx";
+import InputsAdd from "./routes/InputsAdd.tsx";
+import InputsEdit from "./routes/InputsEdit.tsx";
+import HistoricConsumption from "./routes/HistoricConsumption.tsx";
 import Properties from "./routes/Properties.tsx";
 import PropertiesAdd from "./routes/PropertiesAdd.tsx";
 import PropertiesEdit from "./routes/PropertiesEdit.tsx";
@@ -108,6 +111,18 @@ const router = createBrowserRouter([
       {
         path: "inputs",
         element: <Inputs />,
+      },
+      {
+        path: "inputs/add",
+        element: <InputsAdd />,
+      },
+      {
+        path: "inputs/edit",
+        element: <InputsEdit />,
+      },
+      {
+        path: "inputs/consumption",
+        element: <HistoricConsumption />,
       },
       {
         path: "sondeo",
