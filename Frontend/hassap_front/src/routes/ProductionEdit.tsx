@@ -31,6 +31,7 @@ export default function ProductionEdit() {
   >([]);
   const [insumos, setInsumos] = useState<Insumo[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [successMessage, setSuccessMessage] = useState("");
 
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
@@ -145,117 +146,155 @@ export default function ProductionEdit() {
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error(`Error ${res.status}`);
-      alert("Producción actualizada correctamente.");
-      navigate("/production");
+      setSuccessMessage("Producción actualizada correctamente.");
+      setTimeout(() => navigate("/production"), 1500);
     } catch (err) {
       console.error(err);
       setErrors({ general: "No fue posible actualizar la producción." });
     }
   };
 
-  const addPredioField = () =>
-    setPredios((prev) => [...prev, 0]);
-
+  const addPredioField = () => setPredios((prev) => [...prev, 0]);
   const removePredioField = (idx: number) =>
     setPredios((prev) => prev.filter((_, i) => i !== idx));
-
   const updatePredio = (idx: number, val: number) =>
-    setPredios((prev) =>
-      prev.map((v, i) => (i === idx ? val : v))
-    );
+    setPredios((prev) => prev.map((v, i) => (i === idx ? val : v)));
 
   const addInsumoField = () =>
     setInsumos((prev) => [...prev, { insumo_id: 0, cantidad: 0 }]);
-
   const removeInsumoField = (idx: number) =>
     setInsumos((prev) => prev.filter((_, i) => i !== idx));
-
   const updateInsumo = (idx: number, field: keyof Insumo, val: number) =>
     setInsumos((prev) =>
-      prev.map((item, i) =>
-        i === idx ? { ...item, [field]: val } : item
-      )
+      prev.map((item, i) => (i === idx ? { ...item, [field]: val } : item))
     );
 
   return (
-    <div className="production-container">
+    <div className="add-production-container">
       <h1>Editar Producción</h1>
-      {errors.general && <div className="error-text">{errors.general}</div>}
-      <form onSubmit={(e) => { e.preventDefault(); handleUpdate(); }}>
-        {/* Fecha */}
-        <div>
-          <label>Fecha*</label>
-          {errors.fecha && <div className="error-text">{errors.fecha}</div>}
-          <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} />
+      
+      {successMessage && <div className="add-success-text">{successMessage}</div>}
+      {errors.general && <div className="add-error-text">{errors.general}</div>}
+      
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleUpdate();
+        }}
+      >
+        <div className="add-form-grid">
+          <div className="add-form-field">
+            <label>Fecha*</label>
+            {errors.fecha && <div className="add-error-text">{errors.fecha}</div>}
+            <input
+              type="date"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+            />
+          </div>
+
+          <div className="add-form-field">
+            <label>Producto*</label>
+            {errors.productoId && (
+              <div className="add-error-text">{errors.productoId}</div>
+            )}
+            <ProductoSelector value={productoId} onSelect={setProductoId} />
+          </div>
+
+          <div className="add-form-field">
+            <label>Calidad*</label>
+            {errors.calidadId && (
+              <div className="add-error-text">{errors.calidadId}</div>
+            )}
+            <CalidadSelector value={calidadId} onSelect={setCalidadId} />
+          </div>
+
+          <div className="add-form-field">
+            <label>Toneladas*</label>
+            {errors.toneladas && (
+              <div className="add-error-text">{errors.toneladas}</div>
+            )}
+            <input
+              type="number"
+              value={toneladas}
+              min={1}
+              onChange={(e) => setToneladas(+e.target.value)}
+            />
+          </div>
+
+          <div className="add-form-field">
+            <label>Hectáreas*</label>
+            {errors.hectareas && (
+              <div className="add-error-text">{errors.hectareas}</div>
+            )}
+            <input
+              type="number"
+              value={hectareas}
+              min={1}
+              onChange={(e) => setHectareas(+e.target.value)}
+            />
+          </div>
+
+          <div className="add-form-field full-width">
+            <label>Observaciones</label>
+            <textarea
+              value={observaciones}
+              onChange={(e) => setObservaciones(e.target.value)}
+              placeholder="Ingrese observaciones adicionales..."
+            />
+          </div>
         </div>
 
-        {/* Producto */}
-        <div>
-          <label>Producto*</label>
-          {errors.productoId && <div className="error-text">{errors.productoId}</div>}
-          <ProductoSelector value={productoId} onSelect={setProductoId} />
-        </div>
-
-        {/* Calidad */}
-        <div>
-          <label>Calidad*</label>
-          {errors.calidadId && <div className="error-text">{errors.calidadId}</div>}
-          <CalidadSelector value={calidadId} onSelect={setCalidadId} />
-        </div>
-
-        {/* Toneladas y Hectareas */}
-        <div>
-          <label>Toneladas*</label>
-          {errors.toneladas && <div className="error-text">{errors.toneladas}</div>}
-          <input type="number" min="1" value={toneladas} onChange={(e) => setToneladas(+e.target.value)} />
-        </div>
-        <div>
-          <label>Hectáreas*</label>
-          {errors.hectareas && <div className="error-text">{errors.hectareas}</div>}
-          <input type="number" min="1" value={hectareas} onChange={(e) => setHectareas(+e.target.value)} />
-        </div>
-
-        {/* Observaciones */}
-        <div>
-          <label>Observaciones</label>
-          <textarea value={observaciones} onChange={(e) => setObservaciones(e.target.value)} />
-        </div>
-
-        {/* Predios */}
-        <div>
-          <label>Predios*</label>
-          {errors.predios && <div className="error-text">{errors.predios}</div>}
+        <div className="add-dynamic-section">
+          <h3>Predios</h3>
+          {errors.predios && <div className="add-error-text">{errors.predios}</div>}
           {predios.map((id, idx) => (
-            <div key={idx} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <select value={id} onChange={(e) => updatePredio(idx, +e.target.value)}>
-                <option value={0}>Seleccione un predio</option>
-                {prediosDisponibles.map(p => (
-                  <option key={p.id} value={p.id}>
-                    {p.nombre}
-                  </option>
-                ))}
-              </select>
+            <div key={idx} className="add-dynamic-item">
+              <div className="add-form-field">
+                <label>Predio {idx + 1}</label>
+                <select
+                  value={id}
+                  onChange={(e) => updatePredio(idx, Number(e.target.value))}
+                >
+                  <option value={0}>Seleccione un predio</option>
+                  {prediosDisponibles
+                    .filter((p) => p.id === id || !predios.includes(p.id))
+                    .map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.nombre}
+                      </option>
+                    ))}
+                </select>
+              </div>
               {idx > 0 && (
-                <button type="button" onClick={() => removePredioField(idx)}>–</button>
+                <button 
+                  type="button" 
+                  className="add-btn add-btn-danger" 
+                  onClick={() => removePredioField(idx)}
+                >
+                  ×
+                </button>
               )}
             </div>
           ))}
-          <button type="button" onClick={addPredioField}>+ Agregar Predio</button>
+          <button type="button" className="add-btn add-btn-add" onClick={addPredioField}>
+            + Agregar Predio
+          </button>
         </div>
 
         {/* Insumos */}
-        <div>
-          <label>Insumos*</label>
-          {errors.insumos && <div className="error-text">{errors.insumos}</div>}
+        <div className="add-dynamic-section">
+          <h3>Insumos</h3>
+          {errors.insumos && <div className="add-error-text">{errors.insumos}</div>}
           {insumos.map((ins, idx) => {
             const usados = new Set(insumos.map((i, iidx) => iidx !== idx ? i.insumo_id : null));
             const disponibles = insumosDisponibles.filter(i => !usados.has(i.id) || i.id === ins.insumo_id);
 
             return (
-              <div key={idx} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 8, alignItems: "center", marginBottom: 8 }}>
-                <div>
-                  <label>ID</label>
-                  <select
+              <div key={idx} className="add-insumo-item">
+              <div className="add-form-field">
+                <label>ID</label>
+                <select
                     value={ins.insumo_id}
                     onChange={(e) => updateInsumo(idx, "insumo_id", +e.target.value)}
                   >
@@ -266,24 +305,39 @@ export default function ProductionEdit() {
                       </option>
                     ))}
                   </select>
-                </div>
-                <div>
-                  <label>Cantidad</label>
-                  <input type="number" min="1" value={ins.cantidad} onChange={(e) => updateInsumo(idx, "cantidad", +e.target.value)} />
-                </div>
-                {idx > 0 && (
-                  <button type="button" onClick={() => removeInsumoField(idx)}>–</button>
-                )}
               </div>
+              <div className="add-form-field">
+                <label>Cantidad</label>
+                <input
+                  type="number"
+                  placeholder="Cantidad"
+                  value={ins.cantidad}
+                  min={1}
+                  onChange={(e) =>
+                    updateInsumo(idx, "cantidad", Number(e.target.value))
+                  }
+                />
+              </div>
+              {idx > 0 && (
+                <button type="button" className="add-btn add-btn-danger" onClick={() => removeInsumoField(idx)}>–</button>
+              )}
+            </div>
             );
           })}
-          <button type="button" onClick={addInsumoField}>+ Agregar Insumo</button>
+          <button type="button" className="add-btn add-btn-add" onClick={addInsumoField}>+ Agregar Insumo</button>
         </div>
 
-        {/* Acciones */}
-        <div style={{ marginTop: 16 }}>
-          <button type="submit">Guardar Cambios</button>
-          <button type="button" onClick={() => navigate("/production")}>Cancelar</button>
+        <div className="add-form-actions">
+          <button type="submit" className="add-btn add-btn-primary">
+            Guardar Cambios
+          </button>
+          <button 
+            type="button" 
+            className="add-btn add-btn-secondary" 
+            onClick={() => navigate("/production")}
+          >
+            Cancelar
+          </button>
         </div>
       </form>
     </div>
