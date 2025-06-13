@@ -4679,6 +4679,14 @@
     {
       "id": 3,
       "name": "Insecticida"
+    },
+    {
+      "id": 4,
+      "name": "Mano de Obra"
+    },
+    {
+      "id": 5,
+      "name": "Maquinaria"
     }
   ],
   "tipo_producto": [
@@ -4689,6 +4697,28 @@
     {
       "id": 2,
       "name": "Aguacate Lamb Hass."
+    }
+  ],
+  "proveedor": [
+    {
+      "id": 1,
+      "name": "Rodríguez PLC"
+    },
+    {
+      "id": 2,
+      "name": "Cáceres and Sons"
+    },
+    {
+      "id": 3,
+      "name": "Cruz-Sanabria"
+    },
+    {
+      "id": 4,
+      "name": "Arroyo-Cabrera"
+    },
+    {
+      "id": 5,
+      "name": "Ramírez Inc"
     }
   ]
 }
