@@ -79,7 +79,7 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-lg);
-  padding: var(--spacing-lg);
+  padding: 45px;
   margin-bottom: var(--spacing-xl);
   flex: 1;
 }

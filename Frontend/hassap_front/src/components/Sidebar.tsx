@@ -13,15 +13,15 @@ export const Sidebar: React.FC = () => {
   const [username, setUsername] = React.useState<string>("");
 
   const items: SidebarItem[] = [
-    { label: "Inicio", path: "/dashboard" },
-    { label: "Cuenta", path: "/account" },
-    { label: "Predios", path: "/properties" },
-    { label: "Producción", path: "/production" },
-    { label: "Exportación", path: "/export" },
-    { label: "Compradores", path: "/buyers" },
-    { label: "Insumos", path: "/inputs" },
-    { label: "Sondeo", path: "/sondeo" },
-    { label: "Desarrolladores", path: "/Developer" },
+    { label: "INICIO", path: "/dashboard" },
+    { label: "CUENTA", path: "/account" },
+    { label: "PREDIOS", path: "/properties" },
+    { label: "PRODUCCIÓN", path: "/production" },
+    { label: "EXPORTACIÓN", path: "/export" },
+    { label: "COMPRADORES", path: "/buyers" },
+    { label: "INSUMOS", path: "/inputs" },
+    { label: "SONDEO", path: "/sondeo" },
+    { label: "DESSARROLLADORES", path: "/Developer" },
   ];
 
   const handleLogout = () => {
