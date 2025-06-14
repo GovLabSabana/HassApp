@@ -1,0 +1,347 @@
+/* Layout principal */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #112218;
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px;
+  background: #112218;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenedor del formulario */
+.form-container {
+  background-color: #112218;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.212);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 800px;
+}
+
+/* Título */
+.form-title {
+  color: #ffffff;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Grid del formulario */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+/* Labels */
+.form-label {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Inputs */
+.form-input {
+  background-color: #244733;
+  border: 1px solid #244733;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #ffffff;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.form-input:focus {
+   border-color: #4ade80;
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Wrapper para selectores personalizados */
+.form-select-wrapper {
+  position: relative;
+}
+
+.form-select-wrapper select {
+  background-color: #244733 !important;
+  border: 1px solid #244733 !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  color: #ffffff !important;
+  font-size: 16px !important;
+  transition: all 0.3s ease !important;
+  outline: none !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+}
+
+.form-select-wrapper::after {
+  content: "▼";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.form-select-wrapper select:focus {
+   outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+.form-select-wrapper select:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  background-color: rgba(74, 116, 74, 0.9) !important;
+}
+
+.form-select-wrapper select option {
+  background-color: #244733 !important;
+  color: #ffffff !important;
+  padding: 8px !important;
+}
+
+/* Selectores personalizados adicionales */
+.form-group select,
+.form-group .selector-container {
+  background-color: #244733;
+  border: 1px solid #244733;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #ffffff;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  outline: none;
+  cursor: pointer;
+}
+
+.form-group select:focus,
+.form-group .selector-container:focus {
+    outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+  
+}
+
+/* Botones de acción */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+
+
+.btn-primary-insumo {
+    color: #ffffff;
+    background: #244733;
+ 
+  border: none;
+  padding: 15px 40px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(74, 116, 74, 0.3);
+  min-width: 140px;
+}
+
+.btn-primary-insumo:hover {
+  background-color: #B75F0C;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 116, 74, 0.4);
+}
+
+.btn-primary-insumo:active {
+  transform: translateY(0);
+}
+
+.btn-secondary-insumo{
+  background: #ffffff;
+  color: #464646;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 13px 40px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.btn-secondary-insumo:hover {
+  border-color: rgb(255, 255, 255);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 116, 74, 0.4);
+}
+
+.btn-secondary-insumo:active {
+  transform: translateY(0);
+}
+
+/* Mensajes de error */
+.error-message {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-top: 5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.error-message::before {
+  content: "⚠";
+  font-size: 14px;
+}
+
+/* Mensaje de éxito */
+.success-message {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 20px;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 20px;
+  }
+  
+  .form-container {
+    padding: 30px 20px;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .form-group.full-width {
+    grid-column: span 1;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .form-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 15px;
+  }
+  
+  .form-container {
+    padding: 25px 15px;
+  }
+  
+  .form-title {
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+  }
+  
+  .form-input,
+  .form-group select,
+  .form-group .selector-container {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 30px;
+    font-size: 14px;
+  }
+}
+
+/* Estilos adicionales para los selectores personalizados */
+.form-group .selector-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form-group .selector-container::after {
+  content: "▼";
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Efectos de hover para inputs */
+.form-input:hover,
+.form-group select:hover,
+.form-group .selector-container:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(74, 116, 74, 0.9);
+}

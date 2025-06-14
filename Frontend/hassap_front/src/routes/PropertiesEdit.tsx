@@ -141,20 +141,17 @@ export default function PropertiesEdit() {
             </div>
           ))}
 
+
           <div>
-            <label>Municipio</label>
-            {errors.municipio_id && <p className="form-error">{errors.municipio_id}</p>}
-            <MunicipioSelector
-              value={formData.municipio_id}
-              onSelect={(id) => {
-                setFormData((prev) => ({ ...prev, municipio_id: id }));
-                setErrors((prev) => {
-                  const newErrors = { ...prev };
-                  delete newErrors.municipio_id;
-                  return newErrors;
-                });
-              }}
-            />
+            <label>Tipo de Riego</label>
+            {errors.tipo_riego && <p className="form-error">{errors.tipo_riego}</p>}
+            <select name="tipo_riego" value={formData.tipo_riego} onChange={handleChange}>
+              <option value="">Seleccione</option>
+              <option value="manual">Manual</option>
+              <option value="goteo">Goteo</option>
+              <option value="aspersion">Aspersión</option>
+              <option value="mixto">Mixto</option>
+            </select>
           </div>
 
           <div>
@@ -170,16 +167,25 @@ export default function PropertiesEdit() {
           </div>
 
           <div>
-            <label>Tipo de Riego</label>
-            {errors.tipo_riego && <p className="form-error">{errors.tipo_riego}</p>}
-            <select name="tipo_riego" value={formData.tipo_riego} onChange={handleChange}>
-              <option value="">Seleccione</option>
-              <option value="manual">Manual</option>
-              <option value="goteo">Goteo</option>
-              <option value="aspersion">Aspersión</option>
-              <option value="mixto">Mixto</option>
-            </select>
+            <label>Municipio</label>
+            <div className='municipio-selector'>
+              {errors.municipio_id && <p className="form-error">{errors.municipio_id}</p>}
+            <MunicipioSelector
+              value={formData.municipio_id}
+              onSelect={(id) => {
+                setFormData((prev) => ({ ...prev, municipio_id: id }));
+                setErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.municipio_id;
+                  return newErrors;
+                });
+              }}
+            />
+            </div>
+            
           </div>
+
+          
 
           <button type="submit">Actualizar</button>
           <button type="button" onClick={() => navigate('/properties')}>

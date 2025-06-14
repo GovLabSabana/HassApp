@@ -221,7 +221,6 @@
   }
 }
 
-/* Loading state (opcional) */
 .add-form.loading {
   pointer-events: none;
   opacity: 0.7;
@@ -239,13 +238,61 @@
   margin-left: 0.5rem;
 }
 
+.municipio-selector,
+.municipio-selector select {
+  color: #ffffff !important;
+  padding: 0.875rem 1rem !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+  font-family: inherit !important;
+  width: 100% !important;
+  cursor: pointer !important;
+}
+
+.municipio-selector:focus,
+.municipio-selector select:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+
+
+.municipio-selector option,
+.municipio-selector select option {
+  background-color: rgba(36, 71, 51, 1) !important;
+  color: #ffffff !important;
+  padding: 0.5rem !important;
+}
+
+.municipio-selector input {
+  background-color: rgba(36, 71, 51, 1) !important;
+  border: 2px solid rgba(36, 71, 51, 1) !important;
+  width: 100% !important;
+  color: #ffffff !important;
+  padding: 0.875rem 1rem !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+  font-family: inherit !important;
+}
+
+.municipio-selector input:focus {
+  outline: 2px solid #4CAF50 ;
+  transform: translateY(-1px) !important;
+}
+
+.municipio-selector input::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-/* Focus indicators for accessibility */
 .add-form input:focus-visible,
 .add-form select:focus-visible,
 .add-form button:focus-visible {
@@ -253,7 +300,6 @@
   outline-offset: 2px;
 }
 
-/* Improved visual hierarchy */
 .add-form > div:nth-child(1),
 .add-form > div:nth-child(2) {
   grid-column: 1 / -1;

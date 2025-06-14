@@ -60,15 +60,15 @@ export default function Inputs() {
           <div className="filters-grid">
             <div className="filter-group">
               <label className="filter-label">Categoría</label>
-              <CategoriaInsumoSelector
-                value={filterCategoria || undefined}
-                onSelect={setFilterCategoria!}
-              />
-            </div>
-            <div className="filter-group">
-              <button className="btn btn-clear" onClick={() => setFilterCategoria(null)}>
-                Borrar filtro
-              </button>
+              <div className="filter-input-group">
+                <CategoriaInsumoSelector
+                  value={filterCategoria || undefined}
+                  onSelect={setFilterCategoria!}
+                />
+                <button className="btn-insumo-clear" onClick={() => setFilterCategoria(null)}>
+                  Borrar Filtro
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -125,12 +125,19 @@ export default function Inputs() {
           )}
         </div>
 
-        <div className="add-button-container">
-          <button className="btn btn-add" onClick={() => navigate("/inputs/add")}>
-            + Añadir Insumo
+        <div className="insumo-actions-container">
+          <button 
+            className="btn-insumo-add" 
+            onClick={() => navigate("/inputs/add")}
+          >
+            Añadir Insumo
           </button>
-          <button className="btn btn-secondary" onClick={() => navigate("/inputs/consumption")}>
-            Histórico de consumo
+          
+          <button 
+            className="btn-insumo-history" 
+            onClick={() => navigate("/inputs/consumption")}
+          >
+            Histórico de Consumo
           </button>
         </div>
       </main>

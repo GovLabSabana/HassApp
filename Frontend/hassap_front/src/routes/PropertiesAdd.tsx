@@ -177,25 +177,24 @@ export default function PropertiesAdd() {
             ["Hectáreas", "hectareas"],
             ["Altitud Promedio", "altitud_promedio"],
           ].map(([label, name]) => renderInput(label, name))}
-
           <div style={{ marginBottom: "1rem" }}>
-            {errors.municipio_id && (
+            {errors.tipo_riego && (
               <div style={{ color: "red", fontSize: "0.9rem" }}>
-                {errors.municipio_id}
+                {errors.tipo_riego}
               </div>
             )}
-            <label>Municipio</label>
-            <MunicipioSelector
-              value={formData.municipio_id}
-              onSelect={(id) => {
-                setFormData((prev) => ({ ...prev, municipio_id: id }));
-                setErrors((prev) => {
-                  const newErrors = { ...prev };
-                  delete newErrors.municipio_id;
-                  return newErrors;
-                });
-              }}
-            />
+            <label>Tipo de Riego</label>
+            <select
+              name="tipo_riego"
+              value={formData.tipo_riego}
+              onChange={handleChange}
+            >
+              <option value="">Seleccione</option>
+              <option value="manual">Manual</option>
+              <option value="goteo">Goteo</option>
+              <option value="aspersion">Aspersión</option>
+              <option value="mixto">Mixto</option>
+            </select>
           </div>
 
           <div style={{ marginBottom: "1rem" }}>
@@ -219,24 +218,28 @@ export default function PropertiesAdd() {
           </div>
 
           <div style={{ marginBottom: "1rem" }}>
-            {errors.tipo_riego && (
+            {errors.municipio_id && (
               <div style={{ color: "red", fontSize: "0.9rem" }}>
-                {errors.tipo_riego}
+                {errors.municipio_id}
               </div>
             )}
-            <label>Tipo de Riego</label>
-            <select
-              name="tipo_riego"
-              value={formData.tipo_riego}
-              onChange={handleChange}
-            >
-              <option value="">Seleccione</option>
-              <option value="manual">Manual</option>
-              <option value="goteo">Goteo</option>
-              <option value="aspersion">Aspersión</option>
-              <option value="mixto">Mixto</option>
-            </select>
+            <label>Municipio</label>
+            <div className="municipio-selector">
+              <MunicipioSelector
+              value={formData.municipio_id}
+              onSelect={(id) => {
+                setFormData((prev) => ({ ...prev, municipio_id: id }));
+                setErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.municipio_id;
+                  return newErrors;
+                });
+                }}
+              />
+            </div>
           </div>
+
+          
 
           <button type="submit">Guardar</button>
           <button type="button" onClick={() => navigate("/Properties")}>
