@@ -59,6 +59,7 @@
   transition: all 0.4s ease;
   transform-origin: center center;
   flex-shrink: 0;
+  position: relative;
 }
 
 /* Efecto hover - zoom y elevación */
@@ -103,6 +104,7 @@
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 2;
 }
 
 .creator-card:hover .creator-overlay {
@@ -112,6 +114,7 @@
 .creator-social {
   display: flex;
   gap: 1rem;
+  z-index: 3;
 }
 
 .social-link {
@@ -124,8 +127,12 @@
   border-radius: 50%;
   color: white;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 4;
 }
 
 .social-link:hover {
@@ -133,9 +140,15 @@
   transform: scale(1.1);
 }
 
+.social-link:focus {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
 .social-icon {
   width: 24px;
   height: 24px;
+  pointer-events: none;
 }
 
 .creator-content {
@@ -376,6 +389,7 @@
   transform: rotate(45deg);
   transition: all 0.6s;
   opacity: 0;
+  pointer-events: none;
 }
 
 .creator-card:hover::after {
