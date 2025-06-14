@@ -10,6 +10,9 @@ import Account from "./routes/Account.tsx";
 import ChangePass from "./routes/ChangePass.tsx";
 import AccountEdit from "./routes/AccountEdit.tsx";
 import Export from "./routes/Export.tsx";
+import Buyers from "./routes/Buyers.tsx";
+import BuyersAdd from "./routes/BuyersAdd.tsx";
+import BuyersEdit from "./routes/BuyersEdit.tsx";
 import Production from "./routes/Production.tsx";
 import ProductionAdd from "./routes/ProductionAdd.tsx";
 import ProductionEdit from "./routes/ProductionEdit.tsx";
@@ -123,6 +126,18 @@ const router = createBrowserRouter([
       {
         path: "inputs/consumption",
         element: <HistoricConsumption />,
+      },
+      {
+        path: "buyers",
+        element: <Buyers />,
+      },
+      {
+        path: "buyers/add",
+        element: <BuyersAdd />,
+      },
+      {
+        path: "buyers/edit",
+        element: <BuyersEdit />,
       },
       {
         path: "sondeo",

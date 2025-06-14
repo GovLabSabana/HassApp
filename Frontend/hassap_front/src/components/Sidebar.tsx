@@ -18,6 +18,7 @@ export const Sidebar: React.FC = () => {
     { label: "Predios", path: "/properties" },
     { label: "Producción", path: "/production" },
     { label: "Exportación", path: "/export" },
+    { label: "Compradores", path: "/buyers" },
     { label: "Insumos", path: "/inputs" },
     { label: "Sondeo", path: "/sondeo" },
     { label: "Desarrolladores", path: "/Developer" },
