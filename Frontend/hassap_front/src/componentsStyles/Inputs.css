@@ -1,3 +1,4 @@
+/* Estilos existentes - mantenidos sin cambios */
 .input-container {
   display: flex;
   flex-direction: column;
@@ -19,7 +20,7 @@
 
 .input-title {
   font-size: 2rem;
-  font-weight: 300;
+  font-weight: 700;
   color: #ffffff;
   margin-bottom: 2rem;
   text-align: center;
@@ -100,7 +101,7 @@
   color: #ffffff;
   padding: 1rem 2rem;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 600; 
   border-radius: 8px;
   border: none;
   cursor: pointer;
@@ -112,7 +113,7 @@
 
 .input-submit-button:hover {
   background-color: #B75F0C;
-  transform: translateY(-2px);
+  transform: translateY(-2px);    
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -124,21 +125,116 @@
   box-shadow: none;
 }
 
-@media (max-width: 768px) {
-  .input-title {
-    font-size: 1.75rem;
-  }
-
-  .input-container {
-    padding: 1rem;
-  }
-
-  .input-main {
-    padding: 1rem;
-  }
+/* Grupo de filtro con selector y botón */
+.filter-input-group {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
 }
 
-/* Animaciones */
+/* Contenedor de acciones principales */
+.insumo-actions-container {
+  background-color: #112218;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 16px;
+}
+
+/* Botón Añadir Insumo */
+.btn-insumo-add {
+  background: #244733;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px #112218;
+  min-width: 180px;
+}
+
+
+.btn-insumo-add:hover::before {
+  left: 100%;
+}
+
+.btn-insumo-add:hover {
+  background: #B75F0C;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(45, 90, 45, 0.4);
+}
+
+.btn-insumo-add:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Botón Histórico de Consumo */
+.btn-insumo-history {
+  background: #244733;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px #112218;
+  min-width: 200px;
+}
+
+
+
+.btn-insumo-history:hover::before {
+  left: 100%;
+}
+
+.btn-insumo-history:hover {
+  background: #B75F0C;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(45, 90, 45, 0.4);
+}
+
+.btn-insumo-history:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.btn-insumo-clear {
+  background: #e74c3c;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+  white-space: nowrap;
+  height: fit-content;
+}
+
+.btn-insumo-clear:hover {
+  background: linear-gradient(135deg, #b63232);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+.btn-insumo-clear:active {
+  transform: translateY(0);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -150,8 +246,23 @@
   }
 }
 
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .input-container > * {
   animation: fadeIn 0.5s ease-out;
+}
+
+.insumo-actions-container {
+  animation: slideInUp 0.6s ease-out 0.2s both;
 }
 
 /* Scrollbar personalizada */
@@ -170,4 +281,21 @@
 
 .input-main::-webkit-scrollbar-thumb:hover {
   background: #5a8a5a;
+}
+
+/* Estados de carga y disabled para botones de insumo */
+.btn-insumo-add:disabled,
+.btn-insumo-history:disabled,
+.btn-insumo-clear:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-insumo-add:disabled:hover,
+.btn-insumo-history:disabled:hover,
+.btn-insumo-clear:disabled:hover {
+  transform: none;
+  background: #B75F0C;
 }

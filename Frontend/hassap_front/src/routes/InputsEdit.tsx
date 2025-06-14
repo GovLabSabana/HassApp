@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CategoriaInsumoSelector from "../components/forms/SelectInputCategory";
 import ProveedorSelector from "../components/forms/SelectSupplier";
+import "../componentsStyles/Inputadd.css";
 
 interface InsumoForm {
   nombre_comercial: string;
@@ -78,67 +79,94 @@ export default function InputsEdit() {
 
       setTimeout(() => {
         navigate("/inputs");
-      }, 2000); // Redirige luego de 2 segundos
-
+      }, 2000);
     } catch (err) {
       console.error(err);
-      setSuccessMessage(null); // Evita mostrar el mensaje si ocurre error
+      setSuccessMessage(null);
     }
   };
 
   return (
-    <div>
-      <h1>{isEdit ? "Editar" : "Crear"} Insumo</h1>
-      <div>
-        <label>Nombre comercial</label>
-        <input
-          value={form.nombre_comercial}
-          onChange={(e) => setForm({ ...form, nombre_comercial: e.target.value })}
-        />
-        {errors.nombre_comercial && <div style={{ color: "red" }}>{errors.nombre_comercial}</div>}
-      </div>
-      <div>
-        <label>Unidad</label>
-        <input
-          value={form.unidad}
-          onChange={(e) => setForm({ ...form, unidad: e.target.value })}
-        />
-        {errors.unidad && <div style={{ color: "red" }}>{errors.unidad}</div>}
-      </div>
-      <div>
-        <label>Categoría</label>
-        <CategoriaInsumoSelector
-          value={form.categoria_id}
-          onSelect={(id) => setForm((f) => ({ ...f, categoria_id: id }))}
-        />
-        {errors.categoria_id && <div style={{ color: "red" }}>{errors.categoria_id}</div>}
-      </div>
-      <div>
-        <label>Proveedor</label>
-        <ProveedorSelector
-          value={form.proveedor_id}
-          onSelect={(id) => setForm((f) => ({ ...f, proveedor_id: id }))}
-        />
-        {errors.proveedor_id && <div style={{ color: "red" }}>{errors.proveedor_id}</div>}
-      </div>
-      <div>
-        <label>Costo unitario</label>
-        <input
-          type="number"
-          value={form.costo_unitario}
-          onChange={(e) => setForm({ ...form, costo_unitario: e.target.value })}
-        />
-        {errors.costo_unitario && <div style={{ color: "red" }}>{errors.costo_unitario}</div>}
-      </div>
+    <div className="app-layout">
+      <div className="main-content">
+        <div className="form-container">
+          <h1 className="form-title">{isEdit ? "Editar Insumo" : "Agregar Insumo"}</h1>
 
-      <div style={{ marginTop: 16 }}>
-        <button onClick={handleSubmit}>{isEdit ? "Guardar cambios" : "Crear"}</button>
-        <button onClick={() => navigate("/inputs")}>Cancelar</button>
-      </div>
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">Nombre</label>
+              <input
+                className="form-input"
+                value={form.nombre_comercial}
+                onChange={(e) => setForm({ ...form, nombre_comercial: e.target.value })}
+              />
+              {errors.nombre_comercial && (
+                <div className="error-message">{errors.nombre_comercial}</div>
+              )}
+            </div>
 
-      {successMessage && (
-        <div style={{ color: "green", marginTop: 10 }}>{successMessage}</div>
-      )}
+            <div className="form-group">
+              <label className="form-label">Unidad</label>
+              <input
+                className="form-input"
+                value={form.unidad}
+                onChange={(e) => setForm({ ...form, unidad: e.target.value })}
+              />
+              {errors.unidad && (
+                <div className="error-message">{errors.unidad}</div>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Categoría</label>
+              <CategoriaInsumoSelector
+                value={form.categoria_id}
+                onSelect={(id) => setForm((f) => ({ ...f, categoria_id: id }))}
+              />
+              {errors.categoria_id && (
+                <div className="error-message">{errors.categoria_id}</div>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Proveedor</label>
+              <ProveedorSelector
+                value={form.proveedor_id}
+                onSelect={(id) => setForm((f) => ({ ...f, proveedor_id: id }))}
+              />
+              {errors.proveedor_id && (
+                <div className="error-message">{errors.proveedor_id}</div>
+              )}
+            </div>
+
+            <div className="form-group full-width">
+              <label className="form-label">Costo Unitario</label>
+              <input
+                className="form-input"
+                type="number"
+                value={form.costo_unitario}
+                onChange={(e) => setForm({ ...form, costo_unitario: e.target.value })}
+              />
+              {errors.costo_unitario && (
+                <div className="error-message">{errors.costo_unitario}</div>
+              )}
+            </div>
+          </div>
+
+          <div className="form-actions">
+            <button className="btn-primary-insumo" onClick={handleSubmit}>
+              GUARDAR
+            </button>
+            <button className="btn-secondary-insumo" onClick={() => navigate("/inputs")}>
+              CANCELAR
+            </button>
+          </div>
+
+          {successMessage && (
+            <div className="success-message">{successMessage}</div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
