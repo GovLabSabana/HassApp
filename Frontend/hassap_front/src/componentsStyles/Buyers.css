@@ -1,0 +1,234 @@
+
+.buyers-main-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.buyers-container {
+  background-color: #112218;
+  min-height: 100vh;
+  padding: 20px;
+  margin-left: 250px; 
+  padding-left: 40px; 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  flex: 1;
+  width: calc(100% - 250px); 
+}
+
+.buyers-title {
+  color: #ffffff;
+  text-align: center;
+  font-size: 2.5rem;        
+  font-weight: 300;
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+.buyers-filters-section {
+  background-color: #112218;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.buyers-filters-title {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.buyers-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.buyers-filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.buyers-filter-label {
+  color: #ffffff;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.buyers-filter-input {
+  background-color: #244733;
+  border: 2px solid #244733;
+  border-radius: 8px;
+  padding: 12px 15px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.buyers-filter-input:focus {
+  outline: none;
+  border-color: #4a7a4a;
+  box-shadow: 0 0 0 3px rgba(74, 122, 74, 0.2);
+}
+
+.buyers-filter-input::placeholder {
+  color: #d1d1d1;
+}
+
+.buyers-table-container {
+  background-color: #244733;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  margin-bottom: 30px;
+}
+
+.buyers-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: transparent;
+}
+
+.buyers-table thead {
+  background-color: #244733;
+}
+
+.buyers-table th {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 18px 15px;
+  text-align: left;
+  border-bottom: 2px solid #3a5a3a;
+}
+
+.buyers-table tbody tr {
+  background-color: #244733;
+  border-bottom: 1px solid #3a5a3a;
+  transition: background-color 0.2s ease;
+}
+
+.buyers-table tbody tr:hover {
+  background-color: #3a5a3a;
+}
+
+.buyers-table td {
+  color: #ffffff;
+  padding: 15px;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+
+.buyers-actions-cell {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.buyers-btn-edit {
+  background-color: #4a7a4a;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+
+.buyers-btn-edit:hover {
+  background-color: #B75F0C;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 122, 74, 0.3);
+}
+
+.buyers-btn-delete {
+  background-color: #d44444;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+
+.buyers-btn-delete:hover {
+  background-color: #e55555;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 68, 68, 0.3);
+}
+
+.buyers-add-container {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.buyers-btn-add {
+  background-color: #244733;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 15px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(74, 122, 74, 0.2);
+}
+
+.buyers-btn-add:hover {
+  background-color: #B75F0C;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 122, 74, 0.3);
+}
+
+
+@media (max-width: 768px) {
+  .buyers-container {
+    padding: 15px;
+    margin-left: 0; 
+  }
+  
+  .buyers-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  
+  .buyers-filters-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .buyers-table-container {
+    overflow-x: auto;
+  }
+  
+  .buyers-table {
+    min-width: 800px;
+  }
+  
+  .buyers-table th,
+  .buyers-table td {
+    padding: 12px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .buyers-actions-cell {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .buyers-btn-edit,
+  .buyers-btn-delete {
+    width: 100%;
+    padding: 6px 12px;
+  }
+}

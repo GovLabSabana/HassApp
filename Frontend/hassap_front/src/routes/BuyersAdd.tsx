@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../componentsStyles/BuyersAdd.css"; 
 
 const initialForm = {
   nombre: "",
@@ -44,90 +45,118 @@ export default function BuyersAdd() {
   };
 
   return (
-    <div>
-      <h1 style={{ textAlign: "center" }}>Agregar Comprador</h1>
-      {success && <div style={{ color: "green", textAlign: "center" }}>¡Comprador agregado con éxito!</div>}
+    <div className="buyeradd">
+      <h1>Agregar Comprador</h1>
+      
+      {success && (
+        <div className="success-message">
+          ¡Comprador agregado con éxito!
+        </div>
+      )}
 
-      <div>
-        <label>Nombre *</label>
-        {errors.nombre && <div style={{ color: "red" }}>{errors.nombre}</div>}
-        <input
-          placeholder="Nombre"
-          value={form.nombre}
-          onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-        />
-      </div>
+      <div className="form-container">
+        <div className="form-group">
+          <label>Nombre *</label>
+          <input
+            placeholder="Nombre"
+            value={form.nombre}
+            onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+          />
+          {errors.nombre && <div className="error-message">{errors.nombre}</div>}
+        </div>
 
-      <div>
-        <label>Tipo de Documento *</label>
-        {errors.tipo_doc && <div style={{ color: "red" }}>{errors.tipo_doc}</div>}
-        <select
-          value={form.tipo_doc}
-          onChange={(e) => setForm({ ...form, tipo_doc: e.target.value })}
-          className="form-select document-type-select"
-        >
-          <option value="">Seleccionar...</option>
-          <option value={1}>Cédula de Ciudadanía</option>
-          <option value={2}>NIT</option>
-          <option value={3}>Cédula de Extranjería</option>
-        </select>
-      </div>
+        <div className="form-group">
+          <label>Cédula Catastral *</label>
+          <input
+            placeholder="0"
+            value={form.num_doc}
+            onChange={(e) => setForm({ ...form, num_doc: e.target.value })}
+          />
+          {errors.num_doc && <div className="error-message">{errors.num_doc}</div>}
+        </div>
 
-      <div>
-        <label>Número de Documento *</label>
-        {errors.num_doc && <div style={{ color: "red" }}>{errors.num_doc}</div>}
-        <input
-          placeholder="Número de Documento"
-          value={form.num_doc}
-          onChange={(e) => setForm({ ...form, num_doc: e.target.value })}
-        />
-      </div>
+        <div className="form-group">
+          <label>Vereda (opcional)</label>
+          <input
+            placeholder=""
+            value={form.ciudad}
+            onChange={(e) => setForm({ ...form, ciudad: e.target.value })}
+          />
+          {errors.ciudad && <div className="error-message">{errors.ciudad}</div>}
+        </div>
 
-      <div>
-        <label>Ciudad *</label>
-        {errors.ciudad && <div style={{ color: "red" }}>{errors.ciudad}</div>}
-        <input
-          placeholder="Ciudad"
-          value={form.ciudad}
-          onChange={(e) => setForm({ ...form, ciudad: e.target.value })}
-        />
-      </div>
+        <div className="form-group">
+          <label>Dirección *</label>
+          <input
+            placeholder=""
+            value={form.direccion}
+            onChange={(e) => setForm({ ...form, direccion: e.target.value })}
+          />
+          {errors.direccion && <div className="error-message">{errors.direccion}</div>}
+        </div>
 
-      <div>
-        <label>País *</label>
-        {errors.pais && <div style={{ color: "red" }}>{errors.pais}</div>}
-        <input
-          placeholder="País"
-          value={form.pais}
-          onChange={(e) => setForm({ ...form, pais: e.target.value })}
-        />
-      </div>
+        <div className="form-group">
+          <label>Hectáreas</label>
+          <input
+            placeholder="0"
+            value={form.pais}
+            onChange={(e) => setForm({ ...form, pais: e.target.value })}
+          />
+        </div>
 
-      <div>
-        <label>Dirección *</label>
-        {errors.direccion && <div style={{ color: "red" }}>{errors.direccion}</div>}
-        <input
-          placeholder="Dirección"
-          value={form.direccion}
-          onChange={(e) => setForm({ ...form, direccion: e.target.value })}
-        />
-      </div>
+        <div className="form-group">
+          <label>Altitud Promedio</label>
+          <input
+            placeholder="0"
+            value={form.contacto}
+            onChange={(e) => setForm({ ...form, contacto: e.target.value })}
+          />
+        </div>
 
-      <div>
-        <label>Contacto(correo o teléfono) *</label>
-        {errors.contacto && <div style={{ color: "red" }}>{errors.contacto}</div>}
-        <input
-          placeholder="Contacto"
-          value={form.contacto}
-          onChange={(e) => setForm({ ...form, contacto: e.target.value })}
-        />
-      </div>
+        <div className="form-group">
+          <label>Tipo de Documento *</label>
+          <select
+            value={form.tipo_doc}
+            onChange={(e) => setForm({ ...form, tipo_doc: e.target.value })}
+          >
+            <option value="">Seleccione</option>
+            <option value={1}>Cédula de Ciudadanía</option>
+            <option value={2}>NIT</option>
+            <option value={3}>Cédula de Extranjería</option>
+          </select>
+          {errors.tipo_doc && <div className="error-message">{errors.tipo_doc}</div>}
+        </div>
 
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={handleSubmit}>Añadir</button>
-        <button onClick={() => navigate("/buyers")} style={{ marginLeft: "10px" }}>
-          Cancelar
-        </button>
+        <div className="form-group">
+          <label>Vocación</label>
+          <select>
+            <option value="">Seleccione</option>
+            <option value="agricola">Agrícola</option>
+            <option value="ganadera">Ganadera</option>
+            <option value="forestal">Forestal</option>
+          </select>
+        </div>
+
+        <div className="form-group full-width">
+          <label>Municipio</label>
+          <select>
+            <option value="">Todos los municipios</option>
+            <option value="municipio1">Municipio 1</option>
+            <option value="municipio2">Municipio 2</option>
+          </select>
+        </div>
+
+        <div className="buttons-container">
+          <button className="btn-primary-buyersadd" onClick={handleSubmit}>
+            GUARDAR
+          </button>
+          <button 
+            className="btn-secondary-buyersadd" 
+            onClick={() => navigate("/buyers")}
+          >
+            CANCELAR
+          </button>
+        </div>
       </div>
     </div>
   );

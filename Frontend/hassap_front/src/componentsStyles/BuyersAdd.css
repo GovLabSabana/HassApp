@@ -1,0 +1,144 @@
+.buyeradd {
+  background-color: #112218;
+  min-height: 100vh;
+  padding: 40px 20px;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.buyeradd h1 {
+  text-align: center;
+  background-color: #112218;
+  color: white;
+  font-size: 24px;
+  margin-bottom: 40px;
+  font-weight: normal;
+}
+
+.buyeradd .success-message {
+  color: #4ade80;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.buyeradd .form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px 40px;
+}
+
+.buyeradd .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.buyeradd .form-group label {
+  color: white;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.buyeradd .form-group input,
+.buyeradd .form-group select {
+  background-color: #244733;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: background-color 0.2s;
+}
+
+.buyeradd .form-group input::placeholder {
+  color: #ffffff;
+}
+
+.buyeradd .form-group input:focus,
+.buyeradd .form-group select:focus {
+  border: 1px #4CAF50;
+  
+}
+
+.buyeradd .form-group select option {
+  background-color: #244733;
+  color: white;
+}
+
+.buyeradd .error-message {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.buyeradd .full-width {
+  grid-column: 1 / -1;
+}
+
+.buyeradd .buttons-container {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.buyeradd .btn-primary-buyersadd {
+  background-color: #244733;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.buyeradd .btn-primary-buyersadd:hover {
+  background-color: #B75F0C;
+  transform: translateY(-1px);
+  box-shadow: #244733;
+}
+
+.buyeradd .btn-secondary-buyersadd {
+  background-color: #ffffff;
+  color: rgb(85, 85, 85);
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  padding: 10px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.buyeradd .btn-secondary-buyersadd:hover {
+  box-shadow: #244733;
+  transform: translateY(-1px);
+}
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .buyeradd .form-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 400px;
+  }
+  
+  .buyeradd .full-width {
+    grid-column: 1;
+  }
+  
+  .buyeradd .buttons-container {
+    grid-column: 1;
+  }
+}
