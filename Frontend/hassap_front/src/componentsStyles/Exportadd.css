@@ -1,0 +1,247 @@
+/* ExportAdd.css */
+
+.exportadd-container {
+  min-height: 100vh;
+  background: #112218;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.exportadd-form-wrapper {
+  background:#112218;
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.exportadd-title {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 40px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.exportadd-success {
+  color: #4ade80;
+  text-align: center;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+.exportadd-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.exportadd-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.exportadd-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exportadd-label {
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.exportadd-input,
+.exportadd-select {
+  background: #244733;
+  border: 1px solid #244733;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.exportadd-input:focus,
+.exportadd-select:focus {
+  outline: none;
+  border-color: #4ade80;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+.exportadd-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.exportadd-select option {
+  background: #1a4d3a;
+  color: white;
+}
+
+.exportadd-cosechas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.exportadd-cosecha-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.exportadd-cosecha-select {
+  flex: 1;
+}
+
+.exportadd-remove-btn {
+  background: rgba(239, 68, 68, 0.8);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  padding: 8px 12px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 40px;
+}
+
+.exportadd-remove-btn:hover {
+  background: rgba(239, 68, 68, 1);
+  transform: scale(1.05);
+}
+
+.exportadd-add-cosecha-btn {
+  background: #244733;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+}
+
+.exportadd-add-cosecha-btn:hover {
+  background: #B75F0C;
+  transform: translateY(-2px);
+}
+
+.exportadd-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.exportadd-btn {
+  padding: 15px 40px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-width: 140px;
+}
+
+.exportadd-btn-primary {
+  background: #244733;
+  color: white;
+  box-shadow: 0 4px 15px #112218;
+}
+
+.exportadd-btn-primary:hover {
+    background: #B75F0C;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+}
+
+.exportadd-btn-secondary {
+  background: rgb(255, 255, 255);
+  color: rgb(83, 83, 83);
+  border: 1px solid rgb(255, 251, 251);
+}
+
+.exportadd-btn-secondary:hover {
+  transform: translateY(-2px);
+}
+
+.exportadd-error {
+  color: #fca5a5;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  padding: 4px 8px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #ef4444;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .exportadd-container {
+    padding: 10px;
+  }
+  
+  .exportadd-form-wrapper {
+    padding: 20px;
+  }
+  
+  .exportadd-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  
+  .exportadd-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .exportadd-buttons {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .exportadd-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .exportadd-form-wrapper {
+    padding: 15px;
+  }
+  
+  .exportadd-title {
+    font-size: 1.75rem;
+  }
+  
+  .exportadd-cosecha-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .exportadd-remove-btn {
+    align-self: flex-end;
+  }
+}

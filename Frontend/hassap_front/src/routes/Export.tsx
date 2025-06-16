@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
+import "../componentsStyles/Export.css"; 
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -23,14 +24,14 @@ export default function Export() {
   };
 
   const fetchCompradores = async () => {
-  const token = localStorage.getItem("access_token");
-  const res = await fetch(`${API_URL}/compradores/`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const data = await res.json();
-  setCompradores(data);
+    const token = localStorage.getItem("access_token");
+    const res = await fetch(`${API_URL}/compradores/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    setCompradores(data);
   };
 
   const eliminarExportacion = async (id) => {
@@ -52,82 +53,107 @@ export default function Export() {
   };
 
   return (
-    <div>
-      {/*<Sidebar />*/}
-      <h1 style={{ textAlign: "center" }}>Exportación</h1>
+    <div className="export-container">
+      <Sidebar/>
+      <div className="export-content">
+        <h1 className="export-title">Exportación</h1>
 
-      <div style={{ display: "flex", gap: "1rem", margin: "1rem" }}>
-        <div>
-          <label>Filtrar por Fecha:</label>
-          <input
-            type="date"
-            value={filtroFecha}
-            onChange={(e) => setFiltroFecha(e.target.value)}
-          />
+        <div className="export-filters">
+          <h3 className="export-filters-title">Filtros de Búsqueda</h3>
+          <div className="export-filters-row">
+            <div className="export-filter-group">
+              <label className="export-filter-label">Fecha Desde</label>
+              <input
+                type="date"
+                className="export-filter-input"
+                value={filtroFecha}
+                onChange={(e) => setFiltroFecha(e.target.value)}
+                placeholder="dd/mm/aaaa"
+              />
+            </div>
+            <div className="export-filter-group">
+              <label className="export-filter-label">Fecha Hasta</label>
+              <input
+                type="date"
+                className="export-filter-input"
+                placeholder="dd/mm/aaaa"
+              />
+            </div>
+            <div className="export-filter-group">
+              <label className="export-filter-label">Método (nombre)</label>
+              <input
+                type="text"
+                className="export-filter-input"
+                value={filtroMetodo}
+                onChange={(e) => setFiltroMetodo(e.target.value)}
+              />
+            </div>
+            <div className="export-filter-group">
+              <label className="export-filter-label">Comprador (nombre)</label>
+              <input
+                type="text"
+                className="export-filter-input"
+              />
+            </div>
+          </div>
         </div>
-        <div>
-          <label>Método de Salida:</label>
-          <select
-            value={filtroMetodo}
-            onChange={(e) => setFiltroMetodo(e.target.value)}
+
+        <div className="export-table-container">
+          <table className="export-table">
+            <thead className="export-table-header">
+              <tr>
+                <th className="export-table-th">ID</th>
+                <th className="export-table-th">FECHA</th>
+                <th className="export-table-th">MÉTODO</th>
+                <th className="export-table-th">TONELADAS</th>
+                <th className="export-table-th">VALOR FOB</th>
+                <th className="export-table-th">PUERTO SALIDA</th>
+                <th className="export-table-th">PUERTO LLEGADA</th>
+                <th className="export-table-th">COMPRADOR</th>
+                <th className="export-table-th">COSECHAS</th>
+                <th className="export-table-th">ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody className="export-table-body">
+              {exportacionesFiltradas.map((exp) => (
+                <tr key={exp.id} className="export-table-row">
+                  <td className="export-table-td export-table-id">{exp.id}</td>
+                  <td className="export-table-td">{exp.fecha}</td>
+                  <td className="export-table-td">{exp.metodo_salida}</td>
+                  <td className="export-table-td">{exp.toneladas}</td>
+                  <td className="export-table-td">{exp.valor_fob}</td>
+                  <td className="export-table-td">{exp.puerto_salida}</td>
+                  <td className="export-table-td">{exp.puerto_llegada}</td>
+                  <td className="export-table-td">{getNombreComprador(exp.comprador_id)}</td>
+                  <td className="export-table-td">{exp.cosecha_ids.join(", ")}</td>
+                  <td className="export-table-td export-table-actions">
+                    <button 
+                      className="export-btn export-btn-edit"
+                      onClick={() => navigate(`/export/edit?id=${exp.id}`)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="export-btn export-btn-delete"
+                      onClick={() => eliminarExportacion(exp.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="export-actions">
+          <button 
+            className="export-btn export-btn-add"
+            onClick={() => navigate("/export/add")}
           >
-            <option value="">Todos</option>
-            <option value="Tierra">Tierra</option>
-            <option value="Aire">Aire</option>
-            <option value="Agua">Agua</option>
-          </select>
+            + Agregar Nueva Exportación
+          </button>
         </div>
-      </div>
-
-      <table style={{ width: "100%", marginTop: "1rem" }}>
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Método</th>
-            <th>Toneladas</th>
-            <th>Valor FOB</th>
-            <th>Puerto Salida</th>
-            <th>Puerto Llegada</th>
-            <th>Comprador</th>
-            <th>Cosechas</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {exportacionesFiltradas.map((exp) => (
-            <tr key={exp.id}>
-              <td>{exp.fecha}</td>
-              <td>{exp.metodo_salida}</td>
-              <td>{exp.toneladas}</td>
-              <td>{exp.valor_fob}</td>
-              <td>{exp.puerto_salida}</td>
-              <td>{exp.puerto_llegada}</td>
-              <td>{getNombreComprador(exp.comprador_id)}</td>
-              <td>{exp.cosecha_ids.join(", ")}</td>
-              <td>
-                <button onClick={() => navigate(`/export/edit?id=${exp.id}`)}>
-                  Editar
-                </button>
-                <button
-                  onClick={() => eliminarExportacion(exp.id)}
-                  style={{ marginLeft: "5px" }}
-                >
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div style={{ marginTop: "1rem", textAlign: "center" }}>
-        <button onClick={() => navigate("/export/add")}>Agregar Exportación</button>
-        <button
-          onClick={() => navigate("/export/history")}
-          style={{ marginLeft: "1rem" }}
-        >
-          Historial
-        </button>
       </div>
     </div>
   );

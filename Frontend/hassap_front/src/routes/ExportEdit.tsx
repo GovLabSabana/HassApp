@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Sidebar } from "../components/Sidebar";
+import "../componentsStyles/Exportadd.css"; 
 
 export default function ExportEdit() {
   const [searchParams] = useSearchParams();
@@ -107,82 +107,157 @@ export default function ExportEdit() {
   };
 
   return (
-    <div>
-      <h1 style={{textAlign:"center"}}>Editar Exportación</h1>
-      {success && <div style={{color:"green", textAlign:"center"}}>¡Exportación actualizada con éxito!</div>}
-      <div>
-        <label>Fecha*</label>
-        {errors.fecha && <div style={{color:"red"}}>{errors.fecha}</div>}
-        <input type="date" value={form.fecha} onChange={e => setForm({...form, fecha:e.target.value})}/>
-      </div>
+    <div className="exportadd-container">
+      <div className="exportadd-form-wrapper">
+        <h1 className="exportadd-title">Editar Exportación</h1>
+        
+        {success && (
+          <div className="exportadd-success">¡Exportación actualizada con éxito!</div>
+        )}
 
-      <div>
-        <label>Método de salida*</label>
-        {errors.metodo_salida && <div style={{color:"red"}}>{errors.metodo_salida}</div>}
-        <select value={form.metodo_salida} onChange={e => setForm({...form, metodo_salida:e.target.value})}>
-          <option value="">Seleccionar...</option>
-          <option value="Tierra">Tierra</option>
-          <option value="Aire">Aire</option>
-          <option value="Agua">Agua</option>
-        </select>
-      </div>
+        <div className="exportadd-form">
+          <div className="exportadd-row">
+            <div className="exportadd-field">
+              <label className="exportadd-label">Fecha*</label>
+              {errors.fecha && <div className="exportadd-error">{errors.fecha}</div>}
+              <input 
+                type="date" 
+                className="exportadd-input"
+                value={form.fecha} 
+                onChange={e => setForm({...form, fecha:e.target.value})}
+              />
+            </div>
 
-      <div>
-        <label>Toneladas*</label>
-        {errors.toneladas && <div style={{color:"red"}}>{errors.toneladas}</div>}
-        <input type="number" min="1" value={form.toneladas} onChange={e => setForm({...form, toneladas:e.target.value})}/>
-      </div>
-
-      <div>
-        <label>Valor FOB*</label>
-        {errors.valor_fob && <div style={{color:"red"}}>{errors.valor_fob}</div>}
-        <input type="number" min="1" value={form.valor_fob} onChange={e => setForm({...form, valor_fob:e.target.value})}/>
-      </div>
-
-      <div>
-        <label>Puerto Salida*</label>
-        {errors.puerto_salida && <div style={{color:"red"}}>{errors.puerto_salida}</div>}
-        <input value={form.puerto_salida} onChange={e => setForm({...form, puerto_salida:e.target.value})}/>
-      </div>
-
-      <div>
-        <label>Puerto Llegada*</label>
-        {errors.puerto_llegada && <div style={{color:"red"}}>{errors.puerto_llegada}</div>}
-        <input value={form.puerto_llegada} onChange={e => setForm({...form, puerto_llegada:e.target.value})}/>
-      </div>
-
-      <div>
-        <label>Comprador*</label>
-        {errors.comprador_id && <div style={{color:"red"}}>{errors.comprador_id}</div>}
-        <select value={form.comprador_id} onChange={e => setForm({...form, comprador_id:e.target.value})}>
-          <option value="">Seleccionar...</option>
-          {compradores.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-        </select>
-      </div>
-
-      <div>
-        <label>Cosechas*</label>
-        {errors.cosecha_ids && <div style={{color:"red"}}>{errors.cosecha_ids}</div>}
-        {form.cosecha_ids.map((cid, idx) => (
-          <div key={idx}>
-            <select
-              value={cid}
-              onChange={e => updateCosecha(idx, +e.target.value)}
-            >
-              <option value={0}>Seleccionar cosecha</option>
-              {cosechas.filter(c => c.id === cid || !form.cosecha_ids.includes(c.id)).map(c =>
-                <option key={c.id} value={c.id}>{c.id}</option>
-              )}
-            </select>
-            {idx > 0 && <button type="button" onClick={() => removeCosecha(idx)}>–</button>}
+            <div className="exportadd-field">
+              <label className="exportadd-label">Método de Salida*</label>
+              {errors.metodo_salida && <div className="exportadd-error">{errors.metodo_salida}</div>}
+              <select 
+                className="exportadd-select"
+                value={form.metodo_salida} 
+                onChange={e => setForm({...form, metodo_salida:e.target.value})}
+              >
+                <option value="">Seleccionar...</option>
+                <option value="Tierra">Tierra</option>
+                <option value="Aire">Aire</option>
+                <option value="Agua">Agua</option>
+              </select>
+            </div>
           </div>
-        ))}
-        <button type="button" onClick={addCosechaField}>+ Agregar Cosecha</button>
-      </div>
 
-      <div style={{marginTop:16}}>
-        <button onClick={handleSubmit}>Guardar cambios</button>
-        <button onClick={() => navigate("/export")}>Cancelar</button>
+          <div className="exportadd-row">
+            <div className="exportadd-field">
+              <label className="exportadd-label">Toneladas*</label>
+              {errors.toneladas && <div className="exportadd-error">{errors.toneladas}</div>}
+              <input 
+                type="number" 
+                min="1" 
+                className="exportadd-input"
+                value={form.toneladas} 
+                onChange={e => setForm({...form, toneladas:e.target.value})}
+              />
+            </div>
+
+            <div className="exportadd-field">
+              <label className="exportadd-label">Valor FOB*</label>
+              {errors.valor_fob && <div className="exportadd-error">{errors.valor_fob}</div>}
+              <input 
+                type="number" 
+                min="1" 
+                className="exportadd-input"
+                value={form.valor_fob} 
+                onChange={e => setForm({...form, valor_fob:e.target.value})}
+              />
+            </div>
+          </div>
+
+          <div className="exportadd-row">
+            <div className="exportadd-field">
+              <label className="exportadd-label">Puerto Salida*</label>
+              {errors.puerto_salida && <div className="exportadd-error">{errors.puerto_salida}</div>}
+              <input 
+                className="exportadd-input"
+                value={form.puerto_salida} 
+                onChange={e => setForm({...form, puerto_salida:e.target.value})}
+              />
+            </div>
+
+            <div className="exportadd-field">
+              <label className="exportadd-label">Puerto Llegada*</label>
+              {errors.puerto_llegada && <div className="exportadd-error">{errors.puerto_llegada}</div>}
+              <input 
+                className="exportadd-input"
+                value={form.puerto_llegada} 
+                onChange={e => setForm({...form, puerto_llegada:e.target.value})}
+              />
+            </div>
+          </div>
+
+          <div className="exportadd-row">
+            <div className="exportadd-field">
+              <label className="exportadd-label">Comprador*</label>
+              {errors.comprador_id && <div className="exportadd-error">{errors.comprador_id}</div>}
+              <select 
+                className="exportadd-select"
+                value={form.comprador_id} 
+                onChange={e => setForm({...form, comprador_id:e.target.value})}
+              >
+                <option value="">Seleccionar...</option>
+                {compradores.map(c => (
+                  <option key={c.id} value={c.id}>{c.nombre}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="exportadd-field">
+              <label className="exportadd-label">Cosechas*</label>
+              {errors.cosecha_ids && <div className="exportadd-error">{errors.cosecha_ids}</div>}
+              <div className="exportadd-cosechas-container">
+                {form.cosecha_ids.map((cid, idx) => (
+                  <div key={idx} className="exportadd-cosecha-row">
+                    <select
+                      className="exportadd-select exportadd-cosecha-select"
+                      value={cid}
+                      onChange={e => updateCosecha(idx, +e.target.value)}
+                    >
+                      <option value={0}>Seleccionar cosecha</option>
+                      {cosechas.filter(c => c.id === cid || !form.cosecha_ids.includes(c.id)).map(c =>
+                        <option key={c.id} value={c.id}>{c.id}</option>
+                      )}
+                    </select>
+                    {idx > 0 && (
+                      <button 
+                        type="button" 
+                        className="exportadd-remove-btn"
+                        onClick={() => removeCosecha(idx)}
+                      >
+                        –
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button 
+                  type="button" 
+                  className="exportadd-add-cosecha-btn"
+                  onClick={addCosechaField}
+                >
+                  + Agregar Cosecha
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="exportadd-buttons">
+            <button className="exportadd-btn exportadd-btn-primary" onClick={handleSubmit}>
+              GUARDAR CAMBIOS
+            </button>
+            <button 
+              className="exportadd-btn exportadd-btn-secondary" 
+              onClick={() => navigate("/export")}
+            >
+              CANCELAR
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
