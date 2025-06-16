@@ -10,6 +10,9 @@ import Account from "./routes/Account.tsx";
 import ChangePass from "./routes/ChangePass.tsx";
 import AccountEdit from "./routes/AccountEdit.tsx";
 import Export from "./routes/Export.tsx";
+import ExportAdd from "./routes/ExportAdd.tsx";
+import ExportEdit from "./routes/ExportEdit.tsx";
+import ExportHistory from "./routes/ExportHistory.tsx";
 import Buyers from "./routes/Buyers.tsx";
 import BuyersAdd from "./routes/BuyersAdd.tsx";
 import BuyersEdit from "./routes/BuyersEdit.tsx";
@@ -98,6 +101,18 @@ const router = createBrowserRouter([
       {
         path: "export",
         element: <Export />,
+      },
+      {
+        path: "export/add",
+        element: <ExportAdd />,
+      },
+      {
+        path: "export/edit",
+        element: <ExportEdit />,
+      },
+      {
+        path: "export/history",
+        element: <ExportHistory />,
       },
       {
         path: "production",
