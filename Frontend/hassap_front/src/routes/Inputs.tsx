@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CategoriaInsumoSelector from "../components/forms/SelectInputCategory";
 import { Sidebar } from "../components/Sidebar";
 import "../componentsStyles/Inputs.css";
+import data from "../../BD_Keys.json";
 
 interface Insumo {
   id: number;
@@ -17,6 +18,11 @@ export default function Inputs() {
   const [insumos, setInsumos] = useState<Insumo[]>([]);
   const [filterCategoria, setFilterCategoria] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const categorias = data.categoria_insumo;
+  const categoriaMap = categorias.reduce((acc, cat) => {
+    acc[cat.id] = cat.name;
+    return acc;
+  }, {} as Record<number, string>);
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -99,7 +105,7 @@ export default function Inputs() {
                     <td>{ins.id}</td>
                     <td>{ins.nombre_comercial}</td>
                     <td>{ins.unidad}</td>
-                    <td>{ins.categoria_id}</td>
+                    <td>{categoriaMap[ins.categoria_id] || "Sin categoría"}</td>
                     <td>{ins.proveedor_id}</td>
                     <td>{ins.costo_unitario}</td>
                     <td>

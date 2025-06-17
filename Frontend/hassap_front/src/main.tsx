@@ -13,6 +13,9 @@ import Export from "./routes/Export.tsx";
 import ExportAdd from "./routes/ExportAdd.tsx";
 import ExportEdit from "./routes/ExportEdit.tsx";
 import ExportHistory from "./routes/ExportHistory.tsx";
+import Suppliers from "./routes/Suppliers.tsx";
+import SuppliersAdd from "./routes/SuppliersAdd.tsx";
+import SuppliersEdit from "./routes/SuppliersEdit.tsx";
 import Buyers from "./routes/Buyers.tsx";
 import BuyersAdd from "./routes/BuyersAdd.tsx";
 import BuyersEdit from "./routes/BuyersEdit.tsx";
@@ -153,6 +156,18 @@ const router = createBrowserRouter([
       {
         path: "buyers/edit",
         element: <BuyersEdit />,
+      },
+      {
+        path: "suppliers",
+        element: <Suppliers />,
+      },
+      {
+        path: "suppliers/add",
+        element: <SuppliersAdd />,
+      },
+      {
+        path: "suppliers/edit",
+        element: <SuppliersEdit />,
       },
       {
         path: "sondeo",

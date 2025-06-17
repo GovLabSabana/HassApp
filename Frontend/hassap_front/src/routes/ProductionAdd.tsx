@@ -200,7 +200,8 @@ export default function ProductionAdd() {
             <input
               type="number"
               value={toneladas}
-              min={1}
+              min={0.01}
+              step="0.01"
               onChange={(e) => setToneladas(+e.target.value)}
             />
           </div>
@@ -213,7 +214,8 @@ export default function ProductionAdd() {
             <input
               type="number"
               value={hectareas}
-              min={1}
+              min={0.01}
+              step="0.01"
               onChange={(e) => setHectareas(+e.target.value)}
             />
           </div>

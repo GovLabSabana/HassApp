@@ -17,11 +17,12 @@ export const Sidebar: React.FC = () => {
     { label: "CUENTA", path: "/account" },
     { label: "PREDIOS", path: "/properties" },
     { label: "PRODUCCIÓN", path: "/production" },
+    { label: "PROVEEDORES", path: "/suppliers" },
     { label: "EXPORTACIÓN", path: "/export" },
     { label: "COMPRADORES", path: "/buyers" },
     { label: "INSUMOS", path: "/inputs" },
     { label: "SONDEO", path: "/sondeo" },
-    { label: "DESSARROLLADORES", path: "/Developer" },
+    { label: "DESARROLLADORES", path: "/Developer" },
   ];
 
   const handleLogout = () => {

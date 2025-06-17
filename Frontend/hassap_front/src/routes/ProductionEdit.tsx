@@ -217,7 +217,8 @@ export default function ProductionEdit() {
             <input
               type="number"
               value={toneladas}
-              min={1}
+              min={0.01}
+              step="0.01"
               onChange={(e) => setToneladas(+e.target.value)}
             />
           </div>
@@ -230,7 +231,8 @@ export default function ProductionEdit() {
             <input
               type="number"
               value={hectareas}
-              min={1}
+              min={0.01}
+              step="0.01"
               onChange={(e) => setHectareas(+e.target.value)}
             />
           </div>
@@ -313,9 +315,7 @@ export default function ProductionEdit() {
                   placeholder="Cantidad"
                   value={ins.cantidad}
                   min={1}
-                  onChange={(e) =>
-                    updateInsumo(idx, "cantidad", Number(e.target.value))
-                  }
+                  onChange={(e) => updateInsumo(idx, "cantidad", +e.target.value)}
                 />
               </div>
               {idx > 0 && (

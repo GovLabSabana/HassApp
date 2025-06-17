@@ -59,8 +59,10 @@ export default function ExportAdd() {
     else if (form.fecha > today) errs.fecha = "Fecha no puede ser futura";
     if (!form.metodo_salida) errs.metodo_salida = "Seleccione método";
     if (!/^(Agua|Tierra|Aire)$/.test(form.metodo_salida)) errs.metodo_salida = "Opción inválida";
-    if (!/^[1-9]\d*$/.test(form.toneladas)) errs.toneladas = "Debe ser mayor a 0";
-    if (!/^[1-9]\d*$/.test(form.valor_fob)) errs.valor_fob = "Debe ser mayor a 0";
+    if (isNaN(Number(form.toneladas)) || Number(form.toneladas) <= 0)
+      errs.toneladas = "Debe ser mayor a 0";
+    if (isNaN(Number(form.valor_fob)) || Number(form.valor_fob) <= 0)
+      errs.valor_fob = "Debe ser mayor a 0";
     ["puerto_salida","puerto_llegada"].forEach(f => {
       if (!form[f]) errs[f] = "Campo requerido";
     });
@@ -149,7 +151,8 @@ export default function ExportAdd() {
               {errors.toneladas && <div className="exportadd-error">{errors.toneladas}</div>}
               <input 
                 type="number" 
-                min="1" 
+                min={0.01}
+                step="0.01" 
                 className="exportadd-input"
                 value={form.toneladas} 
                 onChange={e => setForm({...form, toneladas:e.target.value})}
@@ -161,7 +164,8 @@ export default function ExportAdd() {
               {errors.valor_fob && <div className="exportadd-error">{errors.valor_fob}</div>}
               <input 
                 type="number" 
-                min="1" 
+                min={0.01}
+                step="0.01"
                 className="exportadd-input"
                 value={form.valor_fob} 
                 onChange={e => setForm({...form, valor_fob:e.target.value})}

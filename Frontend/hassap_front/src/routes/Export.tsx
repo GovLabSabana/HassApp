@@ -8,6 +8,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function Export() {
   const [exportaciones, setExportaciones] = useState([]);
   const [filtroFecha, setFiltroFecha] = useState("");
+  const [fechaHasta, setFechaHasta] = useState("");
+  const [filtroComprador, setFiltroComprador] = useState("");
   const [filtroMetodo, setFiltroMetodo] = useState("");
   const [compradores, setCompradores] = useState([]);
   const navigate = useNavigate();
@@ -35,22 +37,32 @@ export default function Export() {
   };
 
   const eliminarExportacion = async (id) => {
+    console.log(`¿Confirmas eliminar la exportación con ID ${id}?`);
+    const confirmar = window.confirm(`¿Deseas eliminar la exportación con ID ${id}?`);
+    if (!confirmar) return;
+
     await fetch(`${API_URL}/exportaciones/${id}`, {
       method: "DELETE",
     });
     fetchExportaciones();
   };
 
-  const exportacionesFiltradas = exportaciones.filter((exp) => {
-    const fechaOk = !filtroFecha || exp.fecha === filtroFecha;
-    const metodoOk = !filtroMetodo || exp.metodo_salida === filtroMetodo;
-    return fechaOk && metodoOk;
-  });
-
   const getNombreComprador = (id) => {
     const comprador = compradores.find((c) => c.id === id);
     return comprador ? comprador.nombre : "Desconocido";
   };
+
+  const exportacionesFiltradas = exportaciones.filter((exp) => {
+    const fechaExp = new Date(exp.fecha);
+    const desdeOk = !filtroFecha || fechaExp >= new Date(filtroFecha);
+    const hastaOk = !fechaHasta || fechaExp <= new Date(fechaHasta);
+    const metodoOk = !filtroMetodo || exp.metodo_salida.toLowerCase().includes(filtroMetodo.toLowerCase());
+
+    const compradorNombre = getNombreComprador(exp.comprador_id).toLowerCase();
+    const compradorOk = !filtroComprador || compradorNombre.includes(filtroComprador.toLowerCase());
+
+    return desdeOk && hastaOk && metodoOk && compradorOk;
+  });
 
   return (
     <div className="export-container">
@@ -76,6 +88,8 @@ export default function Export() {
               <input
                 type="date"
                 className="export-filter-input"
+                value={fechaHasta}
+                onChange={(e) => setFechaHasta(e.target.value)}
                 placeholder="dd/mm/aaaa"
               />
             </div>
@@ -93,6 +107,8 @@ export default function Export() {
               <input
                 type="text"
                 className="export-filter-input"
+                value={filtroComprador}
+                onChange={(e) => setFiltroComprador(e.target.value)}
               />
             </div>
           </div>
@@ -152,6 +168,12 @@ export default function Export() {
             onClick={() => navigate("/export/add")}
           >
             + Agregar Nueva Exportación
+          </button>
+          <button 
+            className="export-btn export-btn-add"
+            onClick={() => navigate("/export/history")}
+          >
+            Historial de Exportaciones
           </button>
         </div>
       </div>
