@@ -37,6 +37,7 @@ class Usuario(SQLAlchemyBaseUserTable[int], Base):
 
     tipo_documento = relationship("TipoDocumento", lazy="joined")
     predios = relationship("Predio", back_populates="usuario")
+    exportaciones = relationship("Exportacion", back_populates="usuario")
 
 
 async def get_user_db():

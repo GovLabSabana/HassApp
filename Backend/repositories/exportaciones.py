@@ -25,20 +25,19 @@ from models.cosecha import Cosecha
 from models.insumo_cosecha import InsumoCosecha
 from schemas.cosecha import CosechaRead
 
-async def get_all_raw(db: AsyncSession):
+
+async def get_all_raw(db: AsyncSession, user_id: int):
     result = await db.execute(
         select(Exportacion)
+        .where(Exportacion.usuario_id == user_id)
         .options(
-            # Carga la asociación, baja a la cosecha y luego predios
             selectinload(Exportacion.cosechas)
-             .joinedload(ExportacionCosecha.cosecha)
-             .selectinload(Cosecha.predios),
-
-            # Carga la asociación, baja a la cosecha y luego insumos + su insumo
+            .joinedload(ExportacionCosecha.cosecha)
+            .selectinload(Cosecha.predios),
             selectinload(Exportacion.cosechas)
-             .joinedload(ExportacionCosecha.cosecha)
-             .selectinload(Cosecha.insumos_cosecha)
-             .joinedload(InsumoCosecha.insumo),
+            .joinedload(ExportacionCosecha.cosecha)
+            .selectinload(Cosecha.insumos_cosecha)
+            .joinedload(InsumoCosecha.insumo),
         )
     )
     return result.scalars().all()
@@ -50,15 +49,16 @@ async def get_by_id_raw(db: AsyncSession, exportacion_id: int):
         .where(Exportacion.id == exportacion_id)
         .options(
             selectinload(Exportacion.cosechas)
-             .joinedload(ExportacionCosecha.cosecha)
-             .selectinload(Cosecha.predios),
+            .joinedload(ExportacionCosecha.cosecha)
+            .selectinload(Cosecha.predios),
             selectinload(Exportacion.cosechas)
-             .joinedload(ExportacionCosecha.cosecha)
-             .selectinload(Cosecha.insumos_cosecha)
-             .joinedload(InsumoCosecha.insumo),
+            .joinedload(ExportacionCosecha.cosecha)
+            .selectinload(Cosecha.insumos_cosecha)
+            .joinedload(InsumoCosecha.insumo),
         )
     )
     return result.scalar_one_or_none()
+
 
 async def get_all(db: AsyncSession):
     # 1) Traer solo Exportacion (sin relaciones)
@@ -73,11 +73,11 @@ async def get_all(db: AsyncSession):
             .options(
                 # Sub‐path A: cargamos la cosecha y sus predios
                 joinedload(ExportacionCosecha.cosecha)
-                  .selectinload(Cosecha.predios),
+                .selectinload(Cosecha.predios),
                 # Sub‐path B: cargamos la cosecha y sus insumos (+ insumo)
                 joinedload(ExportacionCosecha.cosecha)
-                  .selectinload(Cosecha.insumos_cosecha)
-                  .joinedload(InsumoCosecha.insumo),
+                .selectinload(Cosecha.insumos_cosecha)
+                .joinedload(InsumoCosecha.insumo),
             )
         )
         rels = (await db.execute(q)).scalars().all()
@@ -102,10 +102,10 @@ async def get_by_id(db: AsyncSession, exportacion_id: int):
         .where(ExportacionCosecha.exportacion_id == exportacion_id)
         .options(
             joinedload(ExportacionCosecha.cosecha)
-              .selectinload(Cosecha.predios),
+            .selectinload(Cosecha.predios),
             joinedload(ExportacionCosecha.cosecha)
-              .selectinload(Cosecha.insumos_cosecha)
-              .joinedload(InsumoCosecha.insumo),
+            .selectinload(Cosecha.insumos_cosecha)
+            .joinedload(InsumoCosecha.insumo),
         )
     )
     rels = (await db.execute(q)).scalars().all()
@@ -114,21 +114,22 @@ async def get_by_id(db: AsyncSession, exportacion_id: int):
 
     return export
 
-async def create(db: AsyncSession, exportacion_in: ExportacionCreate) -> Exportacion:
-    """Crea la exportación y sus associations, devuelve solo el objeto nuevo sin mutar relaciones."""
+
+async def create(db: AsyncSession, exportacion_in: ExportacionCreate, user_id: int) -> Exportacion:
     data = exportacion_in.model_dump(exclude={"cosecha_ids"})
-    db_export = Exportacion(**data)
+    # <- Aquí se asigna el usuario
+    db_export = Exportacion(**data, usuario_id=user_id)
     db.add(db_export)
     await db.commit()
     await db.refresh(db_export)
 
-    # asociar cosechas sin recarga de export.cosechas
     for cid in exportacion_in.cosecha_ids:
         assoc = ExportacionCosecha(exportacion_id=db_export.id, cosecha_id=cid)
         db.add(assoc)
     await db.commit()
 
     return db_export
+
 
 async def update(db: AsyncSession, exportacion_id: int, exportacion_data: ExportacionUpdate) -> Exportacion | None:
     """Actualiza campos y relaciones, devuelve objeto actualizado sin mutar colecciones."""
@@ -148,10 +149,12 @@ async def update(db: AsyncSession, exportacion_id: int, exportacion_data: Export
         )
         # añadir nuevas
         for cid in exportacion_data.cosecha_ids:
-            db.add(ExportacionCosecha(exportacion_id=exportacion_id, cosecha_id=cid))
+            db.add(ExportacionCosecha(
+                exportacion_id=exportacion_id, cosecha_id=cid))
 
     await db.commit()
     return db_export
+
 
 async def delete(db: AsyncSession, exportacion_id: int) -> Exportacion | None:
     """Elimina la exportación y retorna el objeto eliminado."""
