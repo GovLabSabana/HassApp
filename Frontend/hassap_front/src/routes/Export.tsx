@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
-import "../componentsStyles/Export.css"; 
+import "../componentsStyles/Export.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -20,14 +20,14 @@ export default function Export() {
   }, []);
 
   const fetchExportaciones = async () => {
-    const res = await fetch(`${API_URL}/exportaciones/`);
+    const res = await fetch(`${API_URL}/exportaciones`);
     const data = await res.json();
     setExportaciones(data);
   };
 
   const fetchCompradores = async () => {
     const token = localStorage.getItem("access_token");
-    const res = await fetch(`${API_URL}/compradores/`, {
+    const res = await fetch(`${API_URL}/compradores`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -38,7 +38,9 @@ export default function Export() {
 
   const eliminarExportacion = async (id) => {
     console.log(`¿Confirmas eliminar la exportación con ID ${id}?`);
-    const confirmar = window.confirm(`¿Deseas eliminar la exportación con ID ${id}?`);
+    const confirmar = window.confirm(
+      `¿Deseas eliminar la exportación con ID ${id}?`
+    );
     if (!confirmar) return;
 
     await fetch(`${API_URL}/exportaciones/${id}`, {
@@ -56,17 +58,21 @@ export default function Export() {
     const fechaExp = new Date(exp.fecha);
     const desdeOk = !filtroFecha || fechaExp >= new Date(filtroFecha);
     const hastaOk = !fechaHasta || fechaExp <= new Date(fechaHasta);
-    const metodoOk = !filtroMetodo || exp.metodo_salida.toLowerCase().includes(filtroMetodo.toLowerCase());
+    const metodoOk =
+      !filtroMetodo ||
+      exp.metodo_salida.toLowerCase().includes(filtroMetodo.toLowerCase());
 
     const compradorNombre = getNombreComprador(exp.comprador_id).toLowerCase();
-    const compradorOk = !filtroComprador || compradorNombre.includes(filtroComprador.toLowerCase());
+    const compradorOk =
+      !filtroComprador ||
+      compradorNombre.includes(filtroComprador.toLowerCase());
 
     return desdeOk && hastaOk && metodoOk && compradorOk;
   });
 
   return (
     <div className="export-container">
-      <Sidebar/>
+      <Sidebar />
       <div className="export-content">
         <h1 className="export-title">Exportación</h1>
 
@@ -140,10 +146,14 @@ export default function Export() {
                   <td className="export-table-td">{exp.valor_fob}</td>
                   <td className="export-table-td">{exp.puerto_salida}</td>
                   <td className="export-table-td">{exp.puerto_llegada}</td>
-                  <td className="export-table-td">{getNombreComprador(exp.comprador_id)}</td>
-                  <td className="export-table-td">{exp.cosecha_ids.join(", ")}</td>
+                  <td className="export-table-td">
+                    {getNombreComprador(exp.comprador_id)}
+                  </td>
+                  <td className="export-table-td">
+                    {exp.cosecha_ids.join(", ")}
+                  </td>
                   <td className="export-table-td export-table-actions">
-                    <button 
+                    <button
                       className="export-btn export-btn-edit"
                       onClick={() => navigate(`/export/edit?id=${exp.id}`)}
                     >
@@ -163,13 +173,13 @@ export default function Export() {
         </div>
 
         <div className="export-actions">
-          <button 
+          <button
             className="export-btn export-btn-add"
             onClick={() => navigate("/export/add")}
           >
             + Agregar Nueva Exportación
           </button>
-          <button 
+          <button
             className="export-btn export-btn-add"
             onClick={() => navigate("/export/history")}
           >
