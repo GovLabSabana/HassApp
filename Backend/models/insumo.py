@@ -9,7 +9,7 @@ class Insumo(Base):
     __tablename__ = "insumo"
 
     id = Column(Integer, primary_key=True, index=True)
-    nombre_comercial = Column(String(50), nullable=False)
+    nombre_comercial = Column(String(155), nullable=False)
     unidad = Column(String(50), nullable=False)
     categoria_id = Column(Integer, ForeignKey(
         "categoria_insumo.id"), nullable=False)

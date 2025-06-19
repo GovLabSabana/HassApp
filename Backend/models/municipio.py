@@ -14,4 +14,3 @@ class Municipio(Base):
         "departamento.id"))
 
     predios = relationship("Predio", back_populates="municipio")
-    proveedores = relationship("Proveedor", back_populates="municipio")

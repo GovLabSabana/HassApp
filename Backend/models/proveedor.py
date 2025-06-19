@@ -8,7 +8,11 @@ class Proveedor(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(50), nullable=False)
-    municipio_id = Column(Integer, ForeignKey("municipio.id"), nullable=False)
+    tipo_doc = Column(Integer, ForeignKey("tipo_documento.id"))
+    num_doc = Column(String(70), nullable=False)
+    ciudad = Column(String(70))
+    pais = Column(String(50))
+    direccion = Column(String(255))
+    contacto = Column(String(70))
 
-    municipio = relationship("Municipio", back_populates="proveedores")
     insumos = relationship("Insumo", back_populates="proveedor")
