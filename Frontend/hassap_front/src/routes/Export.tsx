@@ -47,9 +47,12 @@ export default function Export() {
       `¿Deseas eliminar la exportación con ID ${id}?`
     );
     if (!confirmar) return;
-
+    const token = localStorage.getItem("access_token");
     await fetch(`${API_URL}/exportaciones/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     fetchExportaciones();
   };
