@@ -97,7 +97,7 @@
 }
 
 .sidebar-link::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -117,11 +117,14 @@
 
 .sidebar-link:hover {
   color: #ffffff;
-  background: linear-gradient(135deg, rgba(36, 71, 51, 0.3) 0%, rgba(36, 71, 51, 0.5) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(36, 71, 51, 0.3) 0%,
+    rgba(36, 71, 51, 0.5) 100%
+  );
   border-color: rgba(183, 95, 12, 0.4);
   transform: translateX(4px) scale(1.02);
-  box-shadow: 
-    0 4px 15px rgba(36, 71, 51, 0.3),
+  box-shadow: 0 4px 15px rgba(36, 71, 51, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -135,31 +138,30 @@
 
 @keyframes pulse-glow {
   0% {
-    box-shadow: 
-      0 4px 15px rgba(36, 71, 51, 0.3),
+    box-shadow: 0 4px 15px rgba(36, 71, 51, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   50% {
-    box-shadow: 
-      0 6px 20px rgba(36, 71, 51, 0.4),
-      0 0 15px rgba(183, 95, 12, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 20px rgba(36, 71, 51, 0.4),
+      0 0 15px rgba(183, 95, 12, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
   100% {
-    box-shadow: 
-      0 4px 15px rgba(36, 71, 51, 0.3),
+    box-shadow: 0 4px 15px rgba(36, 71, 51, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 }
 
 .sidebar-link.active {
-  background: linear-gradient(135deg, rgba(36, 71, 51, 0.8) 0%, rgba(36, 71, 51, 1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(36, 71, 51, 0.8) 0%,
+    rgba(36, 71, 51, 1) 100%
+  );
   color: #ffffff;
   font-weight: 600;
   border-left: 3px solid rgba(183, 95, 12, 1);
   border-color: rgba(183, 95, 12, 0.6);
-  box-shadow: 
-    0 4px 12px rgba(36, 71, 51, 0.4),
+  box-shadow: 0 4px 12px rgba(36, 71, 51, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
@@ -199,7 +201,6 @@
 .sidebar-footer {
   padding: 1.5rem;
   margin-top: auto;
-
 }
 
 .sidebar-user {
@@ -247,19 +248,18 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  
+
   display: flex;
-  align-items: center;   
-  justify-content: center; 
-  text-align: center;       
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   line-height: 1;
-  
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.15),
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .logout-button-minimal::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -274,9 +274,8 @@
   color: white;
   border-color: rgba(239, 68, 68, 0.5);
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 
-    0 8px 25px rgba(220, 38, 38, 0.4),
-    0 4px 12px rgba(220, 38, 38, 0.2),
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4),
+    0 4px 12px rgba(220, 38, 38, 0.2);
 }
 
 .logout-button-minimal:hover::before {
@@ -286,15 +285,13 @@
 .logout-button-minimal:active {
   transform: translateY(0) scale(1);
   transition: all 0.1s ease;
-  box-shadow: 
-    0 2px 8px rgba(220, 38, 38, 0.3),
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
 }
 
 .logout-button-minimal:focus {
   outline: none;
-  box-shadow: 
-    0 8px 25px rgba(220, 38, 38, 0.4),
-    0 0 0 3px rgba(220, 38, 38, 0.3),
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4),
+    0 0 0 3px rgba(220, 38, 38, 0.3);
 }
 
 .logout-button-minimal .user-info {
@@ -347,12 +344,24 @@ nav {
   animation: slideIn 0.3s ease forwards;
 }
 
-.sidebar-menu-item:nth-child(1) { animation-delay: 0.1s; }
-.sidebar-menu-item:nth-child(2) { animation-delay: 0.15s; }
-.sidebar-menu-item:nth-child(3) { animation-delay: 0.2s; }
-.sidebar-menu-item:nth-child(4) { animation-delay: 0.25s; }
-.sidebar-menu-item:nth-child(5) { animation-delay: 0.3s; }
-.sidebar-menu-item:nth-child(6) { animation-delay: 0.35s; }
+.sidebar-menu-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.sidebar-menu-item:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.sidebar-menu-item:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.sidebar-menu-item:nth-child(4) {
+  animation-delay: 0.25s;
+}
+.sidebar-menu-item:nth-child(5) {
+  animation-delay: 0.3s;
+}
+.sidebar-menu-item:nth-child(6) {
+  animation-delay: 0.35s;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -360,25 +369,11 @@ nav {
     width: 70px;
     padding: 0;
   }
-  
+
   .sidebar:hover {
     width: 280px;
   }
-  
-  .sidebar-label,
-  .sidebar-title,
-  .user-info {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  .sidebar:hover .sidebar-label,
-  .sidebar:hover .sidebar-title,
-  .sidebar:hover .user-info {
-    opacity: 1;
-    transition-delay: 0.1s;
-  }
-  
+
   .logout-button-minimal {
     padding: 0.75rem 1.25rem;
     font-size: 0.8rem;

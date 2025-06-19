@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
 import "../componentsStyles/Buyers.css";
+import Layout from "./layouts/menu";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -22,7 +23,7 @@ export default function Buyers() {
     nombre: "",
     ciudad: "",
     pais: "",
-    tipoDoc: ""
+    tipoDoc: "",
   });
   const navigate = useNavigate();
 
@@ -33,7 +34,9 @@ export default function Buyers() {
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este comprador?")) {
+    if (
+      window.confirm("¿Estás seguro de que deseas eliminar este comprador?")
+    ) {
       await fetch(`${API_URL}/compradores/${id}`, { method: "DELETE" });
       fetchCompradores();
     }
@@ -44,21 +47,20 @@ export default function Buyers() {
   }, []);
 
   // Filtrar compradores
-  const compradoresFiltrados = compradores.filter(comprador => {
+  const compradoresFiltrados = compradores.filter((comprador) => {
     return (
       comprador.nombre.toLowerCase().includes(filtros.nombre.toLowerCase()) &&
       comprador.ciudad.toLowerCase().includes(filtros.ciudad.toLowerCase()) &&
       comprador.pais.toLowerCase().includes(filtros.pais.toLowerCase()) &&
-      (filtros.tipoDoc === "" || comprador.tipo_doc.toString() === filtros.tipoDoc)
+      (filtros.tipoDoc === "" ||
+        comprador.tipo_doc.toString() === filtros.tipoDoc)
     );
   });
 
   return (
-    <div className="buyers-main-wrapper">
-      <Sidebar />
-      <div className="buyers-container">
-        <h1 className="buyers-title">Compradores</h1>
-      
+    <>
+      <h1 className="buyers-title">Compradores</h1>
+
       {/* Sección de filtros */}
       <div className="buyers-filters-section">
         <h3 className="buyers-filters-title">Filtros de Búsqueda</h3>
@@ -70,10 +72,12 @@ export default function Buyers() {
               className="buyers-filter-input"
               placeholder="Buscar por nombre..."
               value={filtros.nombre}
-              onChange={(e) => setFiltros({...filtros, nombre: e.target.value})}
+              onChange={(e) =>
+                setFiltros({ ...filtros, nombre: e.target.value })
+              }
             />
           </div>
-          
+
           <div className="buyers-filter-group">
             <label className="buyers-filter-label">Ciudad</label>
             <input
@@ -81,10 +85,12 @@ export default function Buyers() {
               className="buyers-filter-input"
               placeholder="Buscar por ciudad..."
               value={filtros.ciudad}
-              onChange={(e) => setFiltros({...filtros, ciudad: e.target.value})}
+              onChange={(e) =>
+                setFiltros({ ...filtros, ciudad: e.target.value })
+              }
             />
           </div>
-          
+
           <div className="buyers-filter-group">
             <label className="buyers-filter-label">País</label>
             <input
@@ -92,16 +98,18 @@ export default function Buyers() {
               className="buyers-filter-input"
               placeholder="Buscar por país..."
               value={filtros.pais}
-              onChange={(e) => setFiltros({...filtros, pais: e.target.value})}
+              onChange={(e) => setFiltros({ ...filtros, pais: e.target.value })}
             />
           </div>
-          
+
           <div className="buyers-filter-group">
             <label className="buyers-filter-label">Tipo de Documento</label>
             <select
               className="buyers-filter-input"
               value={filtros.tipoDoc}
-              onChange={(e) => setFiltros({...filtros, tipoDoc: e.target.value})}
+              onChange={(e) =>
+                setFiltros({ ...filtros, tipoDoc: e.target.value })
+              }
             >
               <option value="">Todos los tipos</option>
               <option value="1">C.C.</option>
@@ -140,13 +148,13 @@ export default function Buyers() {
                 <td>{c.direccion}</td>
                 <td>{c.contacto}</td>
                 <td className="buyers-actions-cell">
-                  <button 
+                  <button
                     className="buyers-btn-edit"
                     onClick={() => navigate(`/buyers/edit?id=${c.id}`)}
                   >
                     Editar
                   </button>
-                  <button 
+                  <button
                     className="buyers-btn-delete"
                     onClick={() => handleDelete(c.id)}
                   >
@@ -161,14 +169,13 @@ export default function Buyers() {
 
       {/* Botón para agregar */}
       <div className="buyers-add-container">
-        <button 
+        <button
           className="buyers-btn-add"
           onClick={() => navigate("/buyers/add")}
         >
           + Agregar Nuevo Comprador
         </button>
       </div>
-      </div>
-    </div>
+    </>
   );
 }

@@ -36,6 +36,7 @@ import "./index.css";
 import Main from "./routes/sondeo/Main.tsx";
 import ResetPassword from "./routes/Reset.tsx";
 import Developers from "./routes/Developers.tsx";
+import Layout from "./routes/layouts/menu.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -75,11 +76,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "dashboard",
-        element: <Dashboard />,
+        element: (
+          <Layout>
+            <Dashboard />
+          </Layout>
+        ),
       },
       {
         path: "account",
-        element: <Account />,
+        element: (
+          <Layout>
+            <Account />
+          </Layout>
+        ),
       },
       {
         path: "account/change",
@@ -91,7 +100,11 @@ const router = createBrowserRouter([
       },
       {
         path: "properties",
-        element: <Properties />,
+        element: (
+          <Layout>
+            <Properties />
+          </Layout>
+        ),
       },
       {
         path: "properties/edit",
@@ -103,7 +116,11 @@ const router = createBrowserRouter([
       },
       {
         path: "export",
-        element: <Export />,
+        element: (
+          <Layout>
+            <Export />
+          </Layout>
+        ),
       },
       {
         path: "export/add",
@@ -119,7 +136,11 @@ const router = createBrowserRouter([
       },
       {
         path: "production",
-        element: <Production />,
+        element: (
+          <Layout>
+            <Production />
+          </Layout>
+        ),
       },
       {
         path: "production/add",
@@ -131,7 +152,11 @@ const router = createBrowserRouter([
       },
       {
         path: "inputs",
-        element: <Inputs />,
+        element: (
+          <Layout>
+            <Inputs />
+          </Layout>
+        ),
       },
       {
         path: "inputs/add",
@@ -147,7 +172,11 @@ const router = createBrowserRouter([
       },
       {
         path: "buyers",
-        element: <Buyers />,
+        element: (
+          <Layout>
+            <Buyers />
+          </Layout>
+        ),
       },
       {
         path: "buyers/add",
@@ -159,7 +188,11 @@ const router = createBrowserRouter([
       },
       {
         path: "suppliers",
-        element: <Suppliers />,
+        element: (
+          <Layout>
+            <Suppliers />
+          </Layout>
+        ),
       },
       {
         path: "suppliers/add",
@@ -171,11 +204,19 @@ const router = createBrowserRouter([
       },
       {
         path: "sondeo",
-        element: <Main />,
+        element: (
+          <Layout>
+            <Main />
+          </Layout>
+        ),
       },
-       {
+      {
         path: "Developer",
-        element: <Developers/>,
+        element: (
+          <Layout>
+            <Developers />
+          </Layout>
+        ),
       },
     ],
   },

@@ -3,6 +3,7 @@ import QuestionCard from "./QuestionCard";
 import { Sidebar } from "../../components/Sidebar";
 import "./styles.css";
 import Modal from "./Modal";
+import Layout from "../layouts/menu";
 
 interface Pregunta {
   id: number;
@@ -57,34 +58,28 @@ const Main = () => {
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
-    <div className="account-container">
-      <div className="account-sidebar">
-        <Sidebar />
+    <Layout>
+      <h1 className="sondeo-title">Sondeo</h1>
+
+      <div className="grid-container">
+        {preguntas.map((pregunta) => (
+          <QuestionCard
+            key={pregunta.id}
+            pregunta={pregunta}
+            onClick={() => handleCardClick(pregunta)}
+          />
+        ))}
       </div>
 
-      <main className="sondeo-main">
-        <h1 className="sondeo-title">Sondeo</h1>
-
-        <div className="grid-container">
-          {preguntas.map((pregunta) => (
-            <QuestionCard
-              key={pregunta.id}
-              pregunta={pregunta}
-              onClick={() => handleCardClick(pregunta)}
-            />
-          ))}
-        </div>
-
-        {selectedPregunta && (
-          <Modal
-            pregunta={selectedPregunta}
-            onClose={closeModal}
-            API_URL={API_URL}
-            token={token}
-          />
-        )}
-      </main>
-    </div>
+      {selectedPregunta && (
+        <Modal
+          pregunta={selectedPregunta}
+          onClose={closeModal}
+          API_URL={API_URL}
+          token={token}
+        />
+      )}
+    </Layout>
   );
 };
 

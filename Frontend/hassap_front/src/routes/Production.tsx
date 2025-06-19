@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sidebar } from "../components/Sidebar";
-import "../componentsStyles/Production.css";
-import data from "../../BD_Keys.json";
-
-const productosMap = new Map<number, string>(
-  data.tipo_producto.map(p => [p.id, p.name])
-);
-const calidadesMap = new Map<number, string>(
-  data.calidad.map(c => [c.id, c.name])
-);
-
+import Layout from "./layouts/menu";
 interface Predio {
   id: number;
   nombre: string;
@@ -24,13 +14,24 @@ interface Insumo {
   nombre_comercial: string;
 }
 
+interface Producto {
+  id: number;
+  nombre: string;
+}
+
+interface Calidad {
+  id: number;
+  descripcion: string;
+}
+
 interface Cosecha {
   id: number;
   fecha: string;
-  producto_id: number;
-  calidad_id: number;
+  producto: Producto;
+  calidad: Calidad;
   toneladas: string;
   hectareas: string;
+  calibre_promedio: string;
   observaciones: string;
   predios: Predio[];
   insumos: Insumo[];
@@ -41,11 +42,8 @@ export default function Production() {
   const [list, setList] = useState<Cosecha[]>([]);
   const [fechaDesde, setFechaDesde] = useState("");
   const [fechaHasta, setFechaHasta] = useState("");
-  const [predioFiltro, setPredioFiltro] = useState("");
-  const [productoFiltro, setProductoFiltro] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-
+  const [predioId, setPredioId] = useState("");
+  const [productoId, setProductoId] = useState("");
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -54,211 +52,141 @@ export default function Production() {
   }, []);
 
   const fetchData = async () => {
-    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/cosechas/`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!res.ok) throw new Error(`Error ${res.status}`);
       const data: Cosecha[] = await res.json();
-      setList(Array.isArray(data) ? data : []);
+      setList(data);
     } catch (err) {
-      console.error("Error al cargar cosechas", err);
-      setList([]);
-    } finally {
-      setLoading(false);
+      console.error("Error al cargar las cosechas", err);
     }
   };
 
   const handleDelete = async (id: number) => {
-    const cosecha = list.find(c => c.id === id);
-    const mensaje = cosecha
-      ? `¿Estás seguro de eliminar la producción con ID ${id} del producto "${productosMap.get(cosecha.producto_id)}"? Esta acción es irreversible.`
-      : `¿Eliminar esta producción con ID ${id}?`;
-
-    if (!confirm(mensaje)) return;
-
-    setDeletingId(id);
-    try {
-      const res = await fetch(`${API_URL}/cosechas/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) {
-        const errorMsg = await res.text(); // Captura error del backend
-        throw new Error(errorMsg || `Error ${res.status}`);
-      }
-
-      // Eliminar de la lista local
-      setList(prev => prev.filter(c => c.id !== id));
-    } catch (err: any) {
-      console.error("Error al eliminar", err);
-      alert("No se pudo eliminar la producción.\n" + (err.message || ""));
-    } finally {
-      setDeletingId(null);
-    }
+    if (!confirm("¿Eliminar producción?")) return;
+    await fetch(`${API_URL}/cosechas/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    fetchData();
   };
 
-  // Filtrado por nombres en lugar de id
-  const filtered = list.filter(c => {
-    const date = new Date(c.fecha);
-    if (fechaDesde && date < new Date(fechaDesde)) return false;
-    if (fechaHasta && date > new Date(fechaHasta)) return false;
-    if (predioFiltro) {
-      const match = c.predios.some(p =>
-        p.nombre.toLowerCase().includes(predioFiltro.toLowerCase())
-      );
-      if (!match) return false;
-    }
-    if (productoFiltro) {
-      const prodName = productosMap.get(c.producto_id) || "";
-      if (!prodName.toLowerCase().includes(productoFiltro.toLowerCase()))
-        return false;
-    }
+  const filtered = list.filter((c) => {
+    const fecha = c.fecha;
+    if (fechaDesde && fecha < fechaDesde) return false;
+    if (fechaHasta && fecha > fechaHasta) return false;
+    if (predioId && !c.predios.some((p) => p.id.toString().includes(predioId)))
+      return false;
+    if (productoId && c.producto.id.toString() !== productoId) return false;
     return true;
   });
 
   return (
-    <div className="production-container">
-      <Sidebar />
-      <main className="production-main">
-        <div className="production-header">
-          <h1 className="production-title">Producción</h1>
-        </div>
+    <>
+      <div className="production-container">
+        {/* <Sidebar /> */}
+        <main>
+          <h1>Producciónx</h1>
 
-        <div className="filters-section">
-          <h3 className="filters-title">Filtros de Búsqueda</h3>
-          <div className="filters-grid">
-            <div className="filter-group">
-              <label className="filter-label">Fecha Desde</label>
+          <div className="filters">
+            <label>
+              Desde:{" "}
               <input
                 type="date"
-                className="filter-input"
                 value={fechaDesde}
-                onChange={e => setFechaDesde(e.target.value)}
+                onChange={(e) => setFechaDesde(e.target.value)}
               />
-            </div>
-            <div className="filter-group">
-              <label className="filter-label">Fecha Hasta</label>
+            </label>
+            <label>
+              Hasta:{" "}
               <input
                 type="date"
-                className="filter-input"
                 value={fechaHasta}
-                onChange={e => setFechaHasta(e.target.value)}
+                onChange={(e) => setFechaHasta(e.target.value)}
               />
-            </div>
-            <div className="filter-group">
-              <label className="filter-label">Predio (nombre)</label>
+            </label>
+            <label>
+              ID Predio:{" "}
               <input
-                type="text"
-                className="filter-input"
-                placeholder="Buscar por nombre de predio..."
-                value={predioFiltro}
-                onChange={e => setPredioFiltro(e.target.value)}
+                value={predioId}
+                onChange={(e) => setPredioId(e.target.value)}
               />
-            </div>
-            <div className="filter-group">
-              <label className="filter-label">Producto (nombre)</label>
+            </label>
+            <label>
+              ID Producto:{" "}
               <input
-                type="text"
-                className="filter-input"
-                placeholder="Buscar por nombre de producto..."
-                value={productoFiltro}
-                onChange={e => setProductoFiltro(e.target.value)}
+                value={productoId}
+                onChange={(e) => setProductoId(e.target.value)}
               />
-            </div>
+            </label>
           </div>
-        </div>
 
-        <div className="table-container">
-          {loading ? (
-            <div className="loading">Cargando producciones...</div>
-          ) : filtered.length === 0 ? (
-            <div className="no-data">
-              No se encontraron registros con los filtros aplicados.
-            </div>
-          ) : (
-            <table className="production-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Fecha</th>
-                  <th>Producto</th>
-                  <th>Calidad</th>
-                  <th>Toneladas</th>
-                  <th>Hectáreas</th>
-                  <th>Observaciones</th>
-                  <th>Predios</th>
-                  <th>Insumos(nombre:cantidad)</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map(c => (
-                  <tr key={c.id}>
-                    <td>{c.id}</td>
-                    <td>{c.fecha.split("T")[0]}</td>
-                    <td>{productosMap.get(c.producto_id) || "Desconocido"}</td>
-                    <td>{calidadesMap.get(c.calidad_id) || "Desconocido"}</td>
-                    <td>{c.toneladas} t</td>
-                    <td>{c.hectareas} ha</td>
-                    <td>{c.observaciones || "Sin observaciones"}</td>
-                    <td className="predios-cell">
-                      {c.predios.length > 0
-                        ? c.predios.map(p => `${p.nombre}`).join(", ")
-                        : "Sin predios"}
-                    </td>
-                    <td className="insumos-cell">
-                      {c.insumos.length > 0
-                        ? c.insumos.map(i => (
-                            <div key={i.insumo_id} className="insumo-item">
-                              {i.nombre_comercial}: {i.cantidad}
-                            </div>
-                          ))
-                        : "Sin insumos"}
-                    </td>
-                    <td>
-                      <div className="action-buttons">
-                        <button
-                          className="btn btn-edit"
-                          onClick={() => navigate(`/production/edit?id=${c.id}`)}
-                          title="Editar producción"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className="btn btn-delete"
-                          onClick={() => handleDelete(c.id)}
-                          disabled={deletingId === c.id}
-                          title="Eliminar producción"
-                        >
-                          {deletingId === c.id ? "Eliminando..." : "Eliminar"}
-                        </button>
+          <table className="production-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Producto</th>
+                <th>Calidad</th>
+                <th>Toneladas</th>
+                <th>Hectáreas</th>
+                <th>Calibre Promedio</th>
+                <th>Observaciones</th>
+                <th>Predios</th>
+                <th>Insumos</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((c) => (
+                <tr key={c.id}>
+                  <td>{c.fecha}</td>
+                  <td>
+                    {c.producto
+                      ? `${c.producto.nombre}-${c.producto.id}`
+                      : "N/A"}
+                  </td>
+                  <td>{c.calidad?.descripcion ?? "N/A"}</td>
+                  <td>{c.toneladas}</td>
+                  <td>{c.hectareas}</td>
+                  <td>{c.calibre_promedio}</td>
+                  <td>{c.observaciones}</td>
+                  <td>
+                    {c.predios.map((p) => `${p.nombre}-${p.id}`).join(", ")}
+                  </td>
+                  <td>
+                    {c.insumos.map((i) => (
+                      <div key={i.insumo_id}>
+                        {i.nombre_comercial} — {i.cantidad} —{" "}
+                        {parseFloat(i.costo_unitario).toLocaleString("es-CO", {
+                          style: "currency",
+                          currency: "COP",
+                        })}
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+                    ))}
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => navigate(`/production/edit?id=${c.id}`)}
+                    >
+                      Editar
+                    </button>
+                    <button onClick={() => handleDelete(c.id)}>Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-        <div className="add-button-container">
-          <button
-            className="btn btn-add"
-            onClick={() => navigate("/production/add")}
-          >
-            + Agregar Nueva Producción
+          <button onClick={() => navigate("/production/add")}>
+            Agregar Producción
           </button>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }

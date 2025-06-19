@@ -4,6 +4,7 @@ import CategoriaInsumoSelector from "../components/forms/SelectInputCategory";
 import { Sidebar } from "../components/Sidebar";
 import "../componentsStyles/Inputs.css";
 import data from "../../BD_Keys.json";
+import Layout from "./layouts/menu";
 
 interface Insumo {
   id: number;
@@ -54,99 +55,99 @@ export default function Inputs() {
     : insumos;
 
   return (
-    <div className="production-container">
-      <Sidebar />
-      <main className="production-main">
-        <div className="production-header">
-          <h1 className="production-title">Insumos</h1>
-        </div>
+    <>
+      <div className="production-header">
+        <h1 className="production-title">Insumos</h1>
+      </div>
 
-        <div className="filters-section">
-          <h3 className="filters-title">Filtro por Categoría</h3>
-          <div className="filters-grid">
-            <div className="filter-group">
-              <label className="filter-label">Categoría</label>
-              <div className="filter-input-group">
-                <CategoriaInsumoSelector
-                  value={filterCategoria || undefined}
-                  onSelect={setFilterCategoria!}
-                />
-                <button className="btn-insumo-clear" onClick={() => setFilterCategoria(null)}>
-                  Borrar Filtro
-                </button>
-              </div>
+      <div className="filters-section">
+        <h3 className="filters-title">Filtro por Categoría</h3>
+        <div className="filters-grid">
+          <div className="filter-group">
+            <label className="filter-label">Categoría</label>
+            <div className="filter-input-group">
+              <CategoriaInsumoSelector
+                value={filterCategoria || undefined}
+                onSelect={setFilterCategoria!}
+              />
+              <button
+                className="btn-insumo-clear"
+                onClick={() => setFilterCategoria(null)}
+              >
+                Borrar Filtro
+              </button>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="table-container">
-          {loading ? (
-            <div className="loading">Cargando insumos...</div>
-          ) : filtered.length === 0 ? (
-            <div className="no-data">
-              No se encontraron insumos con el filtro aplicado.
-            </div>
-          ) : (
-            <table className="production-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nombre Comercial</th>
-                  <th>Unidad</th>
-                  <th>Categoría</th>
-                  <th>Proveedor</th>
-                  <th>Costo Unitario</th>
-                  <th>Acciones</th>
+      <div className="table-container">
+        {loading ? (
+          <div className="loading">Cargando insumos...</div>
+        ) : filtered.length === 0 ? (
+          <div className="no-data">
+            No se encontraron insumos con el filtro aplicado.
+          </div>
+        ) : (
+          <table className="production-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre Comercial</th>
+                <th>Unidad</th>
+                <th>Categoría</th>
+                <th>Proveedor</th>
+                <th>Costo Unitario</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((ins) => (
+                <tr key={ins.id}>
+                  <td>{ins.id}</td>
+                  <td>{ins.nombre_comercial}</td>
+                  <td>{ins.unidad}</td>
+                  <td>{categoriaMap[ins.categoria_id] || "Sin categoría"}</td>
+                  <td>{ins.proveedor_id}</td>
+                  <td>{ins.costo_unitario}</td>
+                  <td>
+                    <div className="action-buttons">
+                      <button
+                        className="btn btn-edit"
+                        onClick={() => navigate(`/inputs/edit?id=${ins.id}`)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="btn btn-delete"
+                        onClick={() => handleDelete(ins.id)}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filtered.map(ins => (
-                  <tr key={ins.id}>
-                    <td>{ins.id}</td>
-                    <td>{ins.nombre_comercial}</td>
-                    <td>{ins.unidad}</td>
-                    <td>{categoriaMap[ins.categoria_id] || "Sin categoría"}</td>
-                    <td>{ins.proveedor_id}</td>
-                    <td>{ins.costo_unitario}</td>
-                    <td>
-                      <div className="action-buttons">
-                        <button
-                          className="btn btn-edit"
-                          onClick={() => navigate(`/inputs/edit?id=${ins.id}`)}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className="btn btn-delete"
-                          onClick={() => handleDelete(ins.id)}
-                        >
-                          Eliminar
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
 
-        <div className="insumo-actions-container">
-          <button 
-            className="btn-insumo-add" 
-            onClick={() => navigate("/inputs/add")}
-          >
-            Añadir Insumo
-          </button>
-          
-          <button 
-            className="btn-insumo-history" 
-            onClick={() => navigate("/inputs/consumption")}
-          >
-            Histórico de Consumo
-          </button>
-        </div>
-      </main>
-    </div>
+      <div className="insumo-actions-container">
+        <button
+          className="btn-insumo-add"
+          onClick={() => navigate("/inputs/add")}
+        >
+          Añadir Insumo
+        </button>
+
+        <button
+          className="btn-insumo-history"
+          onClick={() => navigate("/inputs/consumption")}
+        >
+          Histórico de Consumo
+        </button>
+      </div>
+    </>
   );
 }
