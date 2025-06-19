@@ -150,9 +150,7 @@ async def update_cosecha(db: AsyncSession, cosecha: Cosecha, cosecha_in: Cosecha
 
     await db.commit()
 
-    # Recargar con relaciones actualizadas
-    await db.refresh(cosecha)
-    return cosecha
+    return await get_cosecha(db, cosecha.id)
 
 
 async def delete_cosecha(db: AsyncSession, cosecha: Cosecha) -> None:
