@@ -81,22 +81,15 @@ export default function Properties() {
 
   if (loading) {
     return (
-      <div className="properties-container">
-        <div className="properties-sidebar">
-          <Sidebar />
-        </div>
-        <main className="properties-main">
-          <div
-            style={{
-              textAlign: "center",
-              padding: "4rem",
-              fontSize: "1.2rem",
-              color: "#6b7280",
-            }}
-          >
-            Cargando predios...
-          </div>
-        </main>
+      <div
+        style={{
+          textAlign: "center",
+          padding: "4rem",
+          fontSize: "1.2rem",
+          color: "#6b7280",
+        }}
+      >
+        Cargando predios...
       </div>
     );
   }

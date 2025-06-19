@@ -58,7 +58,7 @@ const Main = () => {
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
-    <Layout>
+    <>
       <h1 className="sondeo-title">Sondeo</h1>
 
       <div className="grid-container">
@@ -79,7 +79,7 @@ const Main = () => {
           token={token}
         />
       )}
-    </Layout>
+    </>
   );
 };
 
