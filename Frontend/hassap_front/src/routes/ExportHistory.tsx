@@ -24,16 +24,30 @@ export default function ExportHistory() {
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    fetch(`${API_URL}/exportaciones/`)
-      .then(res => res.json())
+
+    fetch(`${API_URL}/exportaciones/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`Error ${res.status}: ${errText}`);
+        }
+        return res.json();
+      })
       .then((arr: any[]) => {
         const clean = arr
-            .filter(e => e.fecha && e.puerto_llegada && e.valor_fob !== undefined)
-            .map(e => ({
-                fecha: e.fecha,
-                puerto_llegada: e.puerto_llegada,
-                valor_fob: e.valor_fob
-            }));
+          .filter(e => e.fecha && e.puerto_llegada && e.valor_fob !== undefined)
+          .map(e => ({
+            fecha: e.fecha,
+            puerto_llegada: e.puerto_llegada,
+            valor_fob: e.valor_fob
+          }));
+
         setData(clean);
 
         const years = Array.from(
@@ -41,6 +55,10 @@ export default function ExportHistory() {
         ).sort();
         setAvailableYears(years);
         setSelectedYear(years[0]); // Por defecto
+      })
+      .catch((err) => {
+        console.error("Error al obtener exportaciones:", err);
+        setData([]);
       });
   }, []);
 

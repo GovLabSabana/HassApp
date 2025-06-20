@@ -11,12 +11,10 @@ export default function Export() {
   const [fechaHasta, setFechaHasta] = useState("");
   const [filtroComprador, setFiltroComprador] = useState("");
   const [filtroMetodo, setFiltroMetodo] = useState("");
-  const [compradores, setCompradores] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchExportaciones();
-    fetchCompradores();
   }, []);
 
   const fetchExportaciones = async () => {
@@ -43,30 +41,6 @@ export default function Export() {
     }
   };
 
-  const fetchCompradores = async () => {
-    const token = localStorage.getItem("access_token");
-    try {
-      const res = await fetch(`${API_URL}/compradores`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Error ${res.status}: ${errorText}`);
-      }
-
-      const data = await res.json();
-      setCompradores(data);
-    } catch (err) {
-      console.error("Error al obtener compradores:", err);
-      setCompradores([]);
-    }
-  };
-
   const eliminarExportacion = async (id) => {
     console.log(`¿Confirmas eliminar la exportación con ID ${id}?`);
     const confirmar = window.confirm(
@@ -83,11 +57,6 @@ export default function Export() {
     fetchExportaciones();
   };
 
-  const getNombreComprador = (id) => {
-    const comprador = compradores.find((c) => c.id === id);
-    return comprador ? comprador.nombre : "Desconocido";
-  };
-
   const exportacionesFiltradas = exportaciones.filter((exp) => {
     const fechaExp = new Date(exp.fecha);
     const desdeOk = !filtroFecha || fechaExp >= new Date(filtroFecha);
@@ -96,7 +65,7 @@ export default function Export() {
       !filtroMetodo ||
       exp.metodo_salida.toLowerCase().includes(filtroMetodo.toLowerCase());
 
-    const compradorNombre = getNombreComprador(exp.comprador_id).toLowerCase();
+    const compradorNombre = (exp.comprador || "").toLowerCase();
     const compradorOk =
       !filtroComprador ||
       compradorNombre.includes(filtroComprador.toLowerCase());
@@ -178,9 +147,7 @@ export default function Export() {
                 <td className="export-table-td">{exp.valor_fob}</td>
                 <td className="export-table-td">{exp.puerto_salida}</td>
                 <td className="export-table-td">{exp.puerto_llegada}</td>
-                <td className="export-table-td">
-                  {getNombreComprador(exp.comprador_id)}
-                </td>
+                <td className="export-table-td">{exp.comprador || "Desconocido"}</td>
                 <td className="export-table-td">
                   {exp.cosecha_ids.join(", ")}
                 </td>
