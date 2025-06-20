@@ -22,4 +22,8 @@ class Exportacion(Base):
 
     comprador = relationship("Comprador", back_populates="exportaciones")
     usuario = relationship("Usuario", back_populates="exportaciones")
-    cosechas = relationship("ExportacionCosecha", back_populates="exportacion")
+    cosechas = relationship(
+        "ExportacionCosecha",
+        back_populates="exportacion",
+        cascade="all, delete-orphan"
+    )

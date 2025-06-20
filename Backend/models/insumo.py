@@ -18,4 +18,8 @@ class Insumo(Base):
 
     categoria = relationship("CategoriaInsumo", back_populates="insumos")
     proveedor = relationship("Proveedor", back_populates="insumos")
-    insumos_cosecha = relationship("InsumoCosecha", back_populates="insumo")
+    insumos_cosecha = relationship(
+        "InsumoCosecha",
+        back_populates="insumo",
+        passive_deletes=True
+    )

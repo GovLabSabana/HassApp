@@ -34,4 +34,8 @@ class Cosecha(Base):
     )
 
     exportaciones = relationship(
-        "ExportacionCosecha", back_populates="cosecha")
+        "ExportacionCosecha",
+        back_populates="cosecha",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
