@@ -21,24 +21,50 @@ export default function Export() {
 
   const fetchExportaciones = async () => {
     const token = localStorage.getItem("access_token");
-    const res = await fetch(`${API_URL}/exportaciones/`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await res.json();
-    setExportaciones(data);
+    try {
+      const res = await fetch(`${API_URL}/exportaciones/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Error ${res.status}: ${errorText}`);
+      }
+
+      const data = await res.json();
+      setExportaciones(data);
+    } catch (err) {
+      console.error("Error al obtener exportaciones:", err);
+      setExportaciones([]);
+    }
   };
 
   const fetchCompradores = async () => {
     const token = localStorage.getItem("access_token");
-    const res = await fetch(`${API_URL}/compradores`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await res.json();
-    setCompradores(data);
+    try {
+      const res = await fetch(`${API_URL}/compradores`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Error ${res.status}: ${errorText}`);
+      }
+
+      const data = await res.json();
+      setCompradores(data);
+    } catch (err) {
+      console.error("Error al obtener compradores:", err);
+      setCompradores([]);
+    }
   };
 
   const eliminarExportacion = async (id) => {

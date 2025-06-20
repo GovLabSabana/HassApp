@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoriaInsumoSelector from "../components/forms/SelectInputCategory";
-import ProveedorSelector from "../components/forms/SelectSupplier";
 import "../componentsStyles/Inputadd.css";
-
 
 interface InsumoForm {
   nombre_comercial: string;
@@ -11,6 +9,11 @@ interface InsumoForm {
   categoria_id: number;
   proveedor_id: number;
   costo_unitario: string;
+}
+
+interface Proveedor {
+  id: number;
+  nombre: string;
 }
 
 export default function InputsAdd() {
@@ -25,8 +28,31 @@ export default function InputsAdd() {
     costo_unitario: "",
   });
 
+  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
   const [errors, setErrors] = useState<Partial<Record<keyof InsumoForm, string>>>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchProveedores();
+  }, []);
+
+  const fetchProveedores = async () => {
+    const token = localStorage.getItem("access_token");
+    try {
+      const res = await fetch(`${API_URL}/proveedores/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setProveedores(data);
+      } else {
+        console.error("La respuesta de proveedores no es un array:", data);
+      }
+    } catch (error) {
+      console.error("Error al obtener proveedores:", error);
+    }
+  };
 
   const validate = () => {
     const errs: typeof errors = {};
@@ -43,21 +69,27 @@ export default function InputsAdd() {
   const handleCreate = async () => {
     if (!validate()) return;
 
+    const payload = {
+      ...form,
+      costo_unitario: parseFloat(form.costo_unitario),
+    };
+
+    const token = localStorage.getItem("access_token");
+
     try {
       const response = await fetch(`${API_URL}/insumos/`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) throw new Error("Error al crear insumo");
 
       setSuccessMessage("¡Insumo creado correctamente!");
-
-      setTimeout(() => {
-        navigate("/inputs");
-      }, 2000);
-
+      setTimeout(() => navigate("/inputs"), 2000);
     } catch (err) {
       console.error(err);
       setSuccessMessage(null);
@@ -66,10 +98,10 @@ export default function InputsAdd() {
 
   return (
     <div className="app-layout">
-        <div className="main-content">
+      <div className="main-content">
         <div className="form-container">
           <h1 className="form-title">Agregar Insumo</h1>
-          
+
           <div className="form-grid">
             <div className="form-group">
               <label className="form-label">Nombre</label>
@@ -90,9 +122,7 @@ export default function InputsAdd() {
                 value={form.unidad}
                 onChange={(e) => setForm({ ...form, unidad: e.target.value })}
               />
-              {errors.unidad && (
-                <div className="error-message">{errors.unidad}</div>
-              )}
+              {errors.unidad && <div className="error-message">{errors.unidad}</div>}
             </div>
 
             <div className="form-group">
@@ -108,10 +138,20 @@ export default function InputsAdd() {
 
             <div className="form-group">
               <label className="form-label">Proveedor</label>
-              <ProveedorSelector
+              <select
+                className="form-input"
                 value={form.proveedor_id}
-                onSelect={(id) => setForm((f) => ({ ...f, proveedor_id: id }))}
-              />
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, proveedor_id: parseInt(e.target.value) }))
+                }
+              >
+                <option value={0}>-- Selecciona un proveedor --</option>
+                {proveedores.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.nombre}
+                  </option>
+                ))}
+              </select>
               {errors.proveedor_id && (
                 <div className="error-message">{errors.proveedor_id}</div>
               )}
@@ -140,9 +180,7 @@ export default function InputsAdd() {
             </button>
           </div>
 
-          {successMessage && (
-            <div className="success-message">{successMessage}</div>
-          )}
+          {successMessage && <div className="success-message">{successMessage}</div>}
         </div>
       </div>
     </div>

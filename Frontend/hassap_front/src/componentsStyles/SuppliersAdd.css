@@ -1,0 +1,105 @@
+.supplieradd {
+  background-color: #112218;
+  min-height: 100vh;
+  padding: 40px 20px;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.supplieradd h1 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 40px;
+}
+
+.supplieradd .success-message {
+  color: #4ade80;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.supplieradd .form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px 40px;
+}
+
+.supplieradd .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.supplieradd .form-group label {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.supplieradd .form-group input {
+  background-color: #244733;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 14px;
+}
+
+.supplieradd .error-message {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.supplieradd .buttons-container {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.btn-primary-suppliersadd {
+  background-color: #244733;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.btn-primary-suppliersadd:hover {
+  background-color: #b75f0c;
+}
+
+.btn-secondary-suppliersadd {
+  background-color: #ffffff;
+  color: #555;
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  padding: 10px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.btn-secondary-suppliersadd:hover {
+  box-shadow: #244733;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .supplieradd .form-container {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .supplieradd .buttons-container {
+    grid-column: 1;
+  }
+}

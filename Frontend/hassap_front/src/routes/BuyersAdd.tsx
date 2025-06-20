@@ -66,9 +66,9 @@ export default function BuyersAdd() {
         </div>
 
         <div className="form-group">
-          <label>Cédula Catastral *</label>
+          <label>Número de Documento *</label>
           <input
-            placeholder="0"
+            placeholder="Número de Documento"
             value={form.num_doc}
             onChange={(e) => setForm({ ...form, num_doc: e.target.value })}
           />
@@ -76,9 +76,9 @@ export default function BuyersAdd() {
         </div>
 
         <div className="form-group">
-          <label>Vereda (opcional)</label>
+          <label>Ciudad *</label>
           <input
-            placeholder=""
+            placeholder="Ciudad"
             value={form.ciudad}
             onChange={(e) => setForm({ ...form, ciudad: e.target.value })}
           />
@@ -88,7 +88,7 @@ export default function BuyersAdd() {
         <div className="form-group">
           <label>Dirección *</label>
           <input
-            placeholder=""
+            placeholder="Dirección"
             value={form.direccion}
             onChange={(e) => setForm({ ...form, direccion: e.target.value })}
           />
@@ -96,21 +96,23 @@ export default function BuyersAdd() {
         </div>
 
         <div className="form-group">
-          <label>Hectáreas</label>
+          <label>País *</label>
           <input
-            placeholder="0"
+            placeholder="País"
             value={form.pais}
             onChange={(e) => setForm({ ...form, pais: e.target.value })}
           />
+          {errors.pais && <div className="error-message">{errors.pais}</div>}
         </div>
 
         <div className="form-group">
-          <label>Altitud Promedio</label>
+          <label>Contacto (correo o teléfono) *</label>
           <input
-            placeholder="0"
+            placeholder="Contacto"
             value={form.contacto}
             onChange={(e) => setForm({ ...form, contacto: e.target.value })}
           />
+          {errors.contacto && <div className="error-message">{errors.contacto}</div>}
         </div>
 
         <div className="form-group">
@@ -125,25 +127,6 @@ export default function BuyersAdd() {
             <option value={3}>Cédula de Extranjería</option>
           </select>
           {errors.tipo_doc && <div className="error-message">{errors.tipo_doc}</div>}
-        </div>
-
-        <div className="form-group">
-          <label>Vocación</label>
-          <select>
-            <option value="">Seleccione</option>
-            <option value="agricola">Agrícola</option>
-            <option value="ganadera">Ganadera</option>
-            <option value="forestal">Forestal</option>
-          </select>
-        </div>
-
-        <div className="form-group full-width">
-          <label>Municipio</label>
-          <select>
-            <option value="">Todos los municipios</option>
-            <option value="municipio1">Municipio 1</option>
-            <option value="municipio2">Municipio 2</option>
-          </select>
         </div>
 
         <div className="buttons-container">

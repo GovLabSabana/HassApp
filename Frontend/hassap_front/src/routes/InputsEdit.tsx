@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CategoriaInsumoSelector from "../components/forms/SelectInputCategory";
-import ProveedorSelector from "../components/forms/SelectSupplier";
 import "../componentsStyles/Inputadd.css";
 
 interface InsumoForm {
@@ -10,6 +9,11 @@ interface InsumoForm {
   categoria_id: number;
   proveedor_id: number;
   costo_unitario: string;
+}
+
+interface Proveedor {
+  id: number;
+  nombre: string;
 }
 
 export default function InputsEdit() {
@@ -28,9 +32,11 @@ export default function InputsEdit() {
     costo_unitario: "",
   });
 
+  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
   const [errors, setErrors] = useState<Partial<Record<keyof InsumoForm, string>>>({});
 
   useEffect(() => {
+    fetchProveedores();
     if (isEdit) fetchInsumo();
   }, [isEdit]);
 
@@ -44,6 +50,25 @@ export default function InputsEdit() {
       proveedor_id: data.proveedor_id,
       costo_unitario: data.costo_unitario,
     });
+  };
+
+  const fetchProveedores = async () => {
+    const token = localStorage.getItem("access_token");
+    try {
+      const res = await fetch(`${API_URL}/proveedores/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setProveedores(data);
+      } else {
+        console.error("La respuesta de proveedores no es un array:", data);
+        setProveedores([]);
+      }
+    } catch (error) {
+      console.error("Error al obtener proveedores:", error);
+      setProveedores([]);
+    }
   };
 
   const validate = () => {
@@ -130,10 +155,18 @@ export default function InputsEdit() {
 
             <div className="form-group">
               <label className="form-label">Proveedor</label>
-              <ProveedorSelector
+              <select
+                className="form-input"
                 value={form.proveedor_id}
-                onSelect={(id) => setForm((f) => ({ ...f, proveedor_id: id }))}
-              />
+                onChange={(e) => setForm({ ...form, proveedor_id: parseInt(e.target.value) })}
+              >
+                <option value={0}>-- Selecciona un proveedor --</option>
+                {proveedores.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.nombre}
+                  </option>
+                ))}
+              </select>
               {errors.proveedor_id && (
                 <div className="error-message">{errors.proveedor_id}</div>
               )}
