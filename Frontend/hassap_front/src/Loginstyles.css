@@ -2,7 +2,7 @@
 /* Contenedor principal del login *********************************************************************************************/
 .login-container {
   min-height: 100vh;
-  background-image: url("/public/avocadoimg.jpg");
+  background-image: url("/avocadoimg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

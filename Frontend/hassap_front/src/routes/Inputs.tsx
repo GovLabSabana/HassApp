@@ -15,10 +15,16 @@ interface Insumo {
   costo_unitario: string;
 }
 
+interface Proveedor {
+  id: number;
+  nombre: string;
+}
+
 export default function Inputs() {
   const [insumos, setInsumos] = useState<Insumo[]>([]);
   const [filterCategoria, setFilterCategoria] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
   const categorias = data.categoria_insumo;
   const categoriaMap = categorias.reduce((acc, cat) => {
     acc[cat.id] = cat.name;
@@ -29,6 +35,7 @@ export default function Inputs() {
 
   useEffect(() => {
     fetchInsumos();
+    fetchProveedores();
   }, []);
 
   const fetchInsumos = async () => {
@@ -44,11 +51,57 @@ export default function Inputs() {
     }
   };
 
+  const fetchProveedores = async () => {
+    const token = localStorage.getItem("access_token");
+    try {
+      const res = await fetch(`${API_URL}/proveedores/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setProveedores(data);
+      } else {
+        console.error("La respuesta de proveedores no es un array:", data);
+        setProveedores([]);
+      }
+    } catch (error) {
+      console.error("Error al obtener proveedores:", error);
+      setProveedores([]);
+    }
+  };
+
   const handleDelete = async (id: number) => {
     if (!window.confirm("¿Eliminar este insumo?")) return;
-    await fetch(`${API_URL}/insumos/${id}`, { method: "DELETE" });
-    fetchInsumos();
+
+    const token = localStorage.getItem("access_token");
+
+    try {
+      const res = await fetch(`${API_URL}/insumos/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Error al eliminar insumo: ${res.status} - ${errorText}`);
+      }
+
+      fetchInsumos();
+    } catch (error) {
+      console.error("Error al eliminar insumo:", error);
+      alert("No se pudo eliminar el insumo. Verifica permisos o errores en el servidor.");
+    }
   };
+
+  const proveedorMap = Array.isArray(proveedores)
+  ? proveedores.reduce((acc, p) => {
+      acc[p.id] = p.nombre;
+      return acc;
+    }, {} as Record<number, string>)
+  : {};
 
   const filtered = filterCategoria
     ? insumos.filter((i) => i.categoria_id === filterCategoria)
@@ -108,7 +161,11 @@ export default function Inputs() {
                   <td>{ins.nombre_comercial}</td>
                   <td>{ins.unidad}</td>
                   <td>{categoriaMap[ins.categoria_id] || "Sin categoría"}</td>
-                  <td>{ins.proveedor_id}</td>
+                  <td>
+                    {proveedorMap[ins.proveedor_id] 
+                      ? proveedorMap[ins.proveedor_id] 
+                      : `ID ${ins.proveedor_id} sin proveedor`}
+                  </td>
                   <td>{ins.costo_unitario}</td>
                   <td>
                     <div className="action-buttons">
