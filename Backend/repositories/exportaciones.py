@@ -23,6 +23,7 @@ from models.exportacion import Exportacion
 from models.exportacion_cosecha import ExportacionCosecha
 from models.cosecha import Cosecha
 from models.insumo_cosecha import InsumoCosecha
+from models.comprador import Comprador
 from schemas.cosecha import CosechaRead
 
 
@@ -31,6 +32,7 @@ async def get_all_raw(db: AsyncSession, user_id: int):
         select(Exportacion)
         .where(Exportacion.usuario_id == user_id)
         .options(
+            selectinload(Exportacion.comprador),  # ✅ AQUÍ
             selectinload(Exportacion.cosechas)
             .joinedload(ExportacionCosecha.cosecha)
             .selectinload(Cosecha.predios),

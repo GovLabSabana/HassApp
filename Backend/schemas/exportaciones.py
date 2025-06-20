@@ -40,3 +40,4 @@ class ExportacionOut(ExportacionBase):
 
 class ExportacionOutWithCosechas(ExportacionOut):
     cosechas: Optional[List[CosechaRead]] = []
+    comprador: Optional[str] = None  # Aquí irá el nombre del comprador

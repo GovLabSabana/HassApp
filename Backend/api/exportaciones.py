@@ -31,8 +31,10 @@ async def list_exportaciones(db: AsyncSession = Depends(get_db), user: Usuario =
     orm_list = await repo.get_all_raw(db, user.id)
     salida: List[ExportacionOutWithCosechas] = []
     for exp in orm_list:
-        cosechas_read = [CosechaRead.from_orm_with_predios(
-            rel.cosecha) for rel in exp.cosechas]
+        cosechas_read = [
+            CosechaRead.from_orm_with_predios(rel.cosecha)
+            for rel in exp.cosechas
+        ]
         salida.append(
             ExportacionOutWithCosechas(
                 id=exp.id,
@@ -45,6 +47,7 @@ async def list_exportaciones(db: AsyncSession = Depends(get_db), user: Usuario =
                 puerto_salida=exp.puerto_salida,
                 puerto_llegada=exp.puerto_llegada,
                 comprador_id=exp.comprador_id,
+                comprador=exp.comprador.nombre,  # ✅ Ahora sí existe
                 cosecha_ids=[rel.cosecha_id for rel in exp.cosechas],
                 cosechas=cosechas_read,
             )
