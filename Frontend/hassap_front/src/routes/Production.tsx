@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../componentsStyles/Production.css";
 import data from "../../BD_Keys.json";
 import Layout from "./layouts/menu";
+import Loader from "../components/utils/Loader";
 
 interface Predio {
   id: number;
@@ -44,6 +45,7 @@ export default function Production() {
   const [fechaHasta, setFechaHasta] = useState("");
   const [predioId, setPredioId] = useState("");
   const [productoId, setProductoId] = useState("");
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -64,6 +66,8 @@ export default function Production() {
       setList(data);
     } catch (err) {
       console.error("Error al cargar las cosechas", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,6 +100,9 @@ export default function Production() {
       return false;
     return true;
   });
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="production-container">

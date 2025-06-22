@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
 import "../componentsStyles/Export.css";
+import Loader from "../components/utils/Loader";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Export() {
   const [exportaciones, setExportaciones] = useState([]);
   const [filtroFecha, setFiltroFecha] = useState("");
+  const [loading, setLoading] = useState(true);
   const [fechaHasta, setFechaHasta] = useState("");
   const [filtroComprador, setFiltroComprador] = useState("");
   const [filtroMetodo, setFiltroMetodo] = useState("");
@@ -38,6 +40,8 @@ export default function Export() {
     } catch (err) {
       console.error("Error al obtener exportaciones:", err);
       setExportaciones([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,6 +77,7 @@ export default function Export() {
     return desdeOk && hastaOk && metodoOk && compradorOk;
   });
 
+  if (loading) return <Loader />;
   return (
     <>
       <h1 className="export-title">Exportación</h1>
@@ -147,7 +152,9 @@ export default function Export() {
                 <td className="export-table-td">{exp.valor_fob}</td>
                 <td className="export-table-td">{exp.puerto_salida}</td>
                 <td className="export-table-td">{exp.puerto_llegada}</td>
-                <td className="export-table-td">{exp.comprador || "Desconocido"}</td>
+                <td className="export-table-td">
+                  {exp.comprador || "Desconocido"}
+                </td>
                 <td className="export-table-td">
                   {exp.cosecha_ids.join(", ")}
                 </td>

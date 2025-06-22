@@ -58,7 +58,6 @@ const GraficosTorta = () => {
     fetchData();
   }, [token]);
 
-  if (loading) return <p>Cargando gráficos...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (

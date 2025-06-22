@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
 import "../componentsStyles/Buyers.css";
 import Layout from "./layouts/menu";
+import Loader from "../components/utils/Loader";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -26,11 +27,13 @@ export default function Buyers() {
     tipoDoc: "",
   });
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const fetchCompradores = async () => {
     const res = await fetch(`${API_URL}/compradores/`);
     const data = await res.json();
     setCompradores(data);
+    setLoading(false);
   };
 
   const handleDelete = async (id: number) => {
@@ -56,7 +59,7 @@ export default function Buyers() {
         comprador.tipo_doc.toString() === filtros.tipoDoc)
     );
   });
-
+  if (loading) return <Loader />;
   return (
     <>
       <h1 className="buyers-title">Compradores</h1>

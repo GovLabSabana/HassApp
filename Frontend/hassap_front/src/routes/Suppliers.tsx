@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../componentsStyles/Suppliers.css";
 import data from "../../BD_Keys.json";
+import Loader from "../components/utils/Loader";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -24,6 +25,7 @@ export default function Suppliers() {
     pais: "",
     tipoDoc: "",
   });
+  const [loading, setLoading] = useState(true);
 
   const tipoDocMap: Record<number, string> = data.tipo_documento.reduce(
     (acc, tipo) => {
@@ -46,6 +48,8 @@ export default function Suppliers() {
       setProveedores(data);
     } catch (err) {
       console.error("Error cargando proveedores:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,7 +83,9 @@ export default function Suppliers() {
       (filtros.tipoDoc === "" || p.tipo_doc.toString() === filtros.tipoDoc)
     );
   });
-
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <>
       <h1 className="suppliers-title">Proveedores</h1>
@@ -89,7 +95,9 @@ export default function Suppliers() {
         <div className="suppliers-filters-grid">
           {["nombre", "ciudad", "pais"].map((field) => (
             <div className="suppliers-filter-group" key={field}>
-              <label className="suppliers-filter-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+              <label className="suppliers-filter-label">
+                {field.charAt(0).toUpperCase() + field.slice(1)}
+              </label>
               <input
                 className="suppliers-filter-input"
                 value={(filtros as any)[field]}
@@ -167,7 +175,10 @@ export default function Suppliers() {
       </div>
 
       <div className="suppliers-add-container">
-        <button className="suppliers-btn-add" onClick={() => navigate("/suppliers/add")}>
+        <button
+          className="suppliers-btn-add"
+          onClick={() => navigate("/suppliers/add")}
+        >
           + Agregar Nuevo Proveedor
         </button>
       </div>

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
 import data from "../../BD_Keys.json";
 import Layout from "./layouts/menu";
+import Loader from "../components/utils/Loader";
 
 interface Predio {
   id: number;
@@ -80,18 +81,7 @@ export default function Properties() {
   });
 
   if (loading) {
-    return (
-      <div
-        style={{
-          textAlign: "center",
-          padding: "4rem",
-          fontSize: "1.2rem",
-          color: "#6b7280",
-        }}
-      >
-        Cargando predios...
-      </div>
-    );
+    return <Loader />;
   }
 
   return (

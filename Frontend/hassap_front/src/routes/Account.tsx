@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
 import "../componentsStyles/Account.css";
 import Layout from "./layouts/menu";
+import { useMinimumDelayLoader } from "../hooks/useMinimumLoader";
+import Loader from "../components/utils/Loader";
 
 interface User {
   id: number;
@@ -29,7 +31,7 @@ export default function Account() {
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
-
+  const showLoader = useMinimumDelayLoader(loading, 750);
   useEffect(() => {
     if (!token) {
       navigate("/");
@@ -51,11 +53,7 @@ export default function Account() {
       .finally(() => setLoading(false));
   }, [API_URL, token, navigate]);
 
-  if (loading) {
-    return (
-      <div className="account-loading">Cargando información del usuario...</div>
-    );
-  }
+  if (showLoader) return <Loader />;
 
   return (
     <div className="account-content-wrapper">

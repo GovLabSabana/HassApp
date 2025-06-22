@@ -4,6 +4,7 @@ import { Sidebar } from "../../components/Sidebar";
 import "./styles.css";
 import Modal from "./Modal";
 import Layout from "../layouts/menu";
+import Loader from "../../components/utils/Loader";
 
 interface Pregunta {
   id: number;
@@ -56,7 +57,7 @@ const Main = () => {
     setSelectedPregunta(null);
   };
   if (error) return <p className="text-red-600">{error}</p>;
-
+  if (loading) return <Loader />;
   return (
     <>
       <h1 className="sondeo-title">Sondeo</h1>

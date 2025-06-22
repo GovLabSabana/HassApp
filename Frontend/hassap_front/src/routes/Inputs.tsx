@@ -86,22 +86,26 @@ export default function Inputs() {
 
       if (!res.ok) {
         const errorText = await res.text();
-        throw new Error(`Error al eliminar insumo: ${res.status} - ${errorText}`);
+        throw new Error(
+          `Error al eliminar insumo: ${res.status} - ${errorText}`
+        );
       }
 
       fetchInsumos();
     } catch (error) {
       console.error("Error al eliminar insumo:", error);
-      alert("No se pudo eliminar el insumo. Verifica permisos o errores en el servidor.");
+      alert(
+        "No se pudo eliminar el insumo. Verifica permisos o errores en el servidor."
+      );
     }
   };
 
   const proveedorMap = Array.isArray(proveedores)
-  ? proveedores.reduce((acc, p) => {
-      acc[p.id] = p.nombre;
-      return acc;
-    }, {} as Record<number, string>)
-  : {};
+    ? proveedores.reduce((acc, p) => {
+        acc[p.id] = p.nombre;
+        return acc;
+      }, {} as Record<number, string>)
+    : {};
 
   const filtered = filterCategoria
     ? insumos.filter((i) => i.categoria_id === filterCategoria)
@@ -162,8 +166,8 @@ export default function Inputs() {
                   <td>{ins.unidad}</td>
                   <td>{categoriaMap[ins.categoria_id] || "Sin categoría"}</td>
                   <td>
-                    {proveedorMap[ins.proveedor_id] 
-                      ? proveedorMap[ins.proveedor_id] 
+                    {proveedorMap[ins.proveedor_id]
+                      ? proveedorMap[ins.proveedor_id]
                       : `ID ${ins.proveedor_id} sin proveedor`}
                   </td>
                   <td>{ins.costo_unitario}</td>
