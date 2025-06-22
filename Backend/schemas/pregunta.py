@@ -19,12 +19,3 @@ class PreguntaOut(PreguntaBase):
 
     class Config:
         orm_mode = True
-
-
-class PreguntaOpcionEstadistica(BaseModel):
-    id: int
-    texto: str
-    conteo_opciones: Dict[str, int]  # opción -> cantidad
-
-    class Config:
-        orm_mode = True
