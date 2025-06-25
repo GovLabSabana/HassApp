@@ -10,6 +10,16 @@ import {
     Legend,
     Filler
   } from 'chart.js';
+  import {
+    BarChart,
+    Bar,
+    CartesianGrid,
+    XAxis,
+    YAxis,
+    ResponsiveContainer,
+    Tooltip as ReTooltip,
+    Legend as ReLegend,
+  } from 'recharts';
   import { Line } from 'react-chartjs-2';
   import { useEffect, useState } from 'react';
   
@@ -26,6 +36,7 @@ import {
       chartData: []
     });
     const [chartReady, setChartReady] = useState(false);
+    const [rendimientoData, setRendimientoData] = useState([]);
   
     useEffect(() => {
       fetchExportData();
@@ -106,6 +117,54 @@ import {
   
       return data;
     };
+
+    useEffect(() => {
+      const fetchRendimiento = async () => {
+        const token = localStorage.getItem("access_token");
+        try {
+          const res = await fetch(`${API_URL}/estadisticas/rendimiento-cosecha`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+
+            const grouped = {};
+            data.forEach(item => {
+              const fecha = new Date(item.fecha);
+              const mes = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`;
+              const producto = item.producto;
+
+              if (!grouped[mes]) grouped[mes] = {};
+              if (!grouped[mes][producto]) grouped[mes][producto] = { toneladas: 0, hectareas: 0 };
+
+              grouped[mes][producto].toneladas += parseFloat(item.toneladas);
+              grouped[mes][producto].hectareas += parseFloat(item.hectareas);
+            });
+
+            const result = Object.entries(grouped).map(([mes, productos]) => {
+              const prodEntries = productos as Record<string, { toneladas: number, hectareas: number }>;
+              const entry: Record<string, any> = { mes };
+              for (const prod in prodEntries) {
+                const { toneladas, hectareas } = prodEntries[prod];
+                entry[prod] = hectareas > 0 ? +(toneladas / hectareas).toFixed(2) : 0;
+              }
+              return entry;
+            });
+
+            result.sort((a, b) => a.mes.localeCompare(b.mes));
+            setRendimientoData(result);
+          }
+        } catch (err) {
+          console.error("Error al obtener rendimiento de cosechas:", err);
+        }
+      };
+
+      fetchRendimiento();
+    }, []);
   
     const fetchTRM = async () => {
       try {
@@ -328,6 +387,32 @@ import {
               )}
             </div>
           </div>
+
+          {rendimientoData.length > 0 && (
+            <div className="metric-card">
+              <div className="metric-title">Rendimiento de Cosechas por Producto</div>
+              <div style={{ height: 300 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={rendimientoData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="mes" />
+                    <YAxis />
+                    <ReTooltip />
+                    <ReLegend />
+                    {Object.keys(rendimientoData[0])
+                      .filter(key => key !== "mes")
+                      .map((producto, idx) => (
+                        <Bar
+                          key={producto}
+                          dataKey={producto}
+                          fill={["#48bb78", "#667eea", "#f6ad55", "#ed64a6"][idx % 4]}
+                        />
+                      ))}
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
