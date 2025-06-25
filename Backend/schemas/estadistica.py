@@ -46,3 +46,9 @@ class CostoCategoriaPorTonelada(BaseModel):
 class ToneladasCosechadasMensual(BaseModel):
     mes: str  # Ejemplo: "2025-06"
     toneladas: Decimal
+
+
+class ProduccionPorPredio(BaseModel):
+    predio: str
+    hectareas: Decimal
+    toneladas: Decimal

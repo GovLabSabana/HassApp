@@ -1,3 +1,4 @@
+from schemas.estadistica import ProduccionPorPredio
 from schemas.estadistica import ToneladasCosechadasMensual
 from schemas.estadistica import CostoCategoriaPorTonelada
 from schemas.estadistica import ValorInsumosPorCategoria
@@ -61,3 +62,10 @@ async def promedio_categoria_por_tonelada(db: AsyncSession = Depends(get_db)):
 @router.get("/cosechas/linea-tiempo-toneladas", response_model=List[ToneladasCosechadasMensual])
 async def cosechas_linea_tiempo_toneladas(db: AsyncSession = Depends(get_db)):
     return await repo.get_toneladas_cosecha_por_mes(db)
+
+# Producción por predio del último mes hectareadas y toneladas cosechadas
+
+
+@router.get("/cosechas/ultimo-mes-por-predio", response_model=List[ProduccionPorPredio])
+async def cosecha_predio_ultimo_mes(db: AsyncSession = Depends(get_db)):
+    return await repo.get_produccion_predio_ultimo_mes(db)

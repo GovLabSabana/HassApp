@@ -1,3 +1,7 @@
+from datetime import datetime
+from schemas.estadistica import ProduccionPorPredio
+from models.rompimientos import cosecha_predio_table
+from models.predio import Predio
 from sqlalchemy import func, select
 from schemas.estadistica import ToneladasCosechadasMensual
 from schemas.estadistica import CostoCategoriaPorTonelada
@@ -199,6 +203,46 @@ async def get_toneladas_cosecha_por_mes(db: AsyncSession) -> list[ToneladasCosec
     return [
         ToneladasCosechadasMensual(
             mes=row.mes,
+            toneladas=row.toneladas or 0
+        )
+        for row in rows
+    ]
+
+
+async def get_produccion_predio_ultimo_mes(db: AsyncSession) -> list[ProduccionPorPredio]:
+    # 1. Obtener el último mes registrado
+    max_date_stmt = select(func.max(Cosecha.fecha))
+    max_date_result = await db.execute(max_date_stmt)
+    max_date = max_date_result.scalar_one_or_none()
+
+    if not max_date:
+        return []
+
+    año = max_date.year
+    mes = max_date.month
+
+    # 2. Obtener hectáreas y toneladas por predio en ese mes
+    stmt = (
+        select(
+            Predio.nombre.label("predio"),
+            func.sum(Cosecha.hectareas).label("hectareas"),
+            func.sum(Cosecha.toneladas).label("toneladas")
+        )
+        .select_from(cosecha_predio_table)
+        .join(Predio, cosecha_predio_table.c.predio_id == Predio.id)
+        .join(Cosecha, cosecha_predio_table.c.cosecha_id == Cosecha.id)
+        .where(func.year(Cosecha.fecha) == año)
+        .where(func.month(Cosecha.fecha) == mes)
+        .group_by(Predio.nombre)
+    )
+
+    result = await db.execute(stmt)
+    rows = result.fetchall()
+
+    return [
+        ProduccionPorPredio(
+            predio=row.predio,
+            hectareas=row.hectareas or 0,
             toneladas=row.toneladas or 0
         )
         for row in rows
