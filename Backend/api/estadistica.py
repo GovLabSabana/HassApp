@@ -1,3 +1,4 @@
+from schemas.estadistica import ToneladasCosechadasMensual
 from schemas.estadistica import CostoCategoriaPorTonelada
 from schemas.estadistica import ValorInsumosPorCategoria
 from schemas.estadistica import ExportacionMensual
@@ -53,3 +54,10 @@ async def valor_insumos_por_categoria(db: AsyncSession = Depends(get_db)):
 @router.get("/insumos/promedio-por-tonelada-categoria", response_model=List[CostoCategoriaPorTonelada])
 async def promedio_categoria_por_tonelada(db: AsyncSession = Depends(get_db)):
     return await repo.get_costo_categoria_por_tonelada(db)
+
+# Cantidad de toneladas cosechadas por mes
+
+
+@router.get("/cosechas/linea-tiempo-toneladas", response_model=List[ToneladasCosechadasMensual])
+async def cosechas_linea_tiempo_toneladas(db: AsyncSession = Depends(get_db)):
+    return await repo.get_toneladas_cosecha_por_mes(db)

@@ -42,3 +42,8 @@ class CostoCategoriaPorTonelada(BaseModel):
     valor_total: Decimal
     total_toneladas: Decimal
     promedio_por_tonelada: Decimal
+
+
+class ToneladasCosechadasMensual(BaseModel):
+    mes: str  # Ejemplo: "2025-06"
+    toneladas: Decimal

@@ -1,3 +1,5 @@
+from sqlalchemy import func, select
+from schemas.estadistica import ToneladasCosechadasMensual
 from schemas.estadistica import CostoCategoriaPorTonelada
 from collections import defaultdict
 from sqlalchemy.orm import selectinload
@@ -179,3 +181,25 @@ async def get_costo_categoria_por_tonelada(db: AsyncSession) -> list[CostoCatego
         ))
 
     return resultado
+
+
+async def get_toneladas_cosecha_por_mes(db: AsyncSession) -> list[ToneladasCosechadasMensual]:
+    stmt = (
+        select(
+            func.date_format(Cosecha.fecha, "%Y-%m").label("mes"),
+            func.sum(Cosecha.toneladas).label("toneladas")
+        )
+        .group_by("mes")
+        .order_by("mes")
+    )
+
+    result = await db.execute(stmt)
+    rows = result.fetchall()
+
+    return [
+        ToneladasCosechadasMensual(
+            mes=row.mes,
+            toneladas=row.toneladas or 0
+        )
+        for row in rows
+    ]
