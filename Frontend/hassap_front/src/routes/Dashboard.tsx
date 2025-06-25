@@ -5,10 +5,10 @@ import ExportacionesChart from "../components/dashboard/ExportChart.tsx";
 export default function Dashboard() {
   return (
     <>
-      <h1 style={{ textAlign: "left" }}>Sondeo</h1>
-      <GraficosTorta />
       <MetricasExportacion />
       <ExportacionesChart />
+      <h1 style={{ textAlign: "left" }}>Sondeo</h1>
+      <GraficosTorta />
     </>
   );
 }

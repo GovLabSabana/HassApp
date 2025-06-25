@@ -81,7 +81,7 @@ export default function ExportacionesChart() {
         <div className="metric-card">
           <div className="metric-header">
             <div>
-              <div className="metric-title">Exportaciones - Línea de Tiempo</div>
+              <div className="metric-title">Agregado histórico de exportaciones - Asociados</div>
               <div className="metric-value">Valores históricos</div>
               <div className="metric-change positive">Datos actualizados</div>
             </div>
@@ -119,7 +119,7 @@ export default function ExportacionesChart() {
         <div className="metric-card">
           <div className="metric-header">
             <div>
-              <div className="metric-title">Producción - Línea de Tiempo</div>
+              <div className="metric-title">Agregado histórico de producciones - Asociados</div>
               <div className="metric-value">Toneladas mensuales</div>
               <div className="metric-change positive">Datos actualizados</div>
             </div>
