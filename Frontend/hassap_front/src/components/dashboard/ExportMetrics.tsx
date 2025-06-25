@@ -37,6 +37,7 @@ import {
     });
     const [chartReady, setChartReady] = useState(false);
     const [rendimientoData, setRendimientoData] = useState([]);
+    const [cosechasPredioMes, setCosechasPredioMes] = useState([]);
   
     useEffect(() => {
       fetchExportData();
@@ -207,6 +208,34 @@ import {
       }
     };
 
+    useEffect(() => {
+    const fetchCosechasPorPredio = async () => {
+      const token = localStorage.getItem("access_token");
+      try {
+        const res = await fetch(`${API_URL}/estadisticas/cosechas/ultimo-mes-por-predio`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          // Convertir a formato numérico
+          const parsed = data.map((item) => ({
+            predio: item.predio,
+            hectareas: parseFloat(item.hectareas),
+            toneladas: parseFloat(item.toneladas),
+          }));
+          setCosechasPredioMes(parsed);
+        }
+      } catch (error) {
+        console.error("Error al obtener datos de cosechas por predio:", error);
+      }
+    };
+
+    fetchCosechasPorPredio();
+  }, []);
 
     const formatCurrency = (value) =>
       new Intl.NumberFormat('es-CO', {
@@ -412,6 +441,40 @@ import {
                 </ResponsiveContainer>
               </div>
             </div>
+          )}
+
+          {cosechasPredioMes.length > 0 && (
+            <>
+              <div className="metric-card">
+                <div className="metric-title">Hectáreas usadas por Predio (Último Mes)</div>
+                <div style={{ height: 300 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={cosechasPredioMes}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="predio" />
+                      <YAxis />
+                      <ReTooltip />
+                      <Bar dataKey="hectareas" fill="#63b3ed" name="Hectáreas" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="metric-card">
+                <div className="metric-title">Toneladas recolectadas por Predio (Último Mes)</div>
+                <div style={{ height: 300 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={cosechasPredioMes}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="predio" />
+                      <YAxis />
+                      <ReTooltip />
+                      <Bar dataKey="toneladas" fill="#f6ad55" name="Toneladas" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>
