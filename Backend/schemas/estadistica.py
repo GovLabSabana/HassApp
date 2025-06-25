@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Dict
 from datetime import date
 from decimal import Decimal
@@ -9,8 +9,7 @@ class PreguntaOpcionEstadistica(BaseModel):
     texto: str
     conteo_opciones: Dict[str, int]  # opción -> cantidad
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class RendimientoCosecha(BaseModel):

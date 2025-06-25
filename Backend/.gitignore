@@ -8,6 +8,7 @@ alembic.ini
 __pycache__/
 *.pyc
 *.pyo
+*.pytest_cache/
 
 # Entorno virtual
 venv/
@@ -15,6 +16,7 @@ venv/
 
 # Archivos de entorno
 .env
+.env.test
 
 # IDEs
 .vscode/
