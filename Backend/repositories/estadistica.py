@@ -30,17 +30,15 @@ from datetime import datetime, timedelta
 async def get_estadisticas_opciones(db: AsyncSession):
     hace_30_dias = datetime.utcnow() - timedelta(days=30)
 
-    # Trae preguntas de tipo "opción"
     result = await db.execute(select(Pregunta).where(Pregunta.tipo == "opción"))
     preguntas = result.scalars().all()
 
     salida = []
 
     for pregunta in preguntas:
-        # Inicializa conteo de todas las opciones posibles en 0
+
         conteo = {opcion: 0 for opcion in (pregunta.opciones or [])}
 
-        # Trae respuestas de los últimos 30 días asociadas a esta pregunta
         result_resp = await db.execute(
             select(Respuesta.respuesta)
             .where(
@@ -50,7 +48,6 @@ async def get_estadisticas_opciones(db: AsyncSession):
         )
         respuestas = result_resp.scalars().all()
 
-        # Contar respuestas por opción
         for r in respuestas:
             if r in conteo:
                 conteo[r] += 1
@@ -158,7 +155,6 @@ async def get_costo_categoria_por_tonelada(db: AsyncSession) -> list[CostoCatego
     result = await db.execute(stmt)
     cosechas = result.scalars().all()
 
-    # Agrupar por categoría
     categorias = defaultdict(
         lambda: {"valor_total": Decimal(0), "toneladas": Decimal(0)})
 
@@ -210,7 +206,7 @@ async def get_toneladas_cosecha_por_mes(db: AsyncSession) -> list[ToneladasCosec
 
 
 async def get_produccion_predio_ultimo_mes(db: AsyncSession) -> list[ProduccionPorPredio]:
-    # 1. Obtener el último mes registrado
+
     max_date_stmt = select(func.max(Cosecha.fecha))
     max_date_result = await db.execute(max_date_stmt)
     max_date = max_date_result.scalar_one_or_none()
@@ -221,7 +217,6 @@ async def get_produccion_predio_ultimo_mes(db: AsyncSession) -> list[ProduccionP
     año = max_date.year
     mes = max_date.month
 
-    # 2. Obtener hectáreas y toneladas por predio en ese mes
     stmt = (
         select(
             Predio.nombre.label("predio"),
