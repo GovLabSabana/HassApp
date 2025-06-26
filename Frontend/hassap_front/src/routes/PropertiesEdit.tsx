@@ -23,6 +23,7 @@ export default function PropertiesEdit() {
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!predioId) return;
@@ -109,8 +110,10 @@ export default function PropertiesEdit() {
         return;
       }
 
-      alert('Predio actualizado con éxito.');
-      navigate('/properties');
+      setSuccessMessage('¡Predio actualizado con éxito!');
+      setTimeout(() => {
+        navigate('/properties');
+      }, 2000);
     } catch (error) {
       alert('Error en la petición');
     }
@@ -185,12 +188,11 @@ export default function PropertiesEdit() {
             
           </div>
 
-          
-
           <button type="submit">Actualizar</button>
           <button type="button" onClick={() => navigate('/properties')}>
             Cancelar
           </button>
+          {successMessage && <div className="success-message">{successMessage}</div>}
         </form>
       </main>
     </div>
