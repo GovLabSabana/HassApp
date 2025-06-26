@@ -37,6 +37,7 @@ import Main from "./routes/sondeo/Main.tsx";
 import ResetPassword from "./routes/Reset.tsx";
 import Developers from "./routes/Developers.tsx";
 import Layout from "./routes/layouts/menu.tsx";
+import { ToastContainer } from "react-toastify";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -229,5 +230,6 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RouterProvider router={router} />
+    <ToastContainer />
   </StrictMode>
 );

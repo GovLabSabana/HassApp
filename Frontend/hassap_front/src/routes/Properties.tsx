@@ -5,6 +5,7 @@ import { Sidebar } from "../components/Sidebar";
 import data from "../../BD_Keys.json";
 import Layout from "./layouts/menu";
 import Loader from "../components/utils/Loader";
+import { toast } from "react-toastify";
 
 interface Predio {
   id: number;
@@ -65,7 +66,10 @@ export default function Properties() {
           Authorization: `Bearer ${token}`,
         },
       })
-        .then(() => setPredios((prev) => prev.filter((p) => p.id !== id)))
+        .then(() => {
+          toast.success("Operación exitosa!");
+          setPredios((prev) => prev.filter((p) => p.id !== id));
+        })
         .catch((err) => console.error("Error al eliminar predio:", err));
     }
   };

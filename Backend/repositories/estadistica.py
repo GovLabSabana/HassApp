@@ -1,6 +1,3 @@
-from schemas.estadistica import EstadoRespuestasMensual
-from sqlalchemy import select, extract
-from schemas.estadistica import ProduccionEstimacionComparada
 from datetime import datetime
 from schemas.estadistica import ProduccionPorPredio
 from models.rompimientos import cosecha_predio_table
@@ -247,14 +244,20 @@ async def get_produccion_predio_ultimo_mes(db: AsyncSession) -> list[ProduccionP
     ]
 
 
+from models.respuesta import Respuesta
+from sqlalchemy import func, select
+from datetime import datetime, timedelta
+from collections import defaultdict
+from schemas.estadistica import ProduccionEstimacionComparada
+
+
 async def get_produccion_estimacion_comparada(db: AsyncSession) -> list[ProduccionEstimacionComparada]:
     # IDs de preguntas según definición
     ID_ESTIMADA = 10
     ID_REAL = 11
 
     # Obtener todas las respuestas relevantes
-    stmt = select(Respuesta).where(
-        Respuesta.pregunta_id.in_([ID_ESTIMADA, ID_REAL]))
+    stmt = select(Respuesta).where(Respuesta.pregunta_id.in_([ID_ESTIMADA, ID_REAL]))
     result = await db.execute(stmt)
     respuestas = result.scalars().all()
 
@@ -294,24 +297,3 @@ async def get_produccion_estimacion_comparada(db: AsyncSession) -> list[Producci
     ]
 
     return resultado
-
-
-async def get_estado_respuestas_produccion(db: AsyncSession, user_id: int) -> EstadoRespuestasMensual:
-    current_date = datetime.utcnow()
-    mes = current_date.month
-    anio = current_date.year
-
-    stmt = select(Respuesta.pregunta_id).where(
-        Respuesta.usuario_id == user_id,
-        extract("month", Respuesta.fecha) == mes,
-        extract("year", Respuesta.fecha) == anio,
-        Respuesta.pregunta_id.in_([10, 11])
-    )
-
-    result = await db.execute(stmt)
-    ids = {row[0] for row in result.fetchall()}
-
-    return EstadoRespuestasMensual(
-        produccion_estimada=10 in ids,
-        produccion_real=11 in ids
-    )

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../componentsStyles/Prediosadd.css";
 import MunicipioSelector from "../components/forms/SelectMunicipio";
+import { toast } from "react-toastify";
 
 export default function PropertiesAdd() {
   const navigate = useNavigate();
@@ -133,7 +134,7 @@ export default function PropertiesAdd() {
         return;
       }
 
-      alert("Predio creado con éxito.");
+      toast.success("Operación exitosa!");
       navigate("/Properties");
     } catch (error) {
       alert("Error en la petición");
@@ -226,20 +227,18 @@ export default function PropertiesAdd() {
             <label>Municipio</label>
             <div className="municipio-selector">
               <MunicipioSelector
-              value={formData.municipio_id}
-              onSelect={(id) => {
-                setFormData((prev) => ({ ...prev, municipio_id: id }));
-                setErrors((prev) => {
-                  const newErrors = { ...prev };
-                  delete newErrors.municipio_id;
-                  return newErrors;
-                });
+                value={formData.municipio_id}
+                onSelect={(id) => {
+                  setFormData((prev) => ({ ...prev, municipio_id: id }));
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.municipio_id;
+                    return newErrors;
+                  });
                 }}
               />
             </div>
           </div>
-
-          
 
           <button type="submit">Guardar</button>
           <button type="button" onClick={() => navigate("/Properties")}>

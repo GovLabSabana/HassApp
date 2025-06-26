@@ -53,13 +53,7 @@ class ProduccionPorPredio(BaseModel):
     hectareas: Decimal
     toneladas: Decimal
 
-
 class ProduccionEstimacionComparada(BaseModel):
     mes: str  # "2025-08"
     estimada: int
     real: int
-
-
-class EstadoRespuestasMensual(BaseModel):
-    produccion_estimada: bool
-    produccion_real: bool
