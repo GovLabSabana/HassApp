@@ -18,3 +18,8 @@ class RespuestaOut(RespuestaBase):
     fecha: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class EstadoRespuestasMensual(BaseModel):
+    produccion_estimada: bool
+    produccion_real: bool

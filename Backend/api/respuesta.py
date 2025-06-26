@@ -6,6 +6,7 @@ from schemas.respuesta import RespuestaCreate, RespuestaOut
 from repositories import respuesta as repo
 from utils.current_user import current_user
 from models.usuario import Usuario
+from schemas.respuesta import EstadoRespuestasMensual
 
 router = APIRouter(
     prefix="/respuestas",
@@ -39,3 +40,8 @@ async def delete(respuesta_id: int, db: AsyncSession = Depends(get_db)):
     if not deleted:
         raise HTTPException(status_code=404, detail="Respuesta no encontrada")
     return {"detail": "Respuesta eliminada"}
+
+
+@router.get("/sondeo/respuestas-mensuales", response_model=EstadoRespuestasMensual)
+async def estado_respuestas_mensuales(db: AsyncSession = Depends(get_db), user=Depends(current_user)):
+    return await repo.get_estado_respuestas_produccion(db, user.id)
