@@ -1,3 +1,4 @@
+from schemas.estadistica import ProduccionEstimacionComparada
 from datetime import datetime
 from schemas.estadistica import ProduccionPorPredio
 from models.rompimientos import cosecha_predio_table
@@ -242,3 +243,52 @@ async def get_produccion_predio_ultimo_mes(db: AsyncSession) -> list[ProduccionP
         )
         for row in rows
     ]
+
+
+async def get_produccion_estimacion_comparada(db: AsyncSession) -> list[ProduccionEstimacionComparada]:
+    # IDs de preguntas según definición
+    ID_ESTIMADA = 10
+    ID_REAL = 11
+
+    # Obtener todas las respuestas relevantes
+    stmt = select(Respuesta).where(
+        Respuesta.pregunta_id.in_([ID_ESTIMADA, ID_REAL]))
+    result = await db.execute(stmt)
+    respuestas = result.scalars().all()
+
+    datos = defaultdict(lambda: {"estimada": 0, "real": 0})
+
+    for r in respuestas:
+        try:
+            valor = int(float(r.respuesta.strip()))
+        except ValueError:
+            continue  # Saltar si no es número
+
+        fecha = r.fecha
+
+        if r.pregunta_id == ID_ESTIMADA:
+            # Asignar al mes SIGUIENTE
+            mes = (fecha.replace(day=1) + timedelta(days=32)).replace(day=1)
+        elif r.pregunta_id == ID_REAL:
+            # Asignar al mes ANTERIOR
+            mes = (fecha.replace(day=1) - timedelta(days=1)).replace(day=1)
+        else:
+            continue
+
+        clave_mes = mes.strftime("%Y-%m")
+        if r.pregunta_id == ID_ESTIMADA:
+            datos[clave_mes]["estimada"] += valor
+        else:
+            datos[clave_mes]["real"] += valor
+
+    # Ordenar y construir respuesta
+    resultado = [
+        ProduccionEstimacionComparada(
+            mes=mes,
+            estimada=val["estimada"],
+            real=val["real"]
+        )
+        for mes, val in sorted(datos.items())
+    ]
+
+    return resultado

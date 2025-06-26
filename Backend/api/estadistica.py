@@ -1,3 +1,4 @@
+from schemas.estadistica import ProduccionEstimacionComparada
 from schemas.estadistica import ProduccionPorPredio
 from schemas.estadistica import ToneladasCosechadasMensual
 from schemas.estadistica import CostoCategoriaPorTonelada
@@ -69,3 +70,10 @@ async def cosechas_linea_tiempo_toneladas(db: AsyncSession = Depends(get_db)):
 @router.get("/cosechas/ultimo-mes-por-predio", response_model=List[ProduccionPorPredio])
 async def cosecha_predio_ultimo_mes(db: AsyncSession = Depends(get_db)):
     return await repo.get_produccion_predio_ultimo_mes(db)
+
+# Comparación de producción estimada vs real por mes debido a sondeo GENERAL, es decir para todos
+
+
+@router.get("/sondeo/estimacion-vs-real", response_model=List[ProduccionEstimacionComparada])
+async def produccion_estimacion_vs_real(db: AsyncSession = Depends(get_db)):
+    return await repo.get_produccion_estimacion_comparada(db)
