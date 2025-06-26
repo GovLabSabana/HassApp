@@ -12,6 +12,7 @@ interface Pregunta {
   clave: string;
   tipo: "opcion" | "numero";
   opciones: string[] | null;
+  respondida: boolean;
 }
 
 const Main = () => {
@@ -25,7 +26,7 @@ const Main = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/preguntas/`, {
+    fetch(`${API_URL}/preguntas/con-respuesta`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

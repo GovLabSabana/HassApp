@@ -7,6 +7,7 @@ interface Pregunta {
   clave: string;
   tipo: "opcion" | "numero";
   opciones: string[] | null;
+  respondida: boolean;
 }
 
 interface Props {
@@ -16,7 +17,19 @@ interface Props {
 
 const QuestionCard: React.FC<Props> = ({ pregunta, onClick }) => {
   return (
-    <div className="card" onClick={onClick} style={{ cursor: "pointer" }}>
+    <div
+      className={`card ${pregunta.respondida ? "respondida" : ""}`}
+      onClick={() => {
+        if (!pregunta.respondida) onClick();
+      }}
+      style={{
+        cursor: pregunta.respondida ? "not-allowed" : "pointer",
+        position: "relative",
+      }}
+    >
+      {pregunta.respondida && (
+        <div className="badge-respondida">Respondida</div>
+      )}
       <p className="card-title">{pregunta.texto}</p>
     </div>
   );

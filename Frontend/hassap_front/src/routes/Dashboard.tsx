@@ -1,6 +1,7 @@
 import GraficosTorta from "../components/dashboard/PieCharts";
 import MetricasExportacion from "../components/dashboard/ExportMetrics.tsx";
 import ExportacionesChart from "../components/dashboard/ExportChart.tsx";
+import ComparativeChart from "../components/dashboard/ComparativeChart.tsx";
 
 export default function Dashboard() {
   return (
@@ -9,6 +10,7 @@ export default function Dashboard() {
       <ExportacionesChart />
       <h1 style={{ textAlign: "left" }}>Sondeo</h1>
       <GraficosTorta />
+      <ComparativeChart />
     </>
   );
 }

@@ -1,9 +1,8 @@
-
 .export-metrics {
-    padding: 1.5rem;
-    background-color: rgba(17, 34, 24, 1);
-    min-height: 100vh;
-  }
+  padding: 1.5rem;
+  background-color: rgba(17, 34, 24, 1);
+  min-height: 100vh;
+}
 
 .metrics-subtitle {
   font-size: 1.875rem;
@@ -24,13 +23,15 @@
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid #e2e8f0;
   transition: all 0.3s ease;
 }
 
 .metric-card:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   transform: translateY(-2px);
 }
 
@@ -163,7 +164,6 @@
   text-align: right;
 }
 
-
 /* Estilos específicos para la card de TRM */
 
 .trm-card {
@@ -175,7 +175,7 @@
 }
 
 .trm-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
@@ -253,12 +253,12 @@
   .trm-value {
     font-size: 1.5rem;
   }
-  
+
   .trm-icon {
     width: 32px;
     height: 32px;
   }
-  
+
   .trm-icon svg {
     width: 16px;
     height: 16px;
@@ -289,42 +289,42 @@
   .export-metrics {
     padding: 1rem;
   }
-  
+
   .metrics-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .metric-card {
     padding: 1rem;
   }
-  
+
   .metric-header {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .chart-container {
     width: 100%;
     height: 200px;
     margin-top: 1rem;
   }
-  
+
   .metric-value {
     font-size: 1.5rem;
   }
-  
+
   .metrics-subtitle {
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
-  
+
   .export-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .export-amount {
     align-self: flex-end;
   }
@@ -334,15 +334,15 @@
   .export-metrics {
     padding: 0.75rem;
   }
-  
+
   .metric-card {
     padding: 0.75rem;
   }
-  
+
   .metric-value {
     font-size: 1.25rem;
   }
-  
+
   .metrics-subtitle {
     font-size: 1.25rem;
   }
@@ -379,7 +379,7 @@
 }
 
 .metric-card.loading::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -393,6 +393,25 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.metric-button.warning {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.metric-button.warning:hover {
+  background-color: #fee2e2;
 }
