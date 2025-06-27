@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from pydantic import ValidationError
 import os
-from api import auth, protegida, predio, usuario, cosecha, comprador, exportaciones, reset_data, fake_data, respuesta, pregunta, insumo, insumo_cosecha, proveedor, estadistica, unidad
+from api import auth, protegida, predio, usuario, cosecha, comprador, exportaciones, reset_data, fake_data, respuesta, pregunta, insumo, insumo_cosecha, proveedor, estadistica, unidad, Tipo_documento
 
 load_dotenv()
 
@@ -36,6 +36,7 @@ app.include_router(insumo_cosecha.router)
 app.include_router(proveedor.router)
 app.include_router(estadistica.router)
 app.include_router(unidad.router)
+app.include_router(Tipo_documento.router)
 
 # Manejo de errores de validación
 
