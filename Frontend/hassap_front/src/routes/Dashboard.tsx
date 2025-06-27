@@ -1,16 +1,14 @@
 import GraficosTorta from "../components/dashboard/PieCharts";
-import MetricasExportacion from "../components/dashboard/ExportMetrics.tsx";
-import ExportacionesChart from "../components/dashboard/ExportChart.tsx";
-import ComparativeChart from "../components/dashboard/ComparativeChart.tsx";
+import MiExportacion from "../components/dashboard/MiExportacion";
+import MiProduccion from "../components/dashboard/MiProduccion";
 
 export default function Dashboard() {
   return (
     <>
-      <MetricasExportacion />
-      <ExportacionesChart />
-      <h1 style={{ textAlign: "left" }}>Sondeo</h1>
+      <MiExportacion />
+      <MiProduccion />
+      <h1 style={{ textAlign: "left" }}>Sondeos</h1>
       <GraficosTorta />
-      <ComparativeChart />
     </>
   );
 }
