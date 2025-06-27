@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../componentsStyles/Accountedit.css";
+import { toast } from "react-toastify";
 
 export default function AccountEdit() {
   const navigate = useNavigate();
@@ -143,10 +144,13 @@ export default function AccountEdit() {
       });
 
       if (!res.ok) throw new Error("Error al actualizar usuario");
+
+      toast.success("¡Datos actualizados correctamente!");
       navigate("/account");
     } catch (err) {
       console.error(err);
       setError("Error al actualizar los datos");
+      toast.error("No se pudieron guardar los cambios.");
     }
   };
 

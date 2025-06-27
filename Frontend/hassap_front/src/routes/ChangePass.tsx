@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function ChangePass() {
   const navigate = useNavigate();
@@ -15,19 +16,19 @@ export default function ChangePass() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Reset errors
     setErrorOld("");
     setErrorNew("");
 
-    // Validación frontend
     if (!oldPassword || !newPassword) {
       if (!oldPassword) setErrorOld("Debe ingresar la contraseña actual.");
       if (!newPassword) setErrorNew("Debe ingresar una nueva contraseña.");
+      toast.error("Debe completar todos los campos.");
       return;
     }
 
     if (oldPassword === newPassword) {
       setErrorNew("La nueva contraseña no puede ser igual a la actual.");
+      toast.error("La nueva contraseña no puede ser igual a la actual.");
       return;
     }
 
@@ -47,7 +48,7 @@ export default function ChangePass() {
       });
 
       if (res.ok) {
-        alert("Contraseña actualizada correctamente.");
+        toast.success("Contraseña actualizada correctamente.");
         navigate("/account");
       } else {
         const errorData = await res.json();
@@ -57,22 +58,33 @@ export default function ChangePass() {
           errorData.detail.toLowerCase().includes("incorrecta")
         ) {
           setErrorOld("La contraseña actual es incorrecta.");
+          toast.error("La contraseña actual es incorrecta.");
         } else {
-          alert("Error al cambiar la contraseña.");
+          toast.error("Error al cambiar la contraseña.");
         }
       }
     } catch (err) {
       console.error("Error:", err);
-      alert("Ocurrió un error inesperado.");
+      toast.error("Ocurrió un error inesperado.");
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "40px auto", textAlign: "center", color: "white" }}>
+    <div
+      style={{
+        maxWidth: "400px",
+        margin: "40px auto",
+        textAlign: "center",
+        color: "white",
+      }}
+    >
       <h1>Cambiar Contraseña</h1>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+      >
         <div style={{ textAlign: "left" }}>
           <label>Contraseña actual</label>
           <input
@@ -81,7 +93,9 @@ export default function ChangePass() {
             onChange={(e) => setOldPassword(e.target.value)}
             style={{ width: "100%", padding: "8px" }}
           />
-          {errorOld && <p style={{ color: "red", marginTop: "5px" }}>{errorOld}</p>}
+          {errorOld && (
+            <p style={{ color: "red", marginTop: "5px" }}>{errorOld}</p>
+          )}
         </div>
 
         <div style={{ textAlign: "left" }}>
@@ -92,7 +106,9 @@ export default function ChangePass() {
             onChange={(e) => setNewPassword(e.target.value)}
             style={{ width: "100%", padding: "8px" }}
           />
-          {errorNew && <p style={{ color: "red", marginTop: "5px" }}>{errorNew}</p>}
+          {errorNew && (
+            <p style={{ color: "red", marginTop: "5px" }}>{errorNew}</p>
+          )}
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>

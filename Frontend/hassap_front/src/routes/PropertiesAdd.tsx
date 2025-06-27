@@ -124,10 +124,12 @@ export default function PropertiesAdd() {
             const msg = error.msg || "Error en el campo";
             if (typeof field === "string") {
               newErrors[field] = msg;
+
+              toast.error(`${field}: ${msg}`);
             }
           });
         } else {
-          alert(data.detail || "Error al agregar el predio.");
+          toast.error(data.detail || "Error al agregar el predio.");
         }
 
         setErrors((prev) => ({ ...prev, ...newErrors }));

@@ -58,20 +58,61 @@ export default function Properties() {
       .finally(() => setLoading(false));
   }, [API_URL, token]);
 
+  const ConfirmDeleteToast = ({
+    onConfirm,
+    onCancel,
+  }: {
+    onConfirm: () => void;
+    onCancel: () => void;
+  }) => (
+    <div>
+      <p>¿Estás seguro de que deseas eliminar este predio?</p>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "0.5rem" }}>
+        <button onClick={onCancel} style={{ background: "#ccc", border: "none", padding: "0.3rem 0.7rem" }}>
+          Cancelar
+        </button>
+        <button onClick={onConfirm} style={{ background: "red", color: "white", border: "none", padding: "0.3rem 0.7rem" }}>
+          Eliminar
+        </button>
+      </div>
+    </div>
+  );
+
   const eliminarPredio = (id: number) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este predio?")) {
-      fetch(`${API_URL}/predios/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then(() => {
-          toast.success("Operación exitosa!");
-          setPredios((prev) => prev.filter((p) => p.id !== id));
-        })
-        .catch((err) => console.error("Error al eliminar predio:", err));
-    }
+    const toastId = toast.info(
+      <ConfirmDeleteToast
+        onConfirm={async () => {
+          toast.dismiss(toastId);
+          try {
+            const res = await fetch(`${API_URL}/predios/${id}`, {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            if (!res.ok) {
+              const data = await res.json();
+              toast.error(data.detail || "No se pudo eliminar el predio.");
+              return;
+            }
+
+            setPredios((prev) => prev.filter((p) => p.id !== id));
+            toast.success("Predio eliminado correctamente");
+          } catch (err) {
+            console.error("Error al eliminar predio:", err);
+            toast.error("Error al eliminar el predio.");
+          }
+        }}
+        onCancel={() => toast.dismiss(toastId)}
+      />,
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        position: "top-center",
+      }
+    );
   };
 
   const prediosFiltrados = predios.filter((p) => {
