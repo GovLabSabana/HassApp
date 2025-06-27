@@ -88,8 +88,10 @@ async def update_predio(
     user: Usuario = Depends(current_user)
 ):
     result = await db.execute(
-        select(Predio).where(Predio.id == predio_id,
-                             Predio.usuario_id == user.id)
+        select(Predio).where(
+            Predio.id == predio_id,
+            Predio.usuario_id == user.id
+        )
     )
     predio = result.scalar_one_or_none()
 
@@ -99,8 +101,21 @@ async def update_predio(
     for field, value in predio_update.dict(exclude_unset=True).items():
         setattr(predio, field, value)
 
-    await db.commit()
-    await db.refresh(predio)
+    try:
+        await db.commit()
+        await db.refresh(predio)
+    except IntegrityError as e:
+        await db.rollback()
+        if "cedula_catastral" in str(e.orig):
+            raise HTTPException(
+                status_code=400,
+                detail="Ya existe un predio con esta cédula catastral."
+            )
+        raise HTTPException(
+            status_code=400,
+            detail="Error de integridad en la base de datos."
+        )
+
     return predio
 
 
