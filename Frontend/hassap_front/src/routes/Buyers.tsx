@@ -4,6 +4,7 @@ import { Sidebar } from "../components/Sidebar";
 import "../componentsStyles/Buyers.css";
 import Layout from "./layouts/menu";
 import Loader from "../components/utils/Loader";
+import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -36,13 +37,66 @@ export default function Buyers() {
     setLoading(false);
   };
 
-  const handleDelete = async (id: number) => {
-    if (
-      window.confirm("¿Estás seguro de que deseas eliminar este comprador?")
-    ) {
-      await fetch(`${API_URL}/compradores/${id}`, { method: "DELETE" });
-      fetchCompradores();
-    }
+  const handleDelete = (id: number) => {
+    toast.info(
+      ({ closeToast }) => (
+        <div>
+          <p>¿Estás seguro de eliminar este comprador?</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "8px",
+              marginTop: "10px",
+            }}
+          >
+            <button
+              onClick={async () => {
+                try {
+                  const res = await fetch(`${API_URL}/compradores/${id}`, {
+                    method: "DELETE",
+                  });
+                  if (!res.ok) throw new Error("Error al eliminar");
+                  toast.success("Comprador eliminado correctamente.");
+                  fetchCompradores();
+                } catch (err) {
+                  console.error(err);
+                  toast.error("No se pudo eliminar el comprador.");
+                }
+                closeToast?.();
+              }}
+              style={{
+                backgroundColor: "#d9534f",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
+            >
+              Confirmar
+            </button>
+            <button
+              onClick={() => closeToast?.()}
+              style={{
+                backgroundColor: "#6c757d",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        position: "top-center",
+      }
+    );
   };
 
   useEffect(() => {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoriaInsumoSelector from "../components/forms/SelectInputCategory";
 import "../componentsStyles/Inputadd.css";
+import { toast } from "react-toastify";
 
 interface InsumoForm {
   nombre_comercial: string;
@@ -88,11 +89,11 @@ export default function InputsAdd() {
 
       if (!response.ok) throw new Error("Error al crear insumo");
 
-      setSuccessMessage("¡Insumo creado correctamente!");
+      toast.success("¡Insumo creado correctamente!");
       setTimeout(() => navigate("/inputs"), 2000);
     } catch (err) {
       console.error(err);
-      setSuccessMessage(null);
+      toast.error("No se pudo crear el insumo. Intenta nuevamente.");
     }
   };
 

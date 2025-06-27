@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../componentsStyles/Suppliers.css";
 import data from "../../BD_Keys.json";
 import Loader from "../components/utils/Loader";
+import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -53,22 +54,60 @@ export default function Suppliers() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("¿Eliminar este proveedor?")) return;
-    try {
-      const res = await fetch(`${API_URL}/proveedores/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`Error al eliminar: ${err}`);
+  const handleDelete = (id: number) => {
+    toast.info(
+      ({ closeToast }) => (
+        <div>
+          <p>¿Estás seguro de eliminar el proveedor?</p>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "10px" }}>
+            <button
+              onClick={async () => {
+                try {
+                  const res = await fetch(`${API_URL}/proveedores/${id}`, {
+                    method: "DELETE",
+                    headers: { Authorization: `Bearer ${token}` },
+                  });
+                  if (!res.ok) throw new Error("Error al eliminar.");
+                  toast.success("Proveedor eliminado.");
+                  fetchProveedores();
+                } catch (err) {
+                  console.error(err);
+                  toast.error("No se pudo eliminar el proveedor.");
+                }
+                closeToast?.();
+              }}
+              style={{
+                backgroundColor: "#d9534f",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
+            >
+              Confirmar
+            </button>
+            <button
+              onClick={() => closeToast?.()}
+              style={{
+                backgroundColor: "#6c757d",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        position: "top-center",
       }
-      fetchProveedores();
-    } catch (err) {
-      console.error(err);
-      alert("No fue posible eliminar el proveedor. Revisa tus permisos.");
-    }
+    );
   };
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import { Sidebar } from "../components/Sidebar";
 import "../componentsStyles/Inputs.css";
 import data from "../../BD_Keys.json";
 import Layout from "./layouts/menu";
+import { toast } from "react-toastify";
 
 interface Insumo {
   id: number;
@@ -71,33 +72,75 @@ export default function Inputs() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("¿Eliminar este insumo?")) return;
+  const handleDelete = (id: number) => {
+    toast.info(
+      ({ closeToast }) => (
+        <div>
+          <p>¿Estás seguro de eliminar este insumo?</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "8px",
+              marginTop: "10px",
+            }}
+          >
+            <button
+              onClick={async () => {
+                const token = localStorage.getItem("access_token");
+                try {
+                  const res = await fetch(`${API_URL}/insumos/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  });
 
-    const token = localStorage.getItem("access_token");
+                  if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(`Error al eliminar: ${res.status} - ${errorText}`);
+                  }
 
-    try {
-      const res = await fetch(`${API_URL}/insumos/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(
-          `Error al eliminar insumo: ${res.status} - ${errorText}`
-        );
+                  toast.success("Insumo eliminado correctamente.");
+                  fetchInsumos();
+                } catch (error) {
+                  console.error("Error al eliminar insumo:", error);
+                  toast.error("No se pudo eliminar el insumo. Verifica permisos o el servidor.");
+                }
+                closeToast?.();
+              }}
+              style={{
+                backgroundColor: "#d9534f",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
+            >
+              Confirmar
+            </button>
+            <button
+              onClick={closeToast}
+              style={{
+                backgroundColor: "#6c757d",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        position: "top-center",
       }
-
-      fetchInsumos();
-    } catch (error) {
-      console.error("Error al eliminar insumo:", error);
-      alert(
-        "No se pudo eliminar el insumo. Verifica permisos o errores en el servidor."
-      );
-    }
+    );
   };
 
   const proveedorMap = Array.isArray(proveedores)

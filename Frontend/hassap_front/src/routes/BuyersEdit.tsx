@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "../componentsStyles/BuyersAdd.css"; 
+import { toast } from "react-toastify";
 
 const initialForm = {
   nombre: "",
@@ -60,33 +61,46 @@ export default function BuyersEdit() {
 
   const handleSubmit = async () => {
     if (!validate()) return;
+
     const method = isEdit ? "PUT" : "POST";
     const url = isEdit
       ? `${API_URL}/compradores/${id}`
       : `${API_URL}/compradores/`;
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        tipo_doc: parseInt(form.tipo_doc),
-      }),
-    });
-    setSuccess(true);
-    setTimeout(() => navigate("/buyers"), 1500);
-  };
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          tipo_doc: parseInt(form.tipo_doc),
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        toast.error(errorData.detail || "Error al guardar el comprador.");
+        return;
+      }
+
+      toast.success(
+        isEdit
+          ? "Comprador actualizado correctamente."
+          : "Comprador registrado correctamente."
+      );
+      setSuccess(true);
+      setTimeout(() => navigate("/buyers"), 1500);
+    } catch (err) {
+      console.error("Error al guardar comprador:", err);
+      toast.error("Error de conexión con el servidor.");
+    }
+};
 
   return (
     <div className="buyeradd">
       <h1>
         {isEdit ? "Editar Comprador" : "Agregar Comprador"}
       </h1>
-
-      {success && (
-        <div className="success-message">
-          ¡Comprador {isEdit ? "editado" : "agregado"} con éxito!
-        </div>
-      )}
 
       <div className="form-container">
         <div className="form-group">
