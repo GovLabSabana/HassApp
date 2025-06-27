@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "../componentsStyles/Exportadd.css";
+import { toast } from "react-toastify";
 
 export default function ExportEdit() {
   const [searchParams] = useSearchParams();
@@ -100,6 +101,7 @@ export default function ExportEdit() {
 
   const handleSubmit = async () => {
     if (!validate()) return;
+
     const token = localStorage.getItem("access_token");
     const payload = {
       ...form,
@@ -108,28 +110,37 @@ export default function ExportEdit() {
       comprador_id: Number(form.comprador_id),
       cosecha_ids: form.cosecha_ids,
     };
-    await fetch(`${API_URL}/exportaciones/${exportId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-    setSuccess(true);
-    setTimeout(() => navigate("/export"), 1500);
+
+    try {
+      const res = await fetch(`${API_URL}/exportaciones/${exportId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        const msg = errorData.detail || "Error al actualizar la exportación.";
+        toast.error(msg);
+        return;
+      }
+
+      toast.success("Exportación actualizada correctamente.");
+      setSuccess(true);
+      setTimeout(() => navigate("/export"), 1500);
+    } catch (err) {
+      console.error("Error al actualizar exportación:", err);
+      toast.error("Error de conexión con el servidor.");
+    }
   };
 
   return (
     <div className="exportadd-container">
       <div className="exportadd-form-wrapper">
-        <h1 className="exportadd-title">Editar Exportación</h1>
-
-        {success && (
-          <div className="exportadd-success">
-            ¡Exportación actualizada con éxito!
-          </div>
-        )}
+        <h1 className="exportadd-title">Editar Exportación</h1> 
 
         <div className="exportadd-form">
           <div className="exportadd-row">

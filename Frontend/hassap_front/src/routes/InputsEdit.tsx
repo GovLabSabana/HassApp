@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CategoriaInsumoSelector from "../components/forms/SelectInputCategory";
 import "../componentsStyles/Inputadd.css";
+import { toast } from "react-toastify";
 
 interface InsumoForm {
   nombre_comercial: string;
@@ -100,14 +101,18 @@ export default function InputsEdit() {
 
       if (!response.ok) throw new Error("Error al guardar el insumo");
 
-      setSuccessMessage(isEdit ? "¡Insumo editado correctamente!" : "¡Insumo creado correctamente!");
+      toast.success(
+        isEdit
+          ? "¡Insumo editado correctamente!"
+          : "¡Insumo creado correctamente!"
+      );
 
       setTimeout(() => {
         navigate("/inputs");
       }, 2000);
     } catch (err) {
       console.error(err);
-      setSuccessMessage(null);
+      toast.error("No se pudo guardar el insumo. Intenta nuevamente.");
     }
   };
 

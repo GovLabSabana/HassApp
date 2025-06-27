@@ -3,6 +3,7 @@ import ProductoSelector from "../components/forms/SelectProducto";
 import CalidadSelector from "../components/forms/SelectCalidad";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface Insumo {
   insumo_id: number;
@@ -103,8 +104,11 @@ export default function ProductionAdd() {
   };
 
   const handleAdd = async () => {
-    const isValid = await validate();
-    if (!isValid) return;
+    const isValid = validate();
+    if (!isValid) {
+      toast.error("Hay errores en el formulario. Revisa los campos obligatorios.");
+      return;
+    }
 
     const body = {
       fecha,
@@ -126,12 +130,14 @@ export default function ProductionAdd() {
         },
         body: JSON.stringify(body),
       });
+
       if (!res.ok) throw new Error("Error al crear producción");
-      setSuccessMessage("Producción guardada correctamente.");
+
+      toast.success("Producción guardada correctamente.");
       setTimeout(() => navigate("/production"), 1500);
     } catch (err) {
       console.error(err);
-      setErrors({ general: "No fue posible crear la producción." });
+      toast.error("No fue posible crear la producción.");
     }
   };
 
@@ -155,9 +161,6 @@ export default function ProductionAdd() {
   return (
     <div className="add-production-container">
       <h1>Agregar Producción</h1>
-      
-      {successMessage && <div className="add-success-text">{successMessage}</div>}
-      {errors.general && <div className="add-error-text">{errors.general}</div>}
       
       <form
         onSubmit={(e) => {

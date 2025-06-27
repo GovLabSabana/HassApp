@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./styles.css";
+import { toast } from "react-toastify";
 
 interface Pregunta {
   id: number;
@@ -12,11 +13,12 @@ interface Pregunta {
 interface ModalProps {
   pregunta: Pregunta;
   onClose: () => void;
+  onAnswered: (id: number) => void;
   API_URL: string;
   token: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ pregunta, onClose, API_URL, token }) => {
+const Modal: React.FC<ModalProps> = ({ pregunta, onClose, API_URL, token, onAnswered }) => {
   const [respuesta, setRespuesta] = useState<string>("");
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({ pregunta, onClose, API_URL, token }) => {
 
     setError(null);
     setEnviando(true);
-    
+
     fetch(`${API_URL}/respuestas/`, {
       method: "POST",
       headers: {
@@ -46,12 +48,14 @@ const Modal: React.FC<ModalProps> = ({ pregunta, onClose, API_URL, token }) => {
         return res.json();
       })
       .then(() => {
-        alert("✅ Respuesta enviada con éxito");
+        toast.success("Respuesta enviada con éxito");
+        onAnswered(pregunta.id);
         onClose();
       })
       .catch((err) => {
         console.error(err);
-        setError("No se pudo enviar la respuesta. Inténtalo de nuevo.");
+        toast.error("No se pudo enviar la respuesta. Inténtalo de nuevo.");
+        setError("No se pudo enviar la respuesta.");
       })
       .finally(() => setEnviando(false));
   };

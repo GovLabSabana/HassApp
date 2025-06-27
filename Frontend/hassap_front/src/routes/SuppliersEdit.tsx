@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "../componentsStyles/SuppliersAdd.css";
+import { toast } from "react-toastify";
 
 const initialForm = {
   nombre: "",
@@ -93,14 +94,18 @@ export default function SuppliersEdit() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setApiError(errorData.detail || "Error al actualizar proveedor");
+        const message = errorData.detail || "Error al actualizar proveedor";
+        toast.error(message);
+        setApiError(message);
         return;
       }
 
+      toast.success("Proveedor actualizado correctamente");
       setSuccess(true);
       setTimeout(() => navigate("/suppliers"), 1500);
     } catch (err) {
       console.error("Error al actualizar proveedor:", err);
+      toast.error("Error de conexión con el servidor");
       setApiError("Error de conexión con el servidor");
     }
   };
@@ -109,7 +114,6 @@ export default function SuppliersEdit() {
     <div className="supplieradd">
       <h1>Editar Proveedor</h1>
 
-      {success && <div className="success-message">¡Proveedor editado con éxito!</div>}
       {apiError && <div className="error-message">{apiError}</div>}
 
       <div className="form-container">

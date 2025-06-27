@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
 import "../componentsStyles/Export.css";
 import Loader from "../components/utils/Loader";
+import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -45,20 +46,63 @@ export default function Export() {
     }
   };
 
-  const eliminarExportacion = async (id) => {
-    console.log(`¿Confirmas eliminar la exportación con ID ${id}?`);
-    const confirmar = window.confirm(
-      `¿Deseas eliminar la exportación con ID ${id}?`
+  const eliminarExportacion = (id) => {
+    toast.info(
+      ({ closeToast }) => (
+        <div>
+          <p>¿Deseas eliminar la exportación con ID {id}?</p>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "10px" }}>
+            <button
+              onClick={async () => {
+                try {
+                  const token = localStorage.getItem("access_token");
+                  const res = await fetch(`${API_URL}/exportaciones/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  });
+                  if (!res.ok) throw new Error("Error al eliminar.");
+                  toast.success("Exportación eliminada correctamente.");
+                  fetchExportaciones();
+                } catch (err) {
+                  console.error(err);
+                  toast.error("No se pudo eliminar la exportación.");
+                }
+                closeToast?.();
+              }}
+              style={{
+                backgroundColor: "#d9534f",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
+            >
+              Confirmar
+            </button>
+            <button
+              onClick={() => closeToast?.()}
+              style={{
+                backgroundColor: "#6c757d",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        position: "top-center",
+      }
     );
-    if (!confirmar) return;
-    const token = localStorage.getItem("access_token");
-    await fetch(`${API_URL}/exportaciones/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    fetchExportaciones();
   };
 
   const exportacionesFiltradas = exportaciones.filter((exp) => {

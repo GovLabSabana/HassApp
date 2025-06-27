@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import '../componentsStyles/Prediosadd.css';
 import MunicipioSelector from "../components/forms/SelectMunicipio";
+import { toast } from 'react-toastify';
 
 export default function PropertiesEdit() {
   const navigate = useNavigate();
@@ -23,7 +24,6 @@ export default function PropertiesEdit() {
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!predioId) return;
@@ -71,7 +71,7 @@ export default function PropertiesEdit() {
         ? parseFloat(value)
         : value,
     }));
-    setErrors((prev) => ({ ...prev, [name]: '' })); // limpiar error al cambiar
+    setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -100,22 +100,25 @@ export default function PropertiesEdit() {
             const msg = error.msg || 'Error en el campo';
             if (typeof field === 'string') {
               newErrors[field] = msg;
+
+              if (field === 'cedula_catastral' && msg.toLowerCase().includes('registrada')) {
+                toast.error(`Error: ${msg}`);
+              }
             }
           });
         } else {
-          alert(data.detail || 'Error al actualizar el predio.');
+          toast.error(data.detail || 'Error en el servidor');
         }
 
         setErrors((prev) => ({ ...prev, ...newErrors }));
         return;
       }
 
-      setSuccessMessage('¡Predio actualizado con éxito!');
-      setTimeout(() => {
-        navigate('/properties');
-      }, 2000);
-    } catch (error) {
-      alert('Error en la petición');
+      toast.success('¡Predio actualizado con éxito!');
+      navigate('/properties');
+    } catch (error: any) {
+      toast.error('Error en la petición');
+      console.error("Error en fetch:", error);
     }
   };
 
@@ -192,7 +195,6 @@ export default function PropertiesEdit() {
           <button type="button" onClick={() => navigate('/properties')}>
             Cancelar
           </button>
-          {successMessage && <div className="success-message">{successMessage}</div>}
         </form>
       </main>
     </div>

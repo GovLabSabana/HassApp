@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../componentsStyles/SuppliersAdd.css";
+import { toast } from "react-toastify";
 
 const initialForm = {
   nombre: "",
@@ -43,7 +44,7 @@ export default function SuppliersAdd() {
   };
 
   const handleSubmit = async () => {
-    setApiError(""); // limpiamos error anterior
+    setApiError("");
     if (!validate()) return;
 
     try {
@@ -51,21 +52,25 @@ export default function SuppliersAdd() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // 🔐 Token JWT aquí
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ ...form, tipo_doc: parseInt(form.tipo_doc) }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        setApiError(errorData.detail || "Error al registrar proveedor");
+        const message = errorData.detail || "Error al registrar proveedor";
+        toast.error(message);
+        setApiError(message);
         return;
       }
 
+      toast.success("Proveedor guardado exitosamente");
       setSuccess(true);
       setTimeout(() => navigate("/suppliers"), 1500);
     } catch (err) {
       console.error("Error al guardar proveedor:", err);
+      toast.error("Error de conexión con el servidor");
       setApiError("Error de conexión con el servidor");
     }
   };
@@ -73,8 +78,7 @@ export default function SuppliersAdd() {
   return (
     <div className="supplieradd">
       <h1>Agregar Proveedor</h1>
-
-      {success && <div className="success-message">¡Proveedor agregado con éxito!</div>}
+      
       {apiError && <div className="error-message">{apiError}</div>}
 
       <div className="form-container">

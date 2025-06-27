@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../componentsStyles/Exportadd.css";
+import { toast } from "react-toastify";
 
 interface Option {
   id: number;
@@ -95,6 +96,7 @@ export default function ExportAdd() {
 
   const handleSubmit = async () => {
     if (!validate()) return;
+
     const payload = {
       ...form,
       toneladas: Number(form.toneladas),
@@ -102,29 +104,39 @@ export default function ExportAdd() {
       comprador_id: Number(form.comprador_id),
       cosecha_ids: form.cosecha_ids,
     };
+
     const token = localStorage.getItem("access_token");
-    await fetch(`${API_URL}/exportaciones/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-    setSuccess(true);
-    setTimeout(() => navigate("/export"), 1500);
+
+    try {
+      const res = await fetch(`${API_URL}/exportaciones/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        const msg = errorData.detail || "Error al registrar la exportación.";
+        toast.error(msg);
+        return;
+      }
+
+      toast.success("Exportación guardada exitosamente.");
+      setSuccess(true);
+      setTimeout(() => navigate("/export"), 1500);
+    } catch (err) {
+      console.error("Error al guardar exportación:", err);
+      toast.error("Error de conexión con el servidor.");
+    }
   };
 
   return (
     <div className="exportadd-container">
       <div className="exportadd-form-wrapper">
         <h1 className="exportadd-title">Agregar Exportación</h1>
-
-        {success && (
-          <div className="exportadd-success">
-            ¡Exportación guardada con éxito!
-          </div>
-        )}
 
         <div className="exportadd-form">
           <div className="exportadd-row">

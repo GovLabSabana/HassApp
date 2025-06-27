@@ -1,6 +1,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, Link } from 'react-router-dom';
 import '../Signupstyles.css'; // Importar el archivo CSS
+import { toast } from "react-toastify";
 
 type FormInputs = {
   email: string;
@@ -41,60 +42,49 @@ export default function Signup() {
   const onSubmit = async (data: FormInputs) => {
     const formData = new FormData();
 
-    // Agregar campos de texto
     Object.entries(data).forEach(([key, value]) => {
       if (key === "rut_document" || key === "logo_document") return;
-      if (value !== undefined && value !== '') {
+      if (value !== undefined && value !== "") {
         const finalValue = key === "tipo_documento_id" && value ? Number(value) : value;
         formData.append(key, finalValue as string);
       }
     });
 
-    // Manejar archivos de forma más segura
-    if (data.rut_document && data.rut_document.length > 0) {
+    if (data.rut_document?.length > 0) {
       formData.append("rut_document", data.rut_document[0]);
     }
 
-    if (data.logo_document && data.logo_document.length > 0) {
+    if (data.logo_document?.length > 0) {
       formData.append("logo_document", data.logo_document[0]);
     }
 
-    // Debug: Ver qué se está enviando
-    console.log("FormData contents:");
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
     try {
-    const response = await fetch(`${API_URL}/auth/custom/register`, {
-      method: "POST",
-      body: formData,
-    });
+      const response = await fetch(`${API_URL}/auth/custom/register`, {
+        method: "POST",
+        body: formData,
+      });
 
-    if (response.ok) {
-      alert("¡Registro exitoso!");
-      navigate("/");
-    } else {
-      const errorData = await response.json();
-      console.error("Error response:", errorData);
-
-      if (
-        errorData?.message?.toLowerCase?.().includes("correo") ||
-        errorData?.error?.toLowerCase?.().includes("correo") ||
-        errorData?.email
-      ) {
-        setError("email", {
-          type: "manual",
-          message: "Este correo electrónico ya está registrado.",
-        });
+      if (response.ok) {
+        toast.success("¡Registro exitoso!");
+        navigate("/");
       } else {
-        alert("Error en el registro: " + JSON.stringify(errorData));
+        const errorData = await response.json();
+        console.error("Error response:", errorData);
+
+        const detail = errorData?.detail || "Error desconocido";
+        toast.error(detail); 
+
+        if (detail.toLowerCase().includes("correo")) {
+          setError("email", {
+            type: "manual",
+            message: detail,
+          });
+        }
       }
+    } catch (err) {
+      console.error("Connection error:", err);
+      toast.error("Error en la conexión. Intenta de nuevo.");
     }
-  } catch (err) {
-    console.error("Connection error:", err);
-    alert("Error en la conexión: " + err);
-  }
   };
 
   return (

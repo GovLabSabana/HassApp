@@ -3,6 +3,7 @@ import ProductoSelector from "../components/forms/SelectProducto";
 import CalidadSelector from "../components/forms/SelectCalidad";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface Insumo {
   insumo_id: number;
@@ -123,7 +124,10 @@ export default function ProductionEdit() {
   };
 
   const handleUpdate = async () => {
-    if (!validate()) return;
+    if (!validate()) {
+      toast.error("Hay errores en el formulario. Revisa los campos obligatorios.");
+      return;
+    }
 
     const body = {
       fecha,
@@ -145,12 +149,14 @@ export default function ProductionEdit() {
         },
         body: JSON.stringify(body),
       });
+
       if (!res.ok) throw new Error(`Error ${res.status}`);
-      setSuccessMessage("Producción actualizada correctamente.");
-      setTimeout(() => navigate("/production"), 5000);
+      
+      toast.success("Producción actualizada correctamente.");
+      setTimeout(() => navigate("/production"), 1500);
     } catch (err) {
       console.error(err);
-      setErrors({ general: "No fue posible actualizar la producción." });
+      toast.error("No fue posible actualizar la producción.");
     }
   };
 
@@ -172,11 +178,6 @@ export default function ProductionEdit() {
   return (
     <div className="add-production-container">
       <h1>Editar Producción</h1>
-
-      {successMessage && (
-        <div className="add-success-text">{successMessage}</div>
-      )}
-      {errors.general && <div className="add-error-text">{errors.general}</div>}
 
       <form
         onSubmit={(e) => {

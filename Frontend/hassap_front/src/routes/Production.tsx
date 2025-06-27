@@ -4,6 +4,7 @@ import "../componentsStyles/Production.css";
 import data from "../../BD_Keys.json";
 import Layout from "./layouts/menu";
 import Loader from "../components/utils/Loader";
+import { toast } from "react-toastify";
 
 interface Predio {
   id: number;
@@ -71,13 +72,47 @@ export default function Production() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("¿Eliminar producción?")) return;
-    await fetch(`${API_URL}/cosechas/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    fetchData();
+  const handleDelete = (id: number) => {
+    toast.info(
+      ({ closeToast }) => (
+        <div>
+          <p>¿Estás seguro de eliminar la producción?</p>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "10px" }}>
+            <button
+              onClick={async () => {
+                try {
+                  const res = await fetch(`${API_URL}/cosechas/${id}`, {
+                    method: "DELETE",
+                    headers: { Authorization: `Bearer ${token}` },
+                  });
+                  if (!res.ok) throw new Error("Error al eliminar.");
+                  toast.success("Producción eliminada.");
+                  fetchData();
+                } catch (err) {
+                  toast.error("No se pudo eliminar la producción.");
+                }
+                closeToast?.();
+              }}
+              style={{ backgroundColor: "#d9534f", color: "white", border: "none", padding: "6px 12px", borderRadius: "4px" }}
+            >
+              Confirmar
+            </button>
+            <button
+              onClick={() => closeToast?.()}
+              style={{ backgroundColor: "#6c757d", color: "white", border: "none", padding: "6px 12px", borderRadius: "4px" }}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        position: "top-center",
+      }
+    );
   };
 
   const filtered = list.filter((c) => {

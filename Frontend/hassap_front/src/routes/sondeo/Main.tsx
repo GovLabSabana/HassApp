@@ -54,6 +54,13 @@ const Main = () => {
     setSelectedPregunta(pregunta);
   };
 
+  const handleAnswered = (id: number) => {
+    setPreguntas((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, respondida: true } : p))
+    );
+    setSelectedPregunta(null);
+  };
+
   const closeModal = () => {
     setSelectedPregunta(null);
   };
@@ -77,6 +84,7 @@ const Main = () => {
         <Modal
           pregunta={selectedPregunta}
           onClose={closeModal}
+          onAnswered={handleAnswered}
           API_URL={API_URL}
           token={token}
         />
