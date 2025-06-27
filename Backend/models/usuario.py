@@ -53,10 +53,12 @@ class UserManager(IntegerIDMixin, BaseUserManager[Usuario, int]):
         super().__init__(user_db)
 
     async def on_after_register(self, user: Usuario, request=None):
-        await on_after_register(user, request)
+        # await on_after_register(user, request)
+        return
 
     async def on_after_forgot_password(self, user: Usuario, token: str, request=None):
-        await on_after_forgot_password(user, token, request)
+        # await on_after_forgot_password(user, token, request)
+        return
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
