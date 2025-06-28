@@ -192,7 +192,7 @@ export default function ExportAdd() {
             </div>
 
             <div className="exportadd-field">
-              <label className="exportadd-label">Valor FOB*</label>
+              <label className="exportadd-label">Valor FOB(USD)*</label>
               {errors.valor_fob && (
                 <div className="exportadd-error">{errors.valor_fob}</div>
               )}
@@ -211,7 +211,7 @@ export default function ExportAdd() {
 
           <div className="exportadd-row">
             <div className="exportadd-field">
-              <label className="exportadd-label">Puerto Salida*</label>
+              <label className="exportadd-label">Terminal Salida*</label>
               {errors.puerto_salida && (
                 <div className="exportadd-error">{errors.puerto_salida}</div>
               )}
@@ -225,7 +225,7 @@ export default function ExportAdd() {
             </div>
 
             <div className="exportadd-field">
-              <label className="exportadd-label">Puerto Llegada*</label>
+              <label className="exportadd-label">Terminal Llegada*</label>
               {errors.puerto_llegada && (
                 <div className="exportadd-error">{errors.puerto_llegada}</div>
               )}

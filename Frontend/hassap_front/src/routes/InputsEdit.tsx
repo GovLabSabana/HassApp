@@ -178,7 +178,7 @@ export default function InputsEdit() {
             </div>
 
             <div className="form-group full-width">
-              <label className="form-label">Costo Unitario</label>
+              <label className="form-label">Costo Unitario(USD)</label>
               <input
                 className="form-input"
                 type="number"

@@ -23,7 +23,7 @@ const Loader: React.FC<LoaderProps> = ({
         alignItems: "center",
       }}
     >
-      <SyncLoader color="#36d7b7" />
+      <SyncLoader color="#4a7a4a" />
       <p style={{ marginTop: "1rem", fontSize: "1.25rem", color: "#555" }}>
         {text}
       </p>

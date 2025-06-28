@@ -197,7 +197,7 @@ export default function Inputs() {
                 <th>Unidad</th>
                 <th>Categoría</th>
                 <th>Proveedor</th>
-                <th>Costo Unitario</th>
+                <th>Costo Unitario(USD)</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -213,7 +213,7 @@ export default function Inputs() {
                       ? proveedorMap[ins.proveedor_id]
                       : `ID ${ins.proveedor_id} sin proveedor`}
                   </td>
-                  <td>{ins.costo_unitario}</td>
+                  <td>${ins.costo_unitario}</td>
                   <td>
                     <div className="action-buttons">
                       <button

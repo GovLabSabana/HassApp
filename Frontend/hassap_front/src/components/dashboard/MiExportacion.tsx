@@ -220,7 +220,7 @@ export default function MiExportacion() {
   const lineChartData = {
     labels: exportData.chartData.map(d => d.mes),
     datasets: [{
-      label: 'Exportaciones (Millones COP)',
+      label: 'Exportaciones (Millones USD)',
       data: exportData.chartData.map(d => d.valor),
       borderColor: 'rgba(72, 187, 120, 1)',
       backgroundColor: 'rgba(72, 187, 120, 0.1)',
@@ -271,7 +271,7 @@ export default function MiExportacion() {
         beginAtZero: true,
         title: {
             display: true,
-            text: 'Millones COP',
+            text: 'Millones USD',
             color: '#64748b',
             font: { size: 12, weight: 600 }
         },
@@ -295,7 +295,7 @@ export default function MiExportacion() {
         <div className="metric-card">
           <div className="metric-header">
             <div>
-              <div className="metric-title">Exportaciones del Mes</div>
+              <div className="metric-title">Exportaciones del Mes(USD)</div>
               <div className="metric-value">{formatCurrency(exportData.totalMes)}</div>
               <div className={`metric-change ${exportData.cambioMensual >= 0 ? 'positive' : 'negative'}`}>
                 {exportData.cambioMensual >= 0 ? '+' : ''}{exportData.cambioMensual.toFixed(1)}%

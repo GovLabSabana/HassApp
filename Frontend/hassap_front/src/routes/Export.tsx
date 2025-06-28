@@ -178,9 +178,9 @@ export default function Export() {
               <th className="export-table-th">FECHA</th>
               <th className="export-table-th">MÉTODO</th>
               <th className="export-table-th">TONELADAS</th>
-              <th className="export-table-th">VALOR FOB</th>
-              <th className="export-table-th">PUERTO SALIDA</th>
-              <th className="export-table-th">PUERTO LLEGADA</th>
+              <th className="export-table-th">VALOR FOB(USD)</th>
+              <th className="export-table-th">TERMINAL SALIDA</th>
+              <th className="export-table-th">TERMINAL LLEGADA</th>
               <th className="export-table-th">COMPRADOR</th>
               <th className="export-table-th">COSECHAS</th>
               <th className="export-table-th">ACCIONES</th>
@@ -193,7 +193,7 @@ export default function Export() {
                 <td className="export-table-td">{exp.fecha}</td>
                 <td className="export-table-td">{exp.metodo_salida}</td>
                 <td className="export-table-td">{exp.toneladas}</td>
-                <td className="export-table-td">{exp.valor_fob}</td>
+                <td className="export-table-td">${exp.valor_fob}</td>
                 <td className="export-table-td">{exp.puerto_salida}</td>
                 <td className="export-table-td">{exp.puerto_llegada}</td>
                 <td className="export-table-td">
