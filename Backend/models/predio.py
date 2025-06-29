@@ -4,6 +4,8 @@ from core.db import Base
 from models.rompimientos import cosecha_predio_table
 from models.municipio import Municipio
 from models.usuario import Usuario
+from models.certificacion_predio import CertificacionPredio
+
 
 
 class Predio(Base):
@@ -27,3 +29,8 @@ class Predio(Base):
     # Nueva relación muchos a muchos
     cosechas = relationship(
         "Cosecha", secondary=cosecha_predio_table, back_populates="predios", lazy="selectin")
+    
+    certificaciones = relationship(
+        "CertificacionPredio", back_populates="predio", cascade="all, delete-orphan"
+    )
+

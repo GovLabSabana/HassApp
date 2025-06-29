@@ -12,6 +12,7 @@ import models.municipio
 import models.producto
 import models.calidad
 
+
 # Modelos que empiezan a depender de los anteriores
 import models.predio
 import models.usuario
@@ -19,6 +20,10 @@ import models.usuario
 # Modelos que dependen de producto, calidad, usuario, predio, etc.
 import models.cosecha
 import models.insumo_cosecha
+import models.certificacion_predio
+import models.certificacion
+
+
 
 # Modelos con relaciones cruzadas más complejas
 import models.rompimientos
