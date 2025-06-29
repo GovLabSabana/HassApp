@@ -15,12 +15,13 @@ const Loader: React.FC<LoaderProps> = ({
   return (
     <div
       style={{
-        height: "100%",
-        width: "100%",
+        height: "100vh",
+        width: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        margin: "0 auto",
       }}
     >
       <SyncLoader color="#4a7a4a" />

@@ -6,6 +6,7 @@ import "../componentsStyles/Inputs.css";
 import data from "../../BD_Keys.json";
 import Layout from "./layouts/menu";
 import { toast } from "react-toastify";
+import Loader from "../components/utils/Loader";
 
 interface Insumo {
   id: number;
@@ -98,14 +99,18 @@ export default function Inputs() {
 
                   if (!res.ok) {
                     const errorText = await res.text();
-                    throw new Error(`Error al eliminar: ${res.status} - ${errorText}`);
+                    throw new Error(
+                      `Error al eliminar: ${res.status} - ${errorText}`
+                    );
                   }
 
                   toast.success("Insumo eliminado correctamente.");
                   fetchInsumos();
                 } catch (error) {
                   console.error("Error al eliminar insumo:", error);
-                  toast.error("No se pudo eliminar el insumo. Verifica permisos o el servidor.");
+                  toast.error(
+                    "No se pudo eliminar el insumo. Verifica permisos o el servidor."
+                  );
                 }
                 closeToast?.();
               }}
@@ -153,7 +158,7 @@ export default function Inputs() {
   const filtered = filterCategoria
     ? insumos.filter((i) => i.categoria_id === filterCategoria)
     : insumos;
-
+  if (loading) return <Loader />;
   return (
     <>
       <div className="production-header">
@@ -182,9 +187,7 @@ export default function Inputs() {
       </div>
 
       <div className="table-container">
-        {loading ? (
-          <div className="loading">Cargando insumos...</div>
-        ) : filtered.length === 0 ? (
+        {filtered.length === 0 ? (
           <div className="no-data">
             No se encontraron insumos con el filtro aplicado.
           </div>

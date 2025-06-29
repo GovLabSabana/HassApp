@@ -38,6 +38,8 @@ import ResetPassword from "./routes/Reset.tsx";
 import Developers from "./routes/Developers.tsx";
 import Layout from "./routes/layouts/menu.tsx";
 import { ToastContainer } from "react-toastify";
+import Dashboard2 from "./routes/DashboardTwo.tsx";
+import DashboardTwo from "./routes/DashboardTwo.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -80,6 +82,14 @@ const router = createBrowserRouter([
         element: (
           <Layout>
             <Dashboard />
+          </Layout>
+        ),
+      },
+      {
+        path: "dashboardprueba",
+        element: (
+          <Layout>
+            <DashboardTwo />
           </Layout>
         ),
       },

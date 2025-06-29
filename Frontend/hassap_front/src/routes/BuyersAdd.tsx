@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../componentsStyles/BuyersAdd.css"; 
+import "../componentsStyles/BuyersAdd.css";
 import { toast } from "react-toastify";
+import Loader from "../components/utils/Loader";
 
 const initialForm = {
   nombre: "",
@@ -19,6 +20,7 @@ export default function BuyersAdd() {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -36,7 +38,7 @@ export default function BuyersAdd() {
 
   const handleSubmit = async () => {
     if (!validate()) return;
-
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/compradores/`, {
         method: "POST",
@@ -52,13 +54,15 @@ export default function BuyersAdd() {
 
       toast.success("Comprador registrado exitosamente.");
       setSuccess(true);
-      setTimeout(() => navigate("/buyers"), 1500);
     } catch (err) {
       console.error("Error al registrar comprador:", err);
       toast.error("Error de conexión con el servidor.");
+    } finally {
+      navigate("/buyers");
+      setLoading(false);
     }
   };
-
+  if (loading) return <Loader text="Agregando Comprador" />;
   return (
     <div className="buyeradd">
       <h1>Agregar Comprador</h1>
@@ -71,7 +75,9 @@ export default function BuyersAdd() {
             value={form.nombre}
             onChange={(e) => setForm({ ...form, nombre: e.target.value })}
           />
-          {errors.nombre && <div className="error-message">{errors.nombre}</div>}
+          {errors.nombre && (
+            <div className="error-message">{errors.nombre}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -81,7 +87,9 @@ export default function BuyersAdd() {
             value={form.num_doc}
             onChange={(e) => setForm({ ...form, num_doc: e.target.value })}
           />
-          {errors.num_doc && <div className="error-message">{errors.num_doc}</div>}
+          {errors.num_doc && (
+            <div className="error-message">{errors.num_doc}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -91,7 +99,9 @@ export default function BuyersAdd() {
             value={form.ciudad}
             onChange={(e) => setForm({ ...form, ciudad: e.target.value })}
           />
-          {errors.ciudad && <div className="error-message">{errors.ciudad}</div>}
+          {errors.ciudad && (
+            <div className="error-message">{errors.ciudad}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -101,7 +111,9 @@ export default function BuyersAdd() {
             value={form.direccion}
             onChange={(e) => setForm({ ...form, direccion: e.target.value })}
           />
-          {errors.direccion && <div className="error-message">{errors.direccion}</div>}
+          {errors.direccion && (
+            <div className="error-message">{errors.direccion}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -121,7 +133,9 @@ export default function BuyersAdd() {
             value={form.contacto}
             onChange={(e) => setForm({ ...form, contacto: e.target.value })}
           />
-          {errors.contacto && <div className="error-message">{errors.contacto}</div>}
+          {errors.contacto && (
+            <div className="error-message">{errors.contacto}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -135,15 +149,17 @@ export default function BuyersAdd() {
             <option value={2}>NIT</option>
             <option value={3}>Cédula de Extranjería</option>
           </select>
-          {errors.tipo_doc && <div className="error-message">{errors.tipo_doc}</div>}
+          {errors.tipo_doc && (
+            <div className="error-message">{errors.tipo_doc}</div>
+          )}
         </div>
 
         <div className="buttons-container">
           <button className="btn-primary-buyersadd" onClick={handleSubmit}>
             GUARDAR
           </button>
-          <button 
-            className="btn-secondary-buyersadd" 
+          <button
+            className="btn-secondary-buyersadd"
             onClick={() => navigate("/buyers")}
           >
             CANCELAR

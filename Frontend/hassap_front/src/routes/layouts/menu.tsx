@@ -37,7 +37,7 @@ export default function Layout({ children }) {
       </div>
 
       <main className="layout-main">
-        <div>{children}</div>
+        <div style={{ width: "100%" }}>{children}</div>
       </main>
     </div>
   );

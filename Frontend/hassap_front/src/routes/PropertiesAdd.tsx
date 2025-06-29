@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import "../componentsStyles/Prediosadd.css";
 import MunicipioSelector from "../components/forms/SelectMunicipio";
 import { toast } from "react-toastify";
+import Loader from "../components/utils/Loader";
 
 export default function PropertiesAdd() {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
@@ -102,6 +104,7 @@ export default function PropertiesAdd() {
     e.preventDefault();
     const isValid = validateForm();
     if (!isValid) return;
+    setLoading(true);
 
     try {
       const res = await fetch(`${API_URL}/predios/`, {
@@ -137,9 +140,11 @@ export default function PropertiesAdd() {
       }
 
       toast.success("Operación exitosa!");
-      navigate("/Properties");
     } catch (error) {
       alert("Error en la petición");
+    } finally {
+      navigate("/Properties");
+      setLoading(false);
     }
   };
 
@@ -166,7 +171,7 @@ export default function PropertiesAdd() {
       />
     </div>
   );
-
+  if (loading) return <Loader />;
   return (
     <div className="add-properties-layout">
       <main className="add-properties-main">

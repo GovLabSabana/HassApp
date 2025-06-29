@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import data from "../../../BD_Keys.json";
 
 const municipiosOriginal = data.municipios;
-const defaultOption = { id: 0, name: "Todos los municipios" };
+const defaultOption = { id: 0, name: "" };
 const municipios = [defaultOption, ...municipiosOriginal];
 
 interface MunicipioSelectorProps {
@@ -46,7 +46,7 @@ const MunicipioSelector: React.FC<MunicipioSelectorProps> = ({
 
   return (
     <div
-      style={{ width: "250px", fontFamily: "sans-serif", position: "relative" }}
+      style={{ width: "full", fontFamily: "sans-serif", position: "relative" }}
     >
       <input
         type="text"
@@ -96,7 +96,8 @@ const MunicipioSelector: React.FC<MunicipioSelectorProps> = ({
               style={{
                 padding: "8px",
                 cursor: "pointer",
-                backgroundColor: selected?.id === m.id ? "#f0f0f0" : "transparent",
+                backgroundColor:
+                  selected?.id === m.id ? "#f0f0f0" : "transparent",
                 color: "black",
               }}
               onMouseDown={(e) => e.preventDefault()}

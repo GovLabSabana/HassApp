@@ -77,7 +77,14 @@ export default function Production() {
       ({ closeToast }) => (
         <div>
           <p>¿Estás seguro de eliminar la producción?</p>
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "10px" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "8px",
+              marginTop: "10px",
+            }}
+          >
             <button
               onClick={async () => {
                 try {
@@ -93,13 +100,25 @@ export default function Production() {
                 }
                 closeToast?.();
               }}
-              style={{ backgroundColor: "#d9534f", color: "white", border: "none", padding: "6px 12px", borderRadius: "4px" }}
+              style={{
+                backgroundColor: "#d9534f",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
             >
               Confirmar
             </button>
             <button
               onClick={() => closeToast?.()}
-              style={{ backgroundColor: "#6c757d", color: "white", border: "none", padding: "6px 12px", borderRadius: "4px" }}
+              style={{
+                backgroundColor: "#6c757d",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
             >
               Cancelar
             </button>
@@ -140,113 +159,108 @@ export default function Production() {
   }
 
   return (
-    <div className="production-container">
-      <main>
-        <h1 className="production-title">Gestión de Producción</h1>
+    <main>
+      <h1 className="production-title">Gestión de Producción</h1>
 
-        <div className="filters-section">
-          <h3 className="filters-title">Filtros de búsqueda</h3>
-          <div className="filters-grid">
-            <div className="filter-group">
-              <label className="filter-label">Desde</label>
-              <input
-                className="filter-input"
-                type="date"
-                value={fechaDesde}
-                onChange={(e) => setFechaDesde(e.target.value)}
-              />
-            </div>
-            <div className="filter-group">
-              <label className="filter-label">Hasta</label>
-              <input
-                className="filter-input"
-                type="date"
-                value={fechaHasta}
-                onChange={(e) => setFechaHasta(e.target.value)}
-              />
-            </div>
-            <div className="filter-group">
-              <label className="filter-label">Predio</label>
-              <input
-                className="filter-input"
-                value={predioId}
-                onChange={(e) => setPredioId(e.target.value)}
-              />
-            </div>
-            <div className="filter-group">
-              <label className="filter-label">Producto</label>
-              <input
-                className="filter-input"
-                value={productoId}
-                onChange={(e) => setProductoId(e.target.value)}
-              />
-            </div>
+      <div className="filters-section">
+        <h3 className="filters-title">Filtros de búsqueda</h3>
+        <div className="filters-grid">
+          <div className="filter-group">
+            <label className="filter-label">Desde</label>
+            <input
+              className="filter-input"
+              type="date"
+              value={fechaDesde}
+              onChange={(e) => setFechaDesde(e.target.value)}
+            />
+          </div>
+          <div className="filter-group">
+            <label className="filter-label">Hasta</label>
+            <input
+              className="filter-input"
+              type="date"
+              value={fechaHasta}
+              onChange={(e) => setFechaHasta(e.target.value)}
+            />
+          </div>
+          <div className="filter-group">
+            <label className="filter-label">Predio</label>
+            <input
+              className="filter-input"
+              value={predioId}
+              onChange={(e) => setPredioId(e.target.value)}
+            />
+          </div>
+          <div className="filter-group">
+            <label className="filter-label">Producto</label>
+            <input
+              className="filter-input"
+              value={productoId}
+              onChange={(e) => setProductoId(e.target.value)}
+            />
           </div>
         </div>
+      </div>
 
-        <table className="production-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Fecha</th>
-              <th>Producto</th>
-              <th>Calidad</th>
-              <th>Toneladas</th>
-              <th>Hectáreas</th>
-              <th>Observaciones</th>
-              <th>Predios</th>
-              <th>Insumos(cantidad)</th>
-              <th>Acciones</th>
+      <table className="production-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Producto</th>
+            <th>Calidad</th>
+            <th>Toneladas</th>
+            <th>Hectáreas</th>
+            <th>Observaciones</th>
+            <th>Predios</th>
+            <th>Insumos(cantidad)</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filtered.map((c) => (
+            <tr key={c.id}>
+              <td>{c.id}</td>
+              <td>{c.fecha}</td>
+              <td>{productosMap.get(c.producto_id) || "Desconocido"}</td>
+              <td>{calidadesMap.get(c.calidad_id) || "Desconocido"}</td>
+              <td>{c.toneladas}</td>
+              <td>{c.hectareas}</td>
+              <td>{c.observaciones?.trim() || "Sin observaciones"}</td>
+              <td>{c.predios.map((p) => p.nombre).join(", ")}</td>
+              <td className="insumos-cell">
+                {c.insumos.map((i) => (
+                  <span key={i.insumo_id} className="insumo-item">
+                    {i.nombre_comercial} ({i.cantidad})
+                  </span>
+                ))}
+              </td>
+              <td>
+                <div className="action-buttons">
+                  <button
+                    className="btn btn-edit"
+                    onClick={() => navigate(`/production/edit?id=${c.id}`)}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    className="btn btn-delete"
+                    onClick={() => handleDelete(c.id)}
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {filtered.map((c) => (
-              <tr key={c.id}>
-                <td>{c.id}</td>
-                <td>{c.fecha}</td>
-                <td>{productosMap.get(c.producto_id) || "Desconocido"}</td>
-                <td>{calidadesMap.get(c.calidad_id) || "Desconocido"}</td>
-                <td>{c.toneladas}</td>
-                <td>{c.hectareas}</td>
-                <td>{c.observaciones?.trim() || "Sin observaciones"}</td>
-                <td>{c.predios.map((p) => p.nombre).join(", ")}</td>
-                <td className="insumos-cell">
-                  {c.insumos.map((i) => (
-                    <span key={i.insumo_id} className="insumo-item">
-                      {i.nombre_comercial} ({i.cantidad})
-                    </span>
-                  ))}
-                </td>
-                <td>
-                  <div className="action-buttons">
-                    <button
-                      className="btn btn-edit"
-                      onClick={() => navigate(`/production/edit?id=${c.id}`)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      className="btn btn-delete"
-                      onClick={() => handleDelete(c.id)}
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          ))}
+        </tbody>
+      </table>
 
-        <div className="add-button-container">
-          <button
-            className="btn-add"
-            onClick={() => navigate("/production/add")}
-          >
-            + Agregar Nueva Producción
-          </button>
-        </div>
-      </main>
-    </div>
+      <div className="add-button-container">
+        <button className="btn-add" onClick={() => navigate("/production/add")}>
+          + Agregar Nueva Producción
+        </button>
+      </div>
+    </main>
   );
 }

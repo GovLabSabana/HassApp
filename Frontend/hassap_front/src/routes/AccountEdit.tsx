@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../componentsStyles/Accountedit.css";
 import { toast } from "react-toastify";
+import Loader from "../components/utils/Loader";
 
 export default function AccountEdit() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export default function AccountEdit() {
     logo_document: null as File | null,
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -59,8 +60,6 @@ export default function AccountEdit() {
       } catch (err) {
         console.error(err);
         setError("Error al cargar los datos");
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -129,6 +128,7 @@ export default function AccountEdit() {
       return;
     }
 
+    setLoading(true);
     try {
       const formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
@@ -151,10 +151,12 @@ export default function AccountEdit() {
       console.error(err);
       setError("Error al actualizar los datos");
       toast.error("No se pudieron guardar los cambios.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) return <div className="account-loading">Cargando...</div>;
+  if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
 
   return (
@@ -300,7 +302,9 @@ export default function AccountEdit() {
                 Seleccionar archivo
               </label>
               {formData.rut_document && (
-                <div className="account-file-name">{formData.rut_document.name}</div>
+                <div className="account-file-name">
+                  {formData.rut_document.name}
+                </div>
               )}
             </label>
           </div>
@@ -321,7 +325,9 @@ export default function AccountEdit() {
                 Seleccionar archivo
               </label>
               {formData.logo_document && (
-                <div className="account-file-name">{formData.logo_document.name}</div>
+                <div className="account-file-name">
+                  {formData.logo_document.name}
+                </div>
               )}
             </label>
           </div>

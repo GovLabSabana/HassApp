@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import "../componentsStyles/BuyersAdd.css"; 
+import "../componentsStyles/BuyersAdd.css";
 import { toast } from "react-toastify";
+import Loader from "../components/utils/Loader";
 
 const initialForm = {
   nombre: "",
@@ -22,12 +23,15 @@ export default function BuyersEdit() {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
+  const [loadingData, setLoadingData] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (isEdit) fetchComprador();
   }, [isEdit]);
 
   const fetchComprador = async () => {
+    setLoadingData(true);
     try {
       const res = await fetch(`${API_URL}/compradores/${id}`);
       const data = await res.json();
@@ -42,6 +46,9 @@ export default function BuyersEdit() {
       });
     } catch (err) {
       console.error(err);
+      toast.error("Error al cargar datos del comprador.");
+    } finally {
+      setLoadingData(false);
     }
   };
 
@@ -60,7 +67,9 @@ export default function BuyersEdit() {
   };
 
   const handleSubmit = async () => {
-    if (!validate()) return;
+    if (!validate()) return; // No actives loader si no pasa validación
+
+    setSaving(true);
 
     const method = isEdit ? "PUT" : "POST";
     const url = isEdit
@@ -89,18 +98,20 @@ export default function BuyersEdit() {
           : "Comprador registrado correctamente."
       );
       setSuccess(true);
-      setTimeout(() => navigate("/buyers"), 1500);
+      navigate("/buyers");
     } catch (err) {
       console.error("Error al guardar comprador:", err);
       toast.error("Error de conexión con el servidor.");
+    } finally {
+      setSaving(false);
     }
-};
+  };
 
+  if (loadingData) return <Loader />;
   return (
     <div className="buyeradd">
-      <h1>
-        {isEdit ? "Editar Comprador" : "Agregar Comprador"}
-      </h1>
+      {saving && <Loader />}
+      <h1>{isEdit ? "Editar Comprador" : "Agregar Comprador"}</h1>
 
       <div className="form-container">
         <div className="form-group">
@@ -110,7 +121,9 @@ export default function BuyersEdit() {
             value={form.nombre}
             onChange={(e) => setForm({ ...form, nombre: e.target.value })}
           />
-          {errors.nombre && <div className="error-message">{errors.nombre}</div>}
+          {errors.nombre && (
+            <div className="error-message">{errors.nombre}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -120,7 +133,9 @@ export default function BuyersEdit() {
             value={form.num_doc}
             onChange={(e) => setForm({ ...form, num_doc: e.target.value })}
           />
-          {errors.num_doc && <div className="error-message">{errors.num_doc}</div>}
+          {errors.num_doc && (
+            <div className="error-message">{errors.num_doc}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -130,7 +145,9 @@ export default function BuyersEdit() {
             value={form.ciudad}
             onChange={(e) => setForm({ ...form, ciudad: e.target.value })}
           />
-          {errors.ciudad && <div className="error-message">{errors.ciudad}</div>}
+          {errors.ciudad && (
+            <div className="error-message">{errors.ciudad}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -140,7 +157,9 @@ export default function BuyersEdit() {
             value={form.direccion}
             onChange={(e) => setForm({ ...form, direccion: e.target.value })}
           />
-          {errors.direccion && <div className="error-message">{errors.direccion}</div>}
+          {errors.direccion && (
+            <div className="error-message">{errors.direccion}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -160,7 +179,9 @@ export default function BuyersEdit() {
             value={form.contacto}
             onChange={(e) => setForm({ ...form, contacto: e.target.value })}
           />
-          {errors.contacto && <div className="error-message">{errors.contacto}</div>}
+          {errors.contacto && (
+            <div className="error-message">{errors.contacto}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -174,15 +195,17 @@ export default function BuyersEdit() {
             <option value={2}>NIT</option>
             <option value={3}>Cédula de Extranjería</option>
           </select>
-          {errors.tipo_doc && <div className="error-message">{errors.tipo_doc}</div>}
+          {errors.tipo_doc && (
+            <div className="error-message">{errors.tipo_doc}</div>
+          )}
         </div>
 
         <div className="buttons-container">
           <button className="btn-primary-buyersadd" onClick={handleSubmit}>
             {isEdit ? "GUARDAR CAMBIOS" : "AÑADIR"}
           </button>
-          <button 
-            className="btn-secondary-buyersadd" 
+          <button
+            className="btn-secondary-buyersadd"
             onClick={() => navigate("/buyers")}
           >
             CANCELAR
