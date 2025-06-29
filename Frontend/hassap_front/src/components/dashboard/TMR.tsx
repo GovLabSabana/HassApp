@@ -10,6 +10,15 @@ import {
   Tooltip,
 } from "chart.js";
 import { useEffect, useState } from "react";
+import {
+  LineChart,
+  Line as ReLine,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as ReTooltip,
+  ResponsiveContainer,
+} from "recharts";
 import "../../componentsStyles/Metricas.css";
 
 ChartJS.register(
@@ -22,8 +31,6 @@ ChartJS.register(
   Legend,
   Filler
 );
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 export default function TRM() {
   const [exportData, setExportData] = useState({
@@ -40,30 +47,25 @@ export default function TRM() {
   const AV_API_KEY = import.meta.env.VITE_ALPHA_KEY;
 
   useEffect(() => {
+    fetchTRM();
     fetchTRMHistorico();
     fetchUSDCOP();
   }, []);
 
   const fetchTRMHistorico = async () => {
-    try {
-      const res = await fetch(
-        `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=COP&apikey=${AV_API_KEY}`
-      );
-      const data = await res.json();
-      console.log(data);
-
-      const raw = data["Time Series FX (Daily)"];
-      const arr = Object.entries(raw)
-        .slice(0, 60)
-        .reverse()
-        .map(([date, vals]) => ({
-          date,
-          close: parseFloat(vals["4. close"]),
-        }));
-      setTrmHistorico(arr);
-    } catch (error) {
-      console.log("Error fetching TRM historical data:", error);
-    }
+    const res = await fetch(
+      `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=COP&apikey=${AV_API_KEY}`
+    );
+    const data = await res.json();
+    const raw = data["Time Series FX (Daily)"];
+    const arr = Object.entries(raw)
+      .slice(0, 60)
+      .reverse()
+      .map(([date, vals]) => ({
+        date,
+        close: parseFloat(vals["4. close"]),
+      }));
+    setTrmHistorico(arr);
   };
 
   const fetchUSDCOP = async () => {
@@ -75,6 +77,51 @@ export default function TRM() {
       json["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
     );
     setUsdCop(rate);
+  };
+
+  const fetchTRM = async () => {
+    try {
+      const urltrm =
+        "https://www.larepublica.co/indicadores-economicos/mercado-cambiario/dolar";
+      const response = await fetch(
+        "https://api.allorigins.win/get?url=" + encodeURIComponent(urltrm)
+      );
+      const data = await response.json();
+
+      if (!data.contents)
+        throw new Error("No se recibió contenido de la página");
+
+      const html = data.contents;
+      const match = html.match(
+        /<span class="price">\s*\$?\s*([0-9.,]+)\s*<\/span>/i
+      );
+
+      if (!match) throw new Error("No se encontró el valor del TRM");
+
+      const valorLimpio = match[1].replace(/\./g, "").replace(",", ".");
+      const trmActual = parseFloat(valorLimpio);
+
+      if (isNaN(trmActual) || trmActual < 1000)
+        throw new Error("Valor TRM no válido");
+
+      let cambioPercentual = 0;
+      const cambioMatch = html.match(
+        /<span class="variacion (?:positivo|negativo)">\s*([+-]?[0-9.,]+)%/i
+      );
+      if (cambioMatch) {
+        cambioPercentual = parseFloat(cambioMatch[1].replace(",", "."));
+      }
+
+      setExportData((prev) => ({
+        ...prev,
+        trm: {
+          valor: trmActual,
+          cambio: cambioPercentual || 0,
+        },
+      }));
+    } catch (error) {
+      console.error("Error obteniendo TRM:", error.message);
+    }
   };
 
   const formatCurrency = (value) =>
@@ -90,9 +137,29 @@ export default function TRM() {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value);
+  const lineChartData = {
+    labels: exportData.chartData.map((d) => d.mes),
+    datasets: [
+      {
+        label: "Exportaciones (Millones USD)",
+        data: exportData.chartData.map((d) => d.valor),
+        borderColor: "rgba(72, 187, 120, 1)",
+        backgroundColor: "rgba(72, 187, 120, 0.1)",
+        pointBackgroundColor: "rgba(72, 187, 120, 1)",
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 2,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  };
 
   return (
     <>
+      {/* Card TRM Hoy */}
       <div className="metric-card trm-card">
         <div className="metric-header">
           <div>
@@ -123,7 +190,49 @@ export default function TRM() {
           </div>
         </div>
       </div>
-
+      {/* Card TRM 2 meses */}
+      {trmHistorico.length > 0 && (
+        <div className="metric-card">
+          <div className="metric-title">Valor TRM (últimos 2 meses, COP)</div>
+          <div
+            className="chart-container"
+            style={{ height: "250px", marginTop: "1rem" }}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={trmHistorico}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(148,163,184,0.2)"
+                />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fontSize: 10 }}
+                  tickFormatter={(tick) => tick.slice(5)}
+                />
+                <YAxis
+                  tickFormatter={(v) => Intl.NumberFormat("es-CO").format(v)}
+                />
+                <ReTooltip
+                  formatter={(v) => {
+                    const num =
+                      typeof v === "number" ? v : parseFloat(v as string);
+                    return Intl.NumberFormat("es-CO", {
+                      style: "currency",
+                      currency: "COP",
+                    }).format(num);
+                  }}
+                />
+                <ReLine
+                  type="monotone"
+                  dataKey="close"
+                  stroke="#8884d8"
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
       {/* Card USD Hoy */}
       <div className="metric-card">
         <div className="metric-header">

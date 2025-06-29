@@ -88,7 +88,12 @@ export default function General() {
 
         {/* div4 */}
         <div className="general-cell" style={{ gridArea: "3 / 1 / 5 / 2" }}>
-          <KPICard title="Eficiencia" value="94.2%" change="+3.4%" positive />
+          <KPICard
+            title="Rendimiento Tonelada/Hectarea"
+            value="94.2%"
+            change="+3.4%"
+            positive
+          />
         </div>
 
         {/* div5 */}
