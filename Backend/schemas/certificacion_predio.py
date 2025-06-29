@@ -24,3 +24,9 @@ class CertificacionPredioRead(BaseModel):
     certificacion: CertificacionBase  # Incluye el nombre desde el catálogo
 
     model_config = ConfigDict(from_attributes=True)
+
+# Update certificación predio (sin modificar el archivo)
+class CertificacionPredioUpdate(BaseModel):
+    fecha_expedicion: Optional[date]
+    fecha_vencimiento: Optional[date]
+    certificacion_id: Optional[int]  # por si deseas permitir cambiar la certificación asociada

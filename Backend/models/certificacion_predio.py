@@ -6,6 +6,7 @@ from core.db import Base
 class CertificacionPredio(Base):
     __tablename__ = "certificacion_predio"
 
+
     id = Column(Integer, primary_key=True, index=True)
     predio_id = Column(Integer, ForeignKey("predio.id"), nullable=False)
     certificacion_id = Column(Integer, ForeignKey("certificacion.id"), nullable=False)
@@ -14,4 +15,4 @@ class CertificacionPredio(Base):
     fecha_vencimiento = Column(Date, nullable=True)
 
     predio = relationship("Predio", back_populates="certificaciones")
-    certificacion = relationship("Certificacion")
+    certificacion = relationship("Certificacion", lazy="joined")

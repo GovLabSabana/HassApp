@@ -45,3 +45,10 @@ def url_encode_s3_object_url(url: str) -> str:
     parts = urlsplit(url)
     path = quote(parts.path)
     return urlunsplit((parts.scheme, parts.netloc, path, parts.query, parts.fragment))
+
+def delete_file_from_s3(s3_key: str):
+  
+    try:
+        s3_client.delete_object(Bucket=AWS_S3_BUCKET_NAME, Key=s3_key)
+    except Exception as e:
+        raise Exception(f"No se pudo eliminar el archivo de S3: {str(e)}")
