@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
 import type { ChartOptions } from "chart.js";
 import {
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+} from "chart.js";
+import { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
+import {
+  CartesianGrid,
   LineChart,
+  Legend as ReLegend,
   Line as ReLine,
+  ResponsiveContainer,
+  Tooltip as ReTooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip as ReTooltip,
-  Legend as ReLegend,
-  ResponsiveContainer,
 } from "recharts";
 import "../../componentsStyles/Metricas.css";
 import "../../componentsStyles/dashboard/Export.css";
@@ -39,6 +39,7 @@ ChartJS.register(
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function MiExportacion() {
+  const [loading, setLoading] = useState(true);
   const [exportData, setExportData] = useState({
     totalMes: 0,
     cambioMensual: 0,
@@ -48,11 +49,6 @@ export default function MiExportacion() {
   });
   const [chartReady, setChartReady] = useState(false);
   const [historicalData, setHistoricalData] = useState([]);
-  const [trmHistorico, setTrmHistorico] = useState<
-    { date: string; close: number }[]
-  >([]);
-  const [usdCop, setUsdCop] = useState<number | null>(null);
-  const AV_API_KEY = import.meta.env.VITE_ALPHA_KEY;
 
   useEffect(() => {
     fetchExportData();
@@ -191,12 +187,6 @@ export default function MiExportacion() {
       currency: "COP",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(value);
-
-  const formatTRM = (value) =>
-    new Intl.NumberFormat("es-CO", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
     }).format(value);
 
   const lineChartData = {

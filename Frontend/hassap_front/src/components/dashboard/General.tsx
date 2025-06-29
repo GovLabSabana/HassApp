@@ -52,9 +52,8 @@ const ChartCard: React.FC<ChartCardProps> = ({
   subtitle,
   children,
   span = "span-1",
-  height = "height-80",
 }) => (
-  <div className={`chart-card ${span} ${height}`}>
+  <div className={`chart-card ${span}`}>
     <div className="chart-header">
       <h3 className="chart-title">{title}</h3>
       {subtitle && <p className="chart-subtitle">{subtitle}</p>}

@@ -45,19 +45,25 @@ export default function TRM() {
   }, []);
 
   const fetchTRMHistorico = async () => {
-    const res = await fetch(
-      `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=COP&apikey=${AV_API_KEY}`
-    );
-    const data = await res.json();
-    const raw = data["Time Series FX (Daily)"];
-    const arr = Object.entries(raw)
-      .slice(0, 60)
-      .reverse()
-      .map(([date, vals]) => ({
-        date,
-        close: parseFloat(vals["4. close"]),
-      }));
-    setTrmHistorico(arr);
+    try {
+      const res = await fetch(
+        `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=COP&apikey=${AV_API_KEY}`
+      );
+      const data = await res.json();
+      console.log(data);
+
+      const raw = data["Time Series FX (Daily)"];
+      const arr = Object.entries(raw)
+        .slice(0, 60)
+        .reverse()
+        .map(([date, vals]) => ({
+          date,
+          close: parseFloat(vals["4. close"]),
+        }));
+      setTrmHistorico(arr);
+    } catch (error) {
+      console.log("Error fetching TRM historical data:", error);
+    }
   };
 
   const fetchUSDCOP = async () => {
