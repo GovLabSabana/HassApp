@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  PieChart,
-  Pie,
   Cell,
-  Tooltip,
   Legend,
+  Pie,
+  PieChart,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
+import "../../componentsStyles/Metricas.css";
+import "../../componentsStyles/dashboard/Sondeo.css";
+import Loader from "../utils/Loader";
 
-// Puedes personalizar esta paleta de colores
 const COLORS = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#FF8042",
-  "#AA66CC",
-  "#FF4444",
+  "#3B82F6",
+  "#10B981",
+  "#F59E0B",
+  "#EF4444",
+  "#8B5CF6",
+  "#EC4899",
 ];
 
 const convertirOpciones = (conteo_opciones) => {
@@ -59,37 +61,55 @@ const GraficosTorta = () => {
   }, [token]);
 
   if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (loading) return <Loader />;
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
-      {preguntas.map((pregunta, index) => {
+    <div className="graficos-torta-grid">
+      {preguntas.map((pregunta) => {
         const data = convertirOpciones(pregunta.conteo_opciones);
 
         return (
-          <div key={pregunta.id} style={{ width: 300 }}>
-            <h4 style={{ fontSize: "1rem", marginBottom: "8px" }}>
-              {pregunta.texto}
-            </h4>
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={data}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  fill="#8884d8"
-                  label
-                >
-                  {data.map((_, i) => (
-                    <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+          <div key={pregunta.id} className="kpi-card torta-card">
+            <h4 className="kpi-title">{pregunta.texto}</h4>
+            <div className="torta-chart-container">
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={data}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    innerRadius={40}
+                    label={({ name, percent }) =>
+                      `${name}: ${(percent * 100).toFixed(0)}%`
+                    }
+                  >
+                    {data.map((_, i) => (
+                      <Cell
+                        key={`cell-${i}`}
+                        fill={COLORS[i % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "rgba(255, 255, 255, 0.85)",
+                      borderRadius: "0.5rem",
+                      border: "1px solid #e5e7eb",
+                      color: "#fff",
+                    }}
+                  />
+                  <Legend
+                    wrapperStyle={{
+                      fontSize: "0.75rem",
+                      color: "#6b7280",
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         );
       })}

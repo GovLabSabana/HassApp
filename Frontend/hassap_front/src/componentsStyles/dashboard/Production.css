@@ -1,0 +1,44 @@
+production-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, auto);
+  grid-column-gap: 1rem; /* espacio horizontal */
+  grid-row-gap: 1rem; /* espacio vertical */
+}
+
+/* Áreas de escritorio */
+.production-grid .div1 {
+  grid-area: 1 / 1 / 2 / 3;
+}
+.production-grid .div2 {
+  grid-area: 1 / 3 / 2 / 5;
+}
+.production-grid .div3 {
+  grid-area: 2 / 1 / 3 / 3;
+}
+.production-grid .div4 {
+  grid-area: 2 / 3 / 3 / 5;
+}
+.production-grid .div5 {
+  grid-area: 3 / 1 / 4 / 5;
+  max-width: 1400px;
+  width: 100%;
+  margin: auto;
+}
+
+/* Responsive: todo en columna */
+@media (max-width: 768px) {
+  .production-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+
+  /* Cada div ocupa toda la fila */
+  .production-grid .div1,
+  .production-grid .div2,
+  .production-grid .div3,
+  .production-grid .div4,
+  .production-grid .div5 {
+    grid-area: auto;
+  }
+}

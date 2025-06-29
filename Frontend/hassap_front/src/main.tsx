@@ -2,44 +2,41 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./routes/Login.tsx";
-import ForgotPass from "./routes/ForgotPass.tsx";
-import Signup from "./routes/Signup.tsx";
-import Dashboard from "./routes/Dashboard.tsx";
+import { ToastContainer } from "react-toastify";
 import Account from "./routes/Account.tsx";
-import ChangePass from "./routes/ChangePass.tsx";
 import AccountEdit from "./routes/AccountEdit.tsx";
+import Buyers from "./routes/Buyers.tsx";
+import BuyersAdd from "./routes/BuyersAdd.tsx";
+import BuyersEdit from "./routes/BuyersEdit.tsx";
+import ChangePass from "./routes/ChangePass.tsx";
+import Dashboard from "./routes/Dashboard.tsx";
+import Developers from "./routes/Developers.tsx";
 import Export from "./routes/Export.tsx";
 import ExportAdd from "./routes/ExportAdd.tsx";
 import ExportEdit from "./routes/ExportEdit.tsx";
 import ExportHistory from "./routes/ExportHistory.tsx";
-import Suppliers from "./routes/Suppliers.tsx";
-import SuppliersAdd from "./routes/SuppliersAdd.tsx";
-import SuppliersEdit from "./routes/SuppliersEdit.tsx";
-import Buyers from "./routes/Buyers.tsx";
-import BuyersAdd from "./routes/BuyersAdd.tsx";
-import BuyersEdit from "./routes/BuyersEdit.tsx";
-import Production from "./routes/Production.tsx";
-import ProductionAdd from "./routes/ProductionAdd.tsx";
-import ProductionEdit from "./routes/ProductionEdit.tsx";
+import ForgotPass from "./routes/ForgotPass.tsx";
+import GoBack from "./routes/GoBack.tsx";
+import HistoricConsumption from "./routes/HistoricConsumption.tsx";
 import Inputs from "./routes/Inputs.tsx";
 import InputsAdd from "./routes/InputsAdd.tsx";
 import InputsEdit from "./routes/InputsEdit.tsx";
-import HistoricConsumption from "./routes/HistoricConsumption.tsx";
+import Layout from "./routes/layouts/menu.tsx";
+import Login from "./routes/Login.tsx";
+import Production from "./routes/Production.tsx";
+import ProductionAdd from "./routes/ProductionAdd.tsx";
+import ProductionEdit from "./routes/ProductionEdit.tsx";
 import Properties from "./routes/Properties.tsx";
 import PropertiesAdd from "./routes/PropertiesAdd.tsx";
 import PropertiesEdit from "./routes/PropertiesEdit.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 import PublicRoute from "./routes/PublicRoute.tsx";
-import GoBack from "./routes/GoBack.tsx";
-import "./index.css";
-import Main from "./routes/sondeo/Main.tsx";
 import ResetPassword from "./routes/Reset.tsx";
-import Developers from "./routes/Developers.tsx";
-import Layout from "./routes/layouts/menu.tsx";
-import { ToastContainer } from "react-toastify";
-import Dashboard2 from "./routes/DashboardTwo.tsx";
-import DashboardTwo from "./routes/DashboardTwo.tsx";
+import Signup from "./routes/Signup.tsx";
+import Main from "./routes/sondeo/Main.tsx";
+import Suppliers from "./routes/Suppliers.tsx";
+import SuppliersAdd from "./routes/SuppliersAdd.tsx";
+import SuppliersEdit from "./routes/SuppliersEdit.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -82,14 +79,6 @@ const router = createBrowserRouter([
         element: (
           <Layout>
             <Dashboard />
-          </Layout>
-        ),
-      },
-      {
-        path: "dashboardprueba",
-        element: (
-          <Layout>
-            <DashboardTwo />
           </Layout>
         ),
       },

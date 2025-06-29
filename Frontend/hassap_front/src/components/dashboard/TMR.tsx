@@ -1,4 +1,3 @@
-import type { ChartOptions } from "chart.js";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -11,15 +10,6 @@ import {
   Tooltip,
 } from "chart.js";
 import { useEffect, useState } from "react";
-import {
-  CartesianGrid,
-  LineChart,
-  Line as ReLine,
-  ResponsiveContainer,
-  Tooltip as ReTooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import "../../componentsStyles/Metricas.css";
 
 ChartJS.register(

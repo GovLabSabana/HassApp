@@ -1,0 +1,10 @@
+.graficos-torta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+/* Para un poco más de separación del gráfico */
+.torta-chart-container {
+  margin-top: 0.5rem;
+}

@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  BarChart,
   Bar,
-  LineChart,
+  BarChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
 import "../../componentsStyles/Metricas.css";
+import "../../componentsStyles/dashboard/Production.css";
+import Loader from "../utils/Loader";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -34,7 +36,7 @@ export default function MiProduccion() {
           resCosechas,
           resProduccion,
           resComparative,
-          resRespuestas
+          resRespuestas,
         ] = await Promise.all([
           fetch(`${API_URL}/estadisticas/rendimiento-cosecha`, {
             headers: {
@@ -65,20 +67,23 @@ export default function MiProduccion() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          })
+          }),
         ]);
 
         // Procesar datos de rendimiento
         if (resRendimiento.ok) {
           const data = await resRendimiento.json();
           const grouped = {};
-          data.forEach(item => {
+          data.forEach((item) => {
             const fecha = new Date(item.fecha);
-            const mes = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`;
+            const mes = `${fecha.getFullYear()}-${String(
+              fecha.getMonth() + 1
+            ).padStart(2, "0")}`;
             const producto = item.producto;
 
             if (!grouped[mes]) grouped[mes] = {};
-            if (!grouped[mes][producto]) grouped[mes][producto] = { toneladas: 0, hectareas: 0 };
+            if (!grouped[mes][producto])
+              grouped[mes][producto] = { toneladas: 0, hectareas: 0 };
 
             grouped[mes][producto].toneladas += parseFloat(item.toneladas);
             grouped[mes][producto].hectareas += parseFloat(item.hectareas);
@@ -86,10 +91,14 @@ export default function MiProduccion() {
 
           const result = Object.entries(grouped).map(([mes, productos]) => {
             const entry: Record<string, any> = { mes };
-            const productEntries = productos as Record<string, { toneladas: number, hectareas: number }>;
+            const productEntries = productos as Record<
+              string,
+              { toneladas: number; hectareas: number }
+            >;
             for (const prod in productEntries) {
-                const { toneladas, hectareas } = productEntries[prod];
-                entry[prod] = hectareas > 0 ? +(toneladas / hectareas).toFixed(2) : 0;
+              const { toneladas, hectareas } = productEntries[prod];
+              entry[prod] =
+                hectareas > 0 ? +(toneladas / hectareas).toFixed(2) : 0;
             }
             return entry;
           });
@@ -146,15 +155,7 @@ export default function MiProduccion() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="export-metrics">
-        <div className="metrics-grid">
-          <div className="metric-card loading">
-            <div className="metric-title">Cargando datos de producción...</div>
-          </div>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   const missingEstimacion = respuestas && !respuestas.produccion_estimada;
@@ -163,11 +164,13 @@ export default function MiProduccion() {
   return (
     <div className="export-metrics">
       <h3 className="metrics-subtitle">Mi Producción</h3>
-      <div className="metrics-grid">
+      <div className="production-grid">
         {/* Gráfico de Rendimiento */}
         {rendimientoData.length > 0 && (
-          <div className="metric-card">
-            <div className="metric-title">Rendimiento de Cosechas por Producto</div>
+          <div className="metric-card div1">
+            <div className="metric-title">
+              Rendimiento de Cosechas por Producto
+            </div>
             <div style={{ height: 300 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={rendimientoData}>
@@ -177,12 +180,14 @@ export default function MiProduccion() {
                   <Tooltip />
                   <Legend />
                   {Object.keys(rendimientoData[0])
-                    .filter(key => key !== "mes")
+                    .filter((key) => key !== "mes")
                     .map((producto, idx) => (
                       <Bar
                         key={producto}
                         dataKey={producto}
-                        fill={["#48bb78", "#667eea", "#f6ad55", "#ed64a6"][idx % 4]}
+                        fill={
+                          ["#48bb78", "#667eea", "#f6ad55", "#ed64a6"][idx % 4]
+                        }
                       />
                     ))}
                 </BarChart>
@@ -194,8 +199,10 @@ export default function MiProduccion() {
         {/* Gráficos de Predios */}
         {cosechasPredioMes.length > 0 && (
           <>
-            <div className="metric-card">
-              <div className="metric-title">Hectáreas usadas por Predio (Último Mes)</div>
+            <div className="metric-card div3">
+              <div className="metric-title">
+                Hectáreas usadas por Predio (Último Mes)
+              </div>
               <div style={{ height: 300 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={cosechasPredioMes}>
@@ -209,8 +216,10 @@ export default function MiProduccion() {
               </div>
             </div>
 
-            <div className="metric-card">
-              <div className="metric-title">Toneladas recolectadas por Predio (Último Mes)</div>
+            <div className="metric-card div4">
+              <div className="metric-title">
+                Toneladas recolectadas por Predio (Último Mes)
+              </div>
               <div style={{ height: 300 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={cosechasPredioMes}>
@@ -227,20 +236,47 @@ export default function MiProduccion() {
         )}
 
         {/* Gráfico de Producción Histórica */}
-        <div className="metric-card">
+        <div className="metric-card div2">
           <div className="metric-header">
             <div>
-              <div className="metric-title">Agregado histórico de producciones - Asociados</div>
+              <div className="metric-title">
+                Agregado histórico de producciones - Asociados
+              </div>
               <div className="metric-value">Toneladas mensuales</div>
               <div className="metric-change positive">Datos actualizados</div>
             </div>
           </div>
-          <div className="chart-container" style={{ height: "300px", marginTop: "1rem" }}>
+          <div
+            className="chart-container"
+            style={{ height: "300px", marginTop: "1rem" }}
+          >
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={produccionData} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.2)" />
-                <XAxis dataKey="mes" tick={{ fill: "#64748b", fontSize: 12 }} axisLine={{ stroke: "#cbd5e1" }} tickLine={{ stroke: "#cbd5e1" }} />
-                <YAxis tick={{ fill: "#64748b", fontSize: 12 }} label={{ value: "Toneladas", angle: -90, position: "insideLeft", fill: "#64748b", fontSize: 12 }} axisLine={{ stroke: "#cbd5e1" }} tickLine={{ stroke: "#cbd5e1" }} />
+              <LineChart
+                data={produccionData}
+                margin={{ top: 20, right: 30, left: 10, bottom: 5 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(148, 163, 184, 0.2)"
+                />
+                <XAxis
+                  dataKey="mes"
+                  tick={{ fill: "#64748b", fontSize: 12 }}
+                  axisLine={{ stroke: "#cbd5e1" }}
+                  tickLine={{ stroke: "#cbd5e1" }}
+                />
+                <YAxis
+                  tick={{ fill: "#64748b", fontSize: 12 }}
+                  label={{
+                    value: "Toneladas",
+                    angle: -90,
+                    position: "insideLeft",
+                    fill: "#64748b",
+                    fontSize: 12,
+                  }}
+                  axisLine={{ stroke: "#cbd5e1" }}
+                  tickLine={{ stroke: "#cbd5e1" }}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "rgba(0,0,0,0.8)",
@@ -255,14 +291,27 @@ export default function MiProduccion() {
                   ]}
                 />
                 <Legend wrapperStyle={{ color: "#64748b", fontSize: 12 }} />
-                <Line type="monotone" dataKey="toneladas" stroke="#f59e0b" strokeWidth={3} dot={{ stroke: "#fff", strokeWidth: 2, fill: "#f59e0b", r: 6 }} activeDot={{ r: 8 }} name="Toneladas producidas" />
+                <Line
+                  type="monotone"
+                  dataKey="toneladas"
+                  stroke="#f59e0b"
+                  strokeWidth={3}
+                  dot={{
+                    stroke: "#fff",
+                    strokeWidth: 2,
+                    fill: "#f59e0b",
+                    r: 6,
+                  }}
+                  activeDot={{ r: 8 }}
+                  name="Toneladas producidas"
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Gráfico Comparativo */}
-        <div className="metric-card" style={{ height: "fit-content" }}>
+        <div className="metric-card div5" style={{ height: "fit-content" }}>
           <div className="metric-header">
             <div>
               <div className="metric-title">Comparativo Estimación vs Real</div>
@@ -275,29 +324,65 @@ export default function MiProduccion() {
 
           {missingEstimacion || missingReal ? (
             <div className="chart-placeholder" style={{ padding: "2rem" }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem", width: "100%", alignItems: "center", color: "#000" }}>
-                Te falta completar la información del sondeo para ver el gráfico comparativa
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                  width: "100%",
+                  alignItems: "center",
+                  color: "#000",
+                }}
+              >
+                Te falta completar la información del sondeo para ver el gráfico
+                comparativa
                 {missingEstimacion && (
-                  <button onClick={() => navigate("/sondeo")} className="metric-button warning">
+                  <button
+                    onClick={() => navigate("/sondeo")}
+                    className="metric-button warning"
+                  >
                     ⚠️ Completa: ¿Cuántos kilos planea producir el próximo mes?
                   </button>
                 )}
                 {missingReal && (
-                  <button onClick={() => navigate("/sondeo")} className="metric-button warning">
+                  <button
+                    onClick={() => navigate("/sondeo")}
+                    className="metric-button warning"
+                  >
                     ⚠️ Completa: ¿Cuántos kilos produjo el último mes?
                   </button>
                 )}
               </div>
             </div>
           ) : (
-            <div className="chart-container" style={{ height: "300px", marginTop: "1rem" }}>
+            <div
+              className="chart-container"
+              style={{ height: "300px", marginTop: "1rem" }}
+            >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={comparativeData} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.2)" />
-                  <XAxis dataKey="mes" tick={{ fill: "#64748b", fontSize: 12 }} axisLine={{ stroke: "#cbd5e1" }} tickLine={{ stroke: "#cbd5e1" }} />
+                <LineChart
+                  data={comparativeData}
+                  margin={{ top: 20, right: 30, left: 10, bottom: 5 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="rgba(148, 163, 184, 0.2)"
+                  />
+                  <XAxis
+                    dataKey="mes"
+                    tick={{ fill: "#64748b", fontSize: 12 }}
+                    axisLine={{ stroke: "#cbd5e1" }}
+                    tickLine={{ stroke: "#cbd5e1" }}
+                  />
                   <YAxis
                     tick={{ fill: "#64748b", fontSize: 12 }}
-                    label={{ value: "Kilos", angle: -90, position: "insideLeft", fill: "#64748b", fontSize: 12 }}
+                    label={{
+                      value: "Kilos",
+                      angle: -90,
+                      position: "insideLeft",
+                      fill: "#64748b",
+                      fontSize: 12,
+                    }}
                     axisLine={{ stroke: "#cbd5e1" }}
                     tickLine={{ stroke: "#cbd5e1" }}
                   />
@@ -321,7 +406,12 @@ export default function MiProduccion() {
                     stroke="#48bb78"
                     strokeWidth={3}
                     name="Estimado"
-                    dot={{ stroke: "#fff", strokeWidth: 2, fill: "#48bb78", r: 6 }}
+                    dot={{
+                      stroke: "#fff",
+                      strokeWidth: 2,
+                      fill: "#48bb78",
+                      r: 6,
+                    }}
                     activeDot={{ r: 8 }}
                   />
                   <Line
@@ -330,7 +420,12 @@ export default function MiProduccion() {
                     stroke="#667eea"
                     strokeWidth={3}
                     name="Real"
-                    dot={{ stroke: "#fff", strokeWidth: 2, fill: "#667eea", r: 6 }}
+                    dot={{
+                      stroke: "#fff",
+                      strokeWidth: 2,
+                      fill: "#667eea",
+                      r: 6,
+                    }}
                     activeDot={{ r: 8 }}
                   />
                 </LineChart>
