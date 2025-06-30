@@ -1,3 +1,11 @@
+from schemas.estadistica import ProduccionPorProducto
+from sqlalchemy import select, func, outerjoin
+from models.exportacion_cosecha import ExportacionCosecha
+from models.producto import Producto
+from schemas.estadistica import TotalHectareasUsuario
+from schemas.estadistica import ProduccionEstimacionComparada
+from schemas.estadistica import ProduccionTotalYMejora
+from sqlalchemy import select, extract, func
 from datetime import datetime
 from schemas.estadistica import ProduccionPorPredio
 from models.rompimientos import cosecha_predio_table
@@ -22,6 +30,7 @@ from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy import Integer
 from models.pregunta import Pregunta
 from models.respuesta import Respuesta
 from datetime import datetime, timedelta
@@ -244,20 +253,14 @@ async def get_produccion_predio_ultimo_mes(db: AsyncSession) -> list[ProduccionP
     ]
 
 
-from models.respuesta import Respuesta
-from sqlalchemy import func, select
-from datetime import datetime, timedelta
-from collections import defaultdict
-from schemas.estadistica import ProduccionEstimacionComparada
-
-
 async def get_produccion_estimacion_comparada(db: AsyncSession) -> list[ProduccionEstimacionComparada]:
     # IDs de preguntas según definición
     ID_ESTIMADA = 10
     ID_REAL = 11
 
     # Obtener todas las respuestas relevantes
-    stmt = select(Respuesta).where(Respuesta.pregunta_id.in_([ID_ESTIMADA, ID_REAL]))
+    stmt = select(Respuesta).where(
+        Respuesta.pregunta_id.in_([ID_ESTIMADA, ID_REAL]))
     result = await db.execute(stmt)
     respuestas = result.scalars().all()
 
@@ -297,3 +300,119 @@ async def get_produccion_estimacion_comparada(db: AsyncSession) -> list[Producci
     ]
 
     return resultado
+
+
+async def get_produccion_total_y_mejora(db: AsyncSession, user_id: int) -> ProduccionTotalYMejora:
+    ID_REAL = 11
+
+    hoy = datetime.utcnow()
+    mes_actual = hoy.month
+    anio_actual = hoy.year
+
+    mes_anterior_date = (hoy.replace(day=1) - timedelta(days=1))
+    mes_anterior = mes_anterior_date.month
+    anio_anterior = mes_anterior_date.year
+
+    # Producción total histórica de cosechas del usuario
+    stmt_total = (
+        select(func.sum(Cosecha.toneladas))
+        .join(Cosecha.predios)  # unir predios
+        .where(Cosecha.toneladas != None)
+        .where(Cosecha.predios.any(Predio.usuario_id == user_id))
+    )
+    res_total = await db.execute(stmt_total)
+    total_cosechas = res_total.scalar() or 0
+
+    # Producción del mes actual en cosechas
+    stmt_mes_actual = (
+        select(func.sum(Cosecha.toneladas))
+        .join(Cosecha.predios)
+        .where(Cosecha.toneladas != None)
+        .where(Cosecha.predios.any(Predio.usuario_id == user_id))
+        .where(extract("month", Cosecha.fecha) == mes_actual)
+        .where(extract("year", Cosecha.fecha) == anio_actual)
+    )
+    res_actual = await db.execute(stmt_mes_actual)
+    produccion_mes_actual = res_actual.scalar() or 0
+
+    # Producción reportada del mes anterior (respuestas)
+    stmt_mes_anterior = (
+        select(func.sum(func.cast(Respuesta.respuesta, Integer)))
+        .where(Respuesta.usuario_id == user_id)
+        .where(Respuesta.pregunta_id == ID_REAL)
+        .where(extract("month", Respuesta.fecha) == mes_anterior)
+        .where(extract("year", Respuesta.fecha) == anio_anterior)
+    )
+    res_anterior = await db.execute(stmt_mes_anterior)
+
+    produccion_mes_anterior = res_anterior.scalar() or 0
+    print("Hola", produccion_mes_anterior)
+    if produccion_mes_anterior > 0:
+        porcentaje_mejora = (
+            (produccion_mes_actual - produccion_mes_anterior) / produccion_mes_anterior) * 100
+    else:
+        porcentaje_mejora = None
+
+    return ProduccionTotalYMejora(
+        produccion_total=int(total_cosechas),
+        produccion_mes_actual=int(produccion_mes_actual),
+        produccion_mes_anterior=int(produccion_mes_anterior),
+        porcentaje_mejora=porcentaje_mejora
+    )
+
+
+async def get_total_hectareas_usuario(db: AsyncSession, user_id: int) -> TotalHectareasUsuario:
+    stmt = select(func.sum(Predio.hectareas)).where(
+        Predio.usuario_id == user_id
+    )
+    res = await db.execute(stmt)
+    total = res.scalar() or 0
+
+    return TotalHectareasUsuario(hectareas=float(total))
+
+
+async def get_produccion_por_producto(db: AsyncSession, user_id: int) -> list[ProduccionPorProducto]:
+    # Subconsulta: todas las cosechas que pertenecen al usuario
+    subq = (
+        select(cosecha_predio_table.c.cosecha_id)
+        .join(Predio, cosecha_predio_table.c.predio_id == Predio.id)
+        .where(Predio.usuario_id == user_id)
+        .distinct()
+    )
+
+    # Construir join con Producto y Exportacion
+    cosecha_alias = Cosecha.__table__.alias("c")
+    producto_alias = Producto.__table__.alias("p")
+    exportacion_cosecha_alias = ExportacionCosecha.__table__.alias("ec")
+    exportacion_alias = Exportacion.__table__.alias("e")
+
+    stmt = (
+        select(
+            producto_alias.c.id,
+            producto_alias.c.nombre,
+            func.sum(cosecha_alias.c.toneladas).label("toneladas"),
+            func.sum(exportacion_alias.c.valor_fob).label("valor_fob")
+        )
+        .select_from(
+            cosecha_alias
+            .join(producto_alias, cosecha_alias.c.producto_id == producto_alias.c.id)
+            .outerjoin(exportacion_cosecha_alias, exportacion_cosecha_alias.c.cosecha_id == cosecha_alias.c.id)
+            .outerjoin(exportacion_alias, exportacion_alias.c.id == exportacion_cosecha_alias.c.exportacion_id)
+        )
+        .where(cosecha_alias.c.id.in_(subq))
+        .group_by(producto_alias.c.id, producto_alias.c.nombre)
+        .order_by(producto_alias.c.nombre)
+    )
+
+    result = await db.execute(stmt)
+    rows = result.fetchall()
+
+    return [
+        ProduccionPorProducto(
+            producto_id=row[0],
+            producto_nombre=row[1],
+            toneladas=float(row[2] or 0),
+            valor_fob=float(row[3] or 0)
+        )
+        for row in rows
+    ]
