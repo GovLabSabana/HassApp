@@ -1,7 +1,24 @@
 import { BarChart3, PieChart, TrendingUp } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import "../../componentsStyles/dashboard/Dashboard.css";
 import "../../componentsStyles/dashboard/General.css";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  Legend,
+  CartesianGrid,
+} from "recharts";
+
 import TRM from "./TMR";
+import Loader from "../utils/Loader";
 interface ChartCardProps {
   title: string;
   subtitle?: string;
@@ -10,40 +27,23 @@ interface ChartCardProps {
   height?: "height-64" | "height-80" | "height-96";
 }
 
-const PlaceholderChart: React.FC<{
-  type: "line" | "bar" | "pie";
-  color: string;
-}> = ({ type, color }) => {
-  const ChartIcon =
-    type === "line" ? TrendingUp : type === "bar" ? BarChart3 : PieChart;
-
-  return (
-    <div className="placeholder-chart">
-      <ChartIcon size={48} className={color} />
-      <span>
-        Gráfico{" "}
-        {type === "line"
-          ? "de Línea"
-          : type === "bar"
-          ? "de Barras"
-          : "de Torta"}
-      </span>
-    </div>
-  );
-};
 const KPICard: React.FC<{
   title: string;
   value: string;
-  change: string;
+  change?: string;
   positive: boolean;
 }> = ({ title, value, change, positive }) => (
   <div className="kpi-card">
     <h4 className="kpi-title">{title}</h4>
     <div className="kpi-content">
       <span className="kpi-value">{value}</span>
-      <span className={`kpi-change ${positive ? "positive" : "negative"}`}>
-        {change}
-      </span>
+      {change ? (
+        <span className={`kpi-change ${positive ? "positive" : "negative"}`}>
+          {change}
+        </span>
+      ) : (
+        ""
+      )}
     </div>
   </div>
 );
@@ -62,84 +62,247 @@ const ChartCard: React.FC<ChartCardProps> = ({
   </div>
 );
 export default function General() {
+  const [exportacionesMensuales, setExportacionesMensuales] = useState<any[]>(
+    []
+  );
+  const [produccionTotal, setProduccionTotal] = useState<{
+    total: number;
+    porcentaje: number | null;
+  }>({ total: 0, porcentaje: null });
+  const [rendimiento, setRendimiento] = useState<number>(0);
+  const [hectareasActivas, setHectareasActivas] = useState<number>(0);
+  const [produccionPorProducto, setProduccionPorProducto] = useState<any[]>([]);
+  const [toneladasPorPredio, setToneladasPorPredio] = useState<any[]>([]);
+  const [exportacionesFOB, setExportacionesFOB] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    const API_URL = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem("access_token");
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+
+    async function fetchData() {
+      try {
+        const [
+          resExportacionesMensuales,
+          resProduccionTotal,
+          resRendimiento,
+          resHectareas,
+          resProduccionPorProducto,
+          resToneladasPorPredio,
+          resExportacionesFOB,
+        ] = await Promise.all([
+          fetch(`${API_URL}/estadisticas/exportaciones/linea-tiempo`, {
+            headers,
+          }),
+          fetch(`${API_URL}/estadisticas/produccion/total-y-mejora`, {
+            headers,
+          }),
+          fetch(`${API_URL}/estadisticas/rendimiento/total`, { headers }),
+          fetch(`${API_URL}/estadisticas/predios/total-hectareas`, { headers }),
+          fetch(`${API_URL}/estadisticas/produccion/por-producto`, { headers }),
+          fetch(`${API_URL}/estadisticas/cosechas/ultimo-mes-por-predio`, {
+            headers,
+          }),
+          fetch(`${API_URL}/estadisticas/exportaciones/linea-tiempo`, {
+            headers,
+          }),
+        ]);
+
+        const [
+          dataExportacionesMensuales,
+          dataProduccionTotal,
+          dataRendimiento,
+          dataHectareas,
+          dataProduccionPorProducto,
+          dataToneladasPorPredio,
+          dataExportacionesFOB,
+        ] = await Promise.all([
+          resExportacionesMensuales.json(),
+          resProduccionTotal.json(),
+          resRendimiento.json(),
+          resHectareas.json(),
+          resProduccionPorProducto.json(),
+          resToneladasPorPredio.json(),
+          resExportacionesFOB.json(),
+        ]);
+
+        setExportacionesMensuales(dataExportacionesMensuales);
+        setProduccionTotal({
+          total: dataProduccionTotal.produccion_total,
+          porcentaje: dataProduccionTotal.porcentaje_mejora,
+        });
+        setRendimiento(parseFloat(dataRendimiento.rendimiento_total));
+
+        setHectareasActivas(dataHectareas.hectareas);
+        setProduccionPorProducto(dataProduccionPorProducto);
+        setToneladasPorPredio(dataToneladasPorPredio);
+
+        const sumaFOB = dataExportacionesFOB.reduce(
+          (acc: number, e: any) => acc + parseFloat(e.valor_fob),
+          0
+        );
+        setExportacionesFOB(sumaFOB);
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
   return (
     <div className="general-dashboard">
       <h3 className="metrics-subtitle">Resumen</h3>
-      <div className="general-grid">
-        {/* div1 */}
-        <div className="general-cell" style={{ gridArea: "1 / 1 / 3 / 4" }}>
-          <ChartCard
-            title="Exportaciones Mensuales"
-            subtitle="Tendencia últimos 12 meses"
-          >
-            <PlaceholderChart type="line" color="text-blue-500" />
-          </ChartCard>
-        </div>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="general-grid">
+          {/* div1 */}
+          <div className="general-cell div1">
+            <ChartCard
+              title="Exportaciones Mensuales"
+              subtitle="Tendencia últimos 12 meses"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={exportacionesMensuales}>
+                  <XAxis dataKey="mes" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="valor_fob"
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
 
-        {/* div2 */}
-        <div className="general-cell" style={{ gridArea: " 5 / 1 / 6 / 4" }}>
-          <KPICard
-            title="Exportaciones FOB"
-            value="$2.1M"
-            change="+8.7%"
-            positive
-          />
-        </div>
+          {/* div2 */}
+          <div className="general-cell div2">
+            <KPICard
+              title="Exportaciones FOB"
+              value={`$${exportacionesFOB.toLocaleString()}`}
+              positive
+            />
+          </div>
 
-        {/* div4 */}
-        <div className="general-cell" style={{ gridArea: "3 / 1 / 5 / 2" }}>
-          <KPICard
-            title="Rendimiento Tonelada/Hectarea"
-            value="94.2%"
-            change="+3.4%"
-            positive
-          />
-        </div>
+          {/* div4 */}
+          <div className="general-cell div4">
+            <KPICard
+              title="Rendimiento Tonelada/Hectárea"
+              value={`${rendimiento.toFixed(2)}`}
+              positive
+            />
+          </div>
 
-        {/* div5 */}
-        <div className="general-cell" style={{ gridArea: "3 / 2 / 5 / 4" }}>
-          <TRM />
-        </div>
+          {/* div5 */}
+          <div className="general-cell div5">
+            <ChartCard
+              title="Toneladas Recolectadas"
+              subtitle="Por predio - último mes"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={toneladasPorPredio}>
+                  <XAxis dataKey="predio" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="toneladas" fill="#f97316" />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
 
-        {/* div6 */}
-        <div className="general-cell" style={{ gridArea: "4 / 4 / 6 / 6" }}>
-          <ChartCard
-            title="Producción por Producto"
-            subtitle="Distribución actual"
-          >
-            <PlaceholderChart type="pie" color="text-green-500" />
-          </ChartCard>
-        </div>
-        {/* div7 */}
-        <div className="general-cell" style={{ gridArea: "1 / 4 / 2 / 6" }}>
-          <KPICard
-            title="Producción Total"
-            value="1,847 T"
-            change="+12.3%"
-            positive
-          />
-        </div>
+          {/* div6 */}
+          <div className="general-cell div6">
+            <ChartCard
+              title="Producción por Producto"
+              subtitle="Distribución actual"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={produccionPorProducto}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="producto_nombre" />
 
-        {/* div8 */}
-        <div className="general-cell" style={{ gridArea: "2 / 4 / 3 / 6" }}>
-          <ChartCard
-            title="Toneladas Recolectadas"
-            subtitle="Por predio - último mes"
-          >
-            <PlaceholderChart type="bar" color="text-orange-500" />
-          </ChartCard>
-        </div>
+                  {/* Eje Y izquierdo: toneladas */}
+                  <YAxis
+                    yAxisId="left"
+                    orientation="left"
+                    tickFormatter={(value) => `${value} t`}
+                  />
 
-        {/* div9 */}
-        <div className="general-cell" style={{ gridArea: "3 / 4 / 4 / 6" }}>
-          <KPICard
-            title="Hectáreas Activas"
-            value="234 Ha"
-            change="-2.1%"
-            positive={false}
-          />
+                  {/* Eje Y derecho: valor FOB */}
+                  <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  />
+
+                  <Tooltip />
+
+                  {/* Barras de toneladas */}
+                  <Bar
+                    yAxisId="left"
+                    dataKey="toneladas"
+                    fill="#3b82f6"
+                    name="Toneladas"
+                  />
+
+                  {/* Barras de valor FOB */}
+                  <Bar
+                    yAxisId="right"
+                    dataKey="valor_fob"
+                    fill="#4b32f7"
+                    name="Valor FOB"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
+
+          {/* div7 */}
+          <div className="general-cell div7">
+            <KPICard
+              title="Producción Total"
+              value={`${produccionTotal.total} T`}
+              change={
+                produccionTotal.porcentaje !== null
+                  ? `${
+                      produccionTotal.porcentaje > 0 ? "+" : ""
+                    }${produccionTotal.porcentaje.toFixed(2)}%`
+                  : "0%"
+              }
+              positive={
+                produccionTotal.porcentaje === null
+                  ? true
+                  : produccionTotal.porcentaje >= 0
+              }
+            />
+          </div>
+
+          {/* div8 */}
+          <div className="general-cell div8">
+            <TRM />
+          </div>
+
+          {/* div9 */}
+          <div className="general-cell div9">
+            <KPICard
+              title="Hectáreas Activas"
+              value={`${hectareasActivas.toFixed(2)} Ha`}
+              positive
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -158,7 +158,7 @@ export default function TRM() {
   };
 
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
       {/* Card TRM Hoy */}
       <div className="metric-card trm-card">
         <div className="metric-header">
@@ -244,6 +244,6 @@ export default function TRM() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
