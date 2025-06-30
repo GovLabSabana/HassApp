@@ -29,6 +29,8 @@ import ProductionEdit from "./routes/ProductionEdit.tsx";
 import Properties from "./routes/Properties.tsx";
 import PropertiesAdd from "./routes/PropertiesAdd.tsx";
 import PropertiesEdit from "./routes/PropertiesEdit.tsx";
+import CertificationPropAdd from "./routes/CertificationPropAdd.tsx";
+import CertificationPropEdit from "./routes/CertificationPropEdit.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 import PublicRoute from "./routes/PublicRoute.tsx";
 import ResetPassword from "./routes/Reset.tsx";
@@ -113,6 +115,14 @@ const router = createBrowserRouter([
       {
         path: "properties/add",
         element: <PropertiesAdd />,
+      },
+      {
+        path: "properties/cert-add",
+        element: <CertificationPropAdd />,
+      },
+      {
+        path: "properties/cert-edi",
+        element: <CertificationPropEdit />,
       },
       {
         path: "export",

@@ -20,14 +20,28 @@ interface Predio {
   tipo_riego: string;
 }
 
+interface CertificacionPredio {
+  id: number;
+  archivo_pdf: string;
+  fecha_expedicion: string;
+  fecha_vencimiento: string;
+  certificacion: {
+    id: number;
+    nombre: string;
+  };
+  predio_id: number;
+}
+
 export default function Properties() {
   const [predios, setPredios] = useState<Predio[]>([]);
+  const [certificaciones, setCertificaciones] = useState<CertificacionPredio[]>([]);
   const [municipioFiltro, setMunicipioFiltro] = useState("");
   const [vocacionFiltro, setVocacionFiltro] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token") || "";
   const API_URL = import.meta.env.VITE_API_URL;
+  const [predioFiltroCert, setPredioFiltroCert] = useState<string>("");
   const municipios = data.municipios;
 
   const getNombreMunicipio = (id: string | number): string => {
@@ -35,28 +49,55 @@ export default function Properties() {
     return found ? found.name : "Desconocido";
   };
 
+  const getNombrePredio = (id: number) => {
+    const predio = predios.find((p) => p.id === id);
+    return predio ? predio.nombre : "Desconocido";
+  };
+
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (predioFiltroCert) {
+      fetchCertificacionesPorPredio(predioFiltroCert);
+    } else {
+      setCertificaciones([]);
+    }
+  }, [predioFiltroCert]);
+
+  const fetchData = async () => {
     setLoading(true);
-    fetch(`${API_URL}/predios/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setPredios(data);
-        } else if ("data" in data && Array.isArray(data.data)) {
-          setPredios(data.data);
-        } else {
-          console.error("Respuesta inesperada de la API:", data);
-        }
-      })
-      .catch((err) => console.error("Error al cargar predios:", err))
-      .finally(() => setLoading(false));
-  }, [API_URL, token]);
+    try {
+      const predRes = await fetch(`${API_URL}/predios/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const predData = await predRes.json();
+      setPredios(Array.isArray(predData) ? predData : predData.data || []);
+      setCertificaciones([]); // vaciar si no hay predio seleccionado
+    } catch (err) {
+      console.error("Error al cargar datos:", err);
+      toast.error("Error al cargar predios");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCertificacionesPorPredio = async (predioId: string) => {
+    if (!predioId) return setCertificaciones([]);
+    try {
+      const res = await fetch(`${API_URL}/certificaciones-predio/${predioId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      const certs = Array.isArray(data) ? data : [data];
+      setCertificaciones(certs);
+    } catch (err) {
+      console.error("Error al filtrar certificaciones:", err);
+      toast.error("Error al cargar certificaciones del predio");
+      setCertificaciones([]);
+    }
+  };
 
   const ConfirmDeleteToast = ({
     onConfirm,
@@ -115,10 +156,25 @@ export default function Properties() {
     );
   };
 
+  const eliminarCertificacion = async (id: number) => {
+    if (!window.confirm("¿Estás seguro de eliminar esta certificación?")) return;
+    try {
+      const res = await fetch(`${API_URL}/certificaciones-predio/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error();
+      setCertificaciones((prev) => prev.filter((c) => c.id !== id));
+      toast.success("Certificación eliminada correctamente");
+    } catch (err) {
+      console.error(err);
+      toast.error("Error al eliminar certificación");
+    }
+  };
+
   const prediosFiltrados = predios.filter((p) => {
     const municipioNombre = getNombreMunicipio(p.municipio_id).toLowerCase();
     const filtroMunicipio = municipioFiltro.toLowerCase();
-
     return (
       (!municipioFiltro || municipioNombre.includes(filtroMunicipio)) &&
       (!vocacionFiltro || p.vocacion === vocacionFiltro)
@@ -132,17 +188,8 @@ export default function Properties() {
   return (
     <>
       <h1 className="properties-title">Gestión de Predios</h1>
-
-      {/* Filtros */}
       <div className="properties-filters">
-        <h3
-          style={{
-            margin: 0,
-            color: "rgb(255, 255, 255)",
-            fontSize: "1.1rem",
-            fontWeight: "600",
-          }}
-        >
+        <h3 style={{ margin: 0, color: "rgb(255, 255, 255)", fontSize: "1.1rem", fontWeight: "600" }}>
           Filtros de búsqueda
         </h3>
         <div className="properties-filters-row">
@@ -166,12 +213,10 @@ export default function Properties() {
         </div>
       </div>
 
-      {/* Tabla */}
+      {/* Tabla de Predios */}
       {prediosFiltrados.length === 0 ? (
         <div className="properties-table-empty">
-          {predios.length === 0
-            ? "No hay predios registrados"
-            : "No se encontraron predios que coincidan con los filtros"}
+          {predios.length === 0 ? "No hay predios registrados" : "No se encontraron predios que coincidan con los filtros"}
         </div>
       ) : (
         <div className="properties-table-container">
@@ -202,29 +247,13 @@ export default function Properties() {
                     <td>{p.vereda?.trim() ? p.vereda : "No especificada"}</td>
                     <td>{p.direccion}</td>
                     <td>{p.hectareas?.toLocaleString()} ha</td>
-                    <td style={{ textTransform: "capitalize" }}>
-                      {p.vocacion}
-                    </td>
+                    <td style={{ textTransform: "capitalize" }}>{p.vocacion}</td>
                     <td>{p.altitud_promedio?.toLocaleString()} m</td>
-                    <td style={{ textTransform: "capitalize" }}>
-                      {p.tipo_riego}
-                    </td>
+                    <td style={{ textTransform: "capitalize" }}>{p.tipo_riego}</td>
                     <td>
                       <div className="properties-actions">
-                        <button
-                          className="properties-btn-edit"
-                          onClick={() =>
-                            navigate(`/properties/edit?id=${p.id}`)
-                          }
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className="properties-btn-delete"
-                          onClick={() => eliminarPredio(p.id)}
-                        >
-                          Eliminar
-                        </button>
+                        <button className="properties-btn-edit" onClick={() => navigate(`/properties/edit?id=${p.id}`)}>Editar</button>
+                        <button className="properties-btn-delete" onClick={() => eliminarPredio(p.id)}>Eliminar</button>
                       </div>
                     </td>
                   </tr>
@@ -235,14 +264,71 @@ export default function Properties() {
         </div>
       )}
 
-      {}
       <div className="properties-add-container">
-        <button
-          className="properties-btn-add"
-          onClick={() => navigate("/properties/add")}
-        >
-          + Agregar Nuevo Predio
-        </button>
+        <button className="properties-btn-add" onClick={() => navigate("/properties/add")}>+ Agregar Nuevo Predio</button>
+      </div>
+
+      <h2 className="certification-title">Certificaciones de Predios</h2>
+
+      <div className="properties-filters">
+        <h3 style={{ margin: 0, color: "rgb(255, 255, 255)", fontSize: "1.1rem", fontWeight: "600" }}>
+          Certificaciones del predio seleccionado
+        </h3>
+        <div className="properties-filters-row">
+          <select
+            className="properties-filter-select"
+            value={predioFiltroCert}
+            onChange={(e) => setPredioFiltroCert(e.target.value)}
+          >
+            <option value="">Seleccione el predio</option>
+            {predios.map((p) => (
+              <option key={p.id} value={p.id}>{p.nombre}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Tabla de Certificaciones */}
+      {Array.isArray(certificaciones) && certificaciones.length > 0 ? (
+        <div className="properties-table-container">
+          <div className="properties-table-wrapper">
+            <table className="properties-table">
+              <thead className="properties-table-header">
+                <tr>
+                  <th>Predio</th>
+                  <th>Certificación</th>
+                  <th>Archivo</th>
+                  <th>Fecha Expedición</th>
+                  <th>Fecha Vencimiento</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="properties-table-body">
+                {certificaciones.map((c) => (
+                  <tr key={c.id}>
+                    <td>{getNombrePredio(c.predio_id)}</td>
+                    <td>{c.certificacion.nombre}</td>
+                    <td><a href={c.archivo_pdf} target="_blank" rel="noopener noreferrer">Ver archivo</a></td>
+                    <td>{c.fecha_expedicion}</td>
+                    <td>{c.fecha_vencimiento}</td>
+                    <td>
+                      <div className="properties-actions">
+                        <button className="properties-btn-edit" onClick={() => navigate(`/properties/cert-edit?id=${c.id}`)}>Editar</button>
+                        <button className="properties-btn-delete" onClick={() => eliminarCertificacion(c.id)}>Eliminar</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        <div className="properties-table-empty">No hay certificaciones registradas</div>
+      )}
+
+      <div className="properties-add-container">
+        <button className="properties-btn-add" onClick={() => navigate("/properties/cert-add")}>+ Agregar Certificación</button>
       </div>
     </>
   );
