@@ -105,8 +105,16 @@ async def get_rendimiento_por_hectarea(db: AsyncSession, user_id: int) -> list[R
     return respuesta
 
 
-async def get_rendimiento_total(db: AsyncSession) -> Decimal:
-    stmt = select(Cosecha)
+async def get_rendimiento_total(db: AsyncSession, user_id: int) -> Decimal:
+    # Subconsulta: cosechas del usuario
+    subq = (
+        select(cosecha_predio_table.c.cosecha_id)
+        .join(Predio, cosecha_predio_table.c.predio_id == Predio.id)
+        .where(Predio.usuario_id == user_id)
+        .distinct()
+    )
+
+    stmt = select(Cosecha).where(Cosecha.id.in_(subq))
     result = await db.execute(stmt)
     cosechas = result.scalars().all()
 

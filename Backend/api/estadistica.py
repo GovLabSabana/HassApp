@@ -36,8 +36,8 @@ async def rendimiento_por_hectarea(db: AsyncSession = Depends(get_db), user=Depe
 
 
 @router.get("/rendimiento/total", response_model=RendimientoTotal)
-async def rendimiento_total(db: AsyncSession = Depends(get_db)):
-    rendimiento = await repo.get_rendimiento_total(db)
+async def rendimiento_total(db: AsyncSession = Depends(get_db), user=Depends(current_user)):
+    rendimiento = await repo.get_rendimiento_total(db, user.id)
     return {"rendimiento_total": rendimiento}
 
 
