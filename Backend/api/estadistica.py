@@ -29,8 +29,8 @@ async def estadisticas_preguntas_opcion(db: AsyncSession = Depends(get_db)):
 # Es el rendimiento por tonelada por hectárea en cada cosecha
 
 @router.get("/rendimiento-cosecha", response_model=List[RendimientoCosecha])
-async def rendimiento_por_hectarea(db: AsyncSession = Depends(get_db)):
-    return await repo.get_rendimiento_por_hectarea(db)
+async def rendimiento_por_hectarea(db: AsyncSession = Depends(get_db), user=Depends(current_user)):
+    return await repo.get_rendimiento_por_hectarea(db, user.id)
 
 # Es el rendimiento total de todas las cosechas en toneladas por hectárea
 
@@ -44,8 +44,8 @@ async def rendimiento_total(db: AsyncSession = Depends(get_db)):
 #  Valor FOB y toneladas exportadas por mes
 
 @router.get("/exportaciones/linea-tiempo", response_model=List[ExportacionMensual])
-async def exportaciones_linea_tiempo(db: AsyncSession = Depends(get_db)):
-    return await repo.get_exportaciones_por_mes(db)
+async def exportaciones_linea_tiempo(db: AsyncSession = Depends(get_db), user=Depends(current_user)):
+    return await repo.get_exportaciones_por_mes(db, user.id)
 
 # Valor de insumos usados por categoría
 
@@ -64,15 +64,15 @@ async def promedio_categoria_por_tonelada(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/cosechas/linea-tiempo-toneladas", response_model=List[ToneladasCosechadasMensual])
-async def cosechas_linea_tiempo_toneladas(db: AsyncSession = Depends(get_db)):
-    return await repo.get_toneladas_cosecha_por_mes(db)
+async def cosechas_linea_tiempo_toneladas(db: AsyncSession = Depends(get_db), user=Depends(current_user)):
+    return await repo.get_toneladas_cosecha_por_mes(db, user.id)
 
 # Producción por predio del último mes hectareadas y toneladas cosechadas
 
 
 @router.get("/cosechas/ultimo-mes-por-predio", response_model=List[ProduccionPorPredio])
-async def cosecha_predio_ultimo_mes(db: AsyncSession = Depends(get_db)):
-    return await repo.get_produccion_predio_ultimo_mes(db)
+async def cosecha_predio_ultimo_mes(db: AsyncSession = Depends(get_db), user=Depends(current_user)):
+    return await repo.get_produccion_predio_ultimo_mes(db, user.id)
 
 # Comparación de producción estimada vs real por mes debido a sondeo GENERAL, es decir para todos
 

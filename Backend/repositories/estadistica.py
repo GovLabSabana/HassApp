@@ -1,3 +1,5 @@
+from sqlalchemy.orm import joinedload
+from sqlalchemy.future import select
 from schemas.estadistica import ProduccionPorProducto
 from sqlalchemy import select, func, outerjoin
 from models.exportacion_cosecha import ExportacionCosecha
@@ -70,8 +72,21 @@ async def get_estadisticas_opciones(db: AsyncSession):
     return salida
 
 
-async def get_rendimiento_por_hectarea(db: AsyncSession) -> list[RendimientoCosecha]:
-    stmt = select(Cosecha).options(joinedload(Cosecha.producto))
+async def get_rendimiento_por_hectarea(db: AsyncSession, user_id: int) -> list[RendimientoCosecha]:
+    # Subconsulta: todas las cosechas que pertenecen al usuario
+    subq = (
+        select(cosecha_predio_table.c.cosecha_id)
+        .join(Predio, cosecha_predio_table.c.predio_id == Predio.id)
+        .where(Predio.usuario_id == user_id)
+        .distinct()
+    )
+
+    stmt = (
+        select(Cosecha)
+        .options(joinedload(Cosecha.producto))
+        .where(Cosecha.id.in_(subq))
+    )
+
     result = await db.execute(stmt)
     cosechas = result.scalars().all()
 
@@ -109,13 +124,14 @@ async def get_rendimiento_total(db: AsyncSession) -> Decimal:
     return total_toneladas / total_hectareas
 
 
-async def get_exportaciones_por_mes(db: AsyncSession) -> list[ExportacionMensual]:
+async def get_exportaciones_por_mes(db: AsyncSession, user_id: int) -> list[ExportacionMensual]:
     stmt = (
         select(
             func.date_format(Exportacion.fecha, "%Y-%m").label("mes"),
             func.sum(Exportacion.valor_fob).label("valor_fob"),
             func.sum(Exportacion.toneladas).label("toneladas")
         )
+        .where(Exportacion.usuario_id == user_id)
         .group_by("mes")
         .order_by("mes")
     )
@@ -126,8 +142,8 @@ async def get_exportaciones_por_mes(db: AsyncSession) -> list[ExportacionMensual
     return [
         ExportacionMensual(
             mes=row.mes,
-            valor_fob=row.valor_fob or 0,
-            toneladas=row.toneladas or 0
+            valor_fob=float(row.valor_fob or 0),
+            toneladas=float(row.toneladas or 0)
         )
         for row in rows
     ]
@@ -192,12 +208,20 @@ async def get_costo_categoria_por_tonelada(db: AsyncSession) -> list[CostoCatego
     return resultado
 
 
-async def get_toneladas_cosecha_por_mes(db: AsyncSession) -> list[ToneladasCosechadasMensual]:
+async def get_toneladas_cosecha_por_mes(db: AsyncSession, user_id: int) -> list[ToneladasCosechadasMensual]:
+    subq = (
+        select(cosecha_predio_table.c.cosecha_id)
+        .join(Predio, cosecha_predio_table.c.predio_id == Predio.id)
+        .where(Predio.usuario_id == user_id)
+        .distinct()
+    )
+
     stmt = (
         select(
             func.date_format(Cosecha.fecha, "%Y-%m").label("mes"),
             func.sum(Cosecha.toneladas).label("toneladas")
         )
+        .where(Cosecha.id.in_(subq))
         .group_by("mes")
         .order_by("mes")
     )
@@ -214,9 +238,18 @@ async def get_toneladas_cosecha_por_mes(db: AsyncSession) -> list[ToneladasCosec
     ]
 
 
-async def get_produccion_predio_ultimo_mes(db: AsyncSession) -> list[ProduccionPorPredio]:
+async def get_produccion_predio_ultimo_mes(db: AsyncSession, user_id: int) -> list[ProduccionPorPredio]:
+    # Subconsulta de cosechas del usuario
+    subq_cosechas = (
+        select(cosecha_predio_table.c.cosecha_id)
+        .join(Predio, cosecha_predio_table.c.predio_id == Predio.id)
+        .where(Predio.usuario_id == user_id)
+        .distinct()
+    )
 
-    max_date_stmt = select(func.max(Cosecha.fecha))
+    # Detectar último mes con producción
+    max_date_stmt = select(func.max(Cosecha.fecha)).where(
+        Cosecha.id.in_(subq_cosechas))
     max_date_result = await db.execute(max_date_stmt)
     max_date = max_date_result.scalar_one_or_none()
 
@@ -235,6 +268,7 @@ async def get_produccion_predio_ultimo_mes(db: AsyncSession) -> list[ProduccionP
         .select_from(cosecha_predio_table)
         .join(Predio, cosecha_predio_table.c.predio_id == Predio.id)
         .join(Cosecha, cosecha_predio_table.c.cosecha_id == Cosecha.id)
+        .where(Predio.usuario_id == user_id)
         .where(func.year(Cosecha.fecha) == año)
         .where(func.month(Cosecha.fecha) == mes)
         .group_by(Predio.nombre)
