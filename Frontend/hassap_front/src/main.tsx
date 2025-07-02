@@ -121,7 +121,7 @@ const router = createBrowserRouter([
         element: <CertificationPropAdd />,
       },
       {
-        path: "properties/cert-edi",
+        path: "properties/cert-edit",
         element: <CertificationPropEdit />,
       },
       {

@@ -286,13 +286,6 @@ export default function ProductionEdit() {
               )}
             </div>
           ))}
-          <button
-            type="button"
-            className="add-btn add-btn-add"
-            onClick={addPredioField}
-          >
-            + Agregar Predio
-          </button>
         </div>
 
         {/* Insumos */}

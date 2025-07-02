@@ -265,9 +265,6 @@ export default function ProductionAdd() {
               )}
             </div>
           ))}
-          <button type="button" className="add-btn add-btn-add" onClick={addPredioField}>
-            + Agregar Predio
-          </button>
         </div>
 
         <div className="add-dynamic-section">

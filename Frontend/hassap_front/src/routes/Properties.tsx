@@ -74,6 +74,7 @@ export default function Properties() {
       });
       const predData = await predRes.json();
       setPredios(Array.isArray(predData) ? predData : predData.data || []);
+      
       setCertificaciones([]); // vaciar si no hay predio seleccionado
     } catch (err) {
       console.error("Error al cargar datos:", err);
@@ -107,7 +108,7 @@ export default function Properties() {
     onCancel: () => void;
   }) => (
     <div>
-      <p>¿Estás seguro de que deseas eliminar este predio?</p>
+      <p>¿Estás seguro de que deseas eliminar este predio/certificación?</p>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "0.5rem" }}>
         <button onClick={onCancel} style={{ background: "#ccc", border: "none", padding: "0.3rem 0.7rem" }}>
           Cancelar
@@ -156,20 +157,39 @@ export default function Properties() {
     );
   };
 
-  const eliminarCertificacion = async (id: number) => {
-    if (!window.confirm("¿Estás seguro de eliminar esta certificación?")) return;
-    try {
-      const res = await fetch(`${API_URL}/certificaciones-predio/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error();
-      setCertificaciones((prev) => prev.filter((c) => c.id !== id));
-      toast.success("Certificación eliminada correctamente");
-    } catch (err) {
-      console.error(err);
-      toast.error("Error al eliminar certificación");
-    }
+  const eliminarCertificacion = (id: number) => {
+    const toastId = toast.info(
+      <ConfirmDeleteToast
+        onConfirm={async () => {
+          toast.dismiss(toastId);
+          try {
+            const res = await fetch(`${API_URL}/certificaciones-predio/${id}`, {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (!res.ok) {
+              const data = await res.json();
+              toast.error(data.detail || "No se pudo eliminar la certificación.");
+              return;
+            }
+
+            setCertificaciones((prev) => prev.filter((c) => c.id !== id));
+            toast.success("Certificación eliminada correctamente");
+          } catch (err) {
+            console.error("Error al eliminar certificación:", err);
+            toast.error("Error al eliminar la certificación.");
+          }
+        }}
+        onCancel={() => toast.dismiss(toastId)}
+      />,
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        position: "top-center",
+      }
+    );
   };
 
   const prediosFiltrados = predios.filter((p) => {
@@ -304,21 +324,26 @@ export default function Properties() {
                 </tr>
               </thead>
               <tbody className="properties-table-body">
-                {certificaciones.map((c) => (
-                  <tr key={c.id}>
-                    <td>{getNombrePredio(c.predio_id)}</td>
-                    <td>{c.certificacion.nombre}</td>
-                    <td><a href={c.archivo_pdf} target="_blank" rel="noopener noreferrer">Ver archivo</a></td>
-                    <td>{c.fecha_expedicion}</td>
-                    <td>{c.fecha_vencimiento}</td>
-                    <td>
-                      <div className="properties-actions">
-                        <button className="properties-btn-edit" onClick={() => navigate(`/properties/cert-edit?id=${c.id}`)}>Editar</button>
-                        <button className="properties-btn-delete" onClick={() => eliminarCertificacion(c.id)}>Eliminar</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {(() => {
+                  const nombrePredioSeleccionado =
+                    predios.find((p) => p.id === Number(predioFiltroCert))?.nombre || "Desconocido";
+
+                  return certificaciones.map((c) => (
+                    <tr key={c.id}>
+                      <td>{nombrePredioSeleccionado}</td>
+                      <td>{c.certificacion.nombre}</td>
+                      <td><a href={c.archivo_pdf} target="_blank" rel="noopener noreferrer">Ver archivo</a></td>
+                      <td>{c.fecha_expedicion}</td>
+                      <td>{c.fecha_vencimiento}</td>
+                      <td>
+                        <div className="properties-actions">
+                          <button className="properties-btn-edit" onClick={() => navigate(`/properties/cert-edit?id=${c.id}`)}>Editar</button>
+                          <button className="properties-btn-delete" onClick={() => eliminarCertificacion(c.id)}>Eliminar</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ));
+                })()}
               </tbody>
             </table>
           </div>

@@ -98,54 +98,35 @@ export default function CertificationPropAdd() {
     if (!validate() || !form.archivo_pdf) return;
 
     try {
-        const predioId = parseInt(form.predio_id);
-        const certificacionId = parseInt(form.certificacion_id);
-        const certificacion = certificaciones.find(c => c.id === certificacionId);
+      const formData = new FormData();
 
-        if (!certificacion) {
-        toast.error("Certificación inválida");
-        return;
-        }
+      formData.append("predio_id", form.predio_id);
+      formData.append("archivo", form.archivo_pdf);
+      formData.append("fecha_expedicion", form.fecha_expedicion);
+      formData.append("fecha_vencimiento", form.fecha_vencimiento);
+      formData.append("certificacion_id", form.certificacion_id);
 
-        // Construcción del objeto JSON esperado
-        const bodyJson = {
-        id: predioId,  // ← este es el ID del predio
-        archivo_pdf: form.archivo_pdf.name,
-        fecha_expedicion: form.fecha_expedicion,
-        fecha_vencimiento: form.fecha_vencimiento,
-        certificacion: {
-            id: certificacion.id,
-            nombre: certificacion.nombre,
-        }
-        };
-
-        // Mostrar en consola el JSON enviado (para debug)
-        console.log("JSON enviado:", JSON.stringify(bodyJson, null, 2));
-
-        // Crear FormData
-        const formData = new FormData();
-        formData.append("archivo_pdf", form.archivo_pdf);
-        formData.append("data", new Blob([JSON.stringify(bodyJson)], { type: "application/json" }));
-
-        // Hacer la petición
-        const res = await fetch(`${API_URL}/certificaciones-predio/`, {
+      const res = await fetch(`${API_URL}/certificaciones-predio/`, {
         method: "POST",
         headers: {
-            Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
-        });
+      });
 
-        if (!res.ok) throw new Error("Error en la creación");
+      if (!res.ok) {
+        const errRes = await res.json();
+        console.error("Respuesta del backend con error:", errRes);
+        throw new Error("Error en la creación");
+      }
 
-        toast.success("Certificación creada correctamente");
-        navigate("/properties");
-
+      toast.success("Certificación creada correctamente");
+      navigate("/properties");
     } catch (err) {
-        console.error(err);
-        toast.error("Error al agregar certificación");
+      console.error("Error al enviar certificación:", err);
+      toast.error("Error al agregar certificación");
     }
-    };
+  };
 
   return (
     <div className="certadd-container">
