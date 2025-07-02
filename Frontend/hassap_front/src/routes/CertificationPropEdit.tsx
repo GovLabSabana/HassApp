@@ -34,7 +34,6 @@ interface CertForm {
 type CertFormErrors = Partial<Record<keyof CertForm, string>>;
 
 export default function CertificationPropEdit() {
-  const [predios, setPredios] = useState<Predio[]>([]);
   const [certificaciones, setCertificaciones] = useState<Certificacion[]>([]);
   const [form, setForm] = useState<CertForm>({
     predio_id: "",
@@ -57,23 +56,18 @@ export default function CertificationPropEdit() {
 
     const loadData = async () => {
       try {
-        const [resPredios, resCerts, resData] = await Promise.all([
-          fetch(`${API_URL}/predios/`, { headers: { Authorization: `Bearer ${token}` } }),
+        const [resCerts, resData] = await Promise.all([
           fetch(`${API_URL}/certificaciones/`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/certificaciones-predio/?certificacion_id=${id}`, {
+          fetch(`${API_URL}/certificaciones-predio/detalle/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
 
-        const [dataPredios, dataCerts, dataCert] = await Promise.all([
-          resPredios.json(),
+        const [dataCerts, dataCert] = await Promise.all([
           resCerts.json(),
           resData.json(),
         ]);
 
-        console.log(dataCert)
-
-        setPredios(dataPredios);
         setCertificaciones(dataCerts);
 
         setForm({
@@ -98,7 +92,6 @@ export default function CertificationPropEdit() {
     const newErrors: CertFormErrors = {};
     const hoy = new Date().toISOString().split("T")[0];
 
-    if (!form.predio_id) newErrors.predio_id = "Campo obligatorio";
     if (!form.fecha_expedicion) {
       newErrors.fecha_expedicion = "Campo obligatorio";
     } else {
@@ -134,7 +127,6 @@ export default function CertificationPropEdit() {
     if (!validate() || !id) return;
 
     const formData = new FormData();
-    formData.append("predio_id", form.predio_id);
     formData.append("certificacion_id", form.certificacion_id);
     formData.append("fecha_expedicion", form.fecha_expedicion);
     formData.append("fecha_vencimiento", form.fecha_vencimiento);
@@ -169,12 +161,6 @@ export default function CertificationPropEdit() {
         <h1 className="certadd-title">Editar Certificación</h1>
         <div className="certadd-form">
           <div className="certadd-row">
-            <div className="certadd-field">
-              <label className="certadd-label">Predio</label>
-              <div className="certadd-readonly">
-                {predios.find((p) => p.id.toString() === form.predio_id)?.nombre || "Cargando..."}
-              </div>
-            </div>
 
             <div className="certadd-field">
               <label className="certadd-label">Archivo PDF</label>

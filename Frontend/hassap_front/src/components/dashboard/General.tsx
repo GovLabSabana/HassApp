@@ -187,11 +187,7 @@ export default function General() {
 
           {/* div2 */}
           <div className="general-cell div2">
-            <KPICard
-              title="Exportaciones FOB"
-              value={`$${exportacionesFOB.toLocaleString()}`}
-              positive
-            />
+            <TRM />
           </div>
 
           {/* div4 */}
@@ -290,7 +286,11 @@ export default function General() {
 
           {/* div8 */}
           <div className="general-cell div8">
-            <TRM />
+            <KPICard
+              title="Exportaciones FOB"
+              value={`$${exportacionesFOB.toLocaleString()}`}
+              positive
+            />
           </div>
 
           {/* div9 */}
