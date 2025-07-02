@@ -61,24 +61,29 @@ async def crear_certificacion_predio(
     await db.refresh(nueva)
     return nueva
 
-@router.get("/unico_certificacion/{certificacion_id}", response_model=list[CertificacionPredioRead])
-async def listar_por_certificacion_id(
-    certificacion_id: int,
+@router.get("/detalle/{certificacion_predio_id}", response_model=CertificacionPredioRead)
+async def obtener_certificacion_predio(
+    certificacion_predio_id: int,
     db: AsyncSession = Depends(get_db),
     user: Usuario = Depends(current_user)
 ):
-    query = (
+    result = await db.execute(
         select(CertificacionPredio)
         .join(Predio)
         .where(
-            CertificacionPredio.certificacion_id == certificacion_id,
+            CertificacionPredio.id == certificacion_predio_id,
             Predio.usuario_id == user.id
         )
         .options(selectinload(CertificacionPredio.certificacion))
     )
+    cert = result.scalar_one_or_none()
+    
+    if not cert:
+        raise HTTPException(status_code=404, detail="Certificación no encontrada o no autorizada")
+    
+    return cert
 
-    result = await db.execute(query)
-    return result.scalars().all()
+
 
 @router.get("/{predio_id}", response_model=list[CertificacionPredioRead])
 async def listar_certificaciones_de_predio(
