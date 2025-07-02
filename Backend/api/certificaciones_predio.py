@@ -61,20 +61,20 @@ async def crear_certificacion_predio(
     await db.refresh(nueva)
     return nueva
 
-@router.get("/", response_model=list[CertificacionPredioRead])
-async def filtrar_certificaciones_por_certificacion_id(
-    certificacion_id: int = Query(..., description="ID de la certificación"),
+@router.get("/unico_certificacion/{certificacion_id}", response_model=list[CertificacionPredioRead])
+async def listar_por_certificacion_id(
+    certificacion_id: int,
     db: AsyncSession = Depends(get_db),
     user: Usuario = Depends(current_user)
 ):
     query = (
         select(CertificacionPredio)
         .join(Predio)
-        .options(selectinload(CertificacionPredio.certificacion))
         .where(
             CertificacionPredio.certificacion_id == certificacion_id,
             Predio.usuario_id == user.id
         )
+        .options(selectinload(CertificacionPredio.certificacion))
     )
 
     result = await db.execute(query)
