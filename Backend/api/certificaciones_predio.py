@@ -17,6 +17,8 @@ from typing import Optional
 from sqlalchemy.orm import selectinload
 from core.s3 import upload_file_to_s3, delete_file_from_s3
 from urllib.parse import urlparse
+from fastapi import Query
+
 
 
 import uuid
@@ -59,6 +61,24 @@ async def crear_certificacion_predio(
     await db.refresh(nueva)
     return nueva
 
+@router.get("/unico_certificacion/{certificacion_id}", response_model=list[CertificacionPredioRead])
+async def listar_por_certificacion_id(
+    certificacion_id: int,
+    db: AsyncSession = Depends(get_db),
+    user: Usuario = Depends(current_user)
+):
+    query = (
+        select(CertificacionPredio)
+        .join(Predio)
+        .where(
+            CertificacionPredio.certificacion_id == certificacion_id,
+            Predio.usuario_id == user.id
+        )
+        .options(selectinload(CertificacionPredio.certificacion))
+    )
+
+    result = await db.execute(query)
+    return result.scalars().all()
 
 @router.get("/{predio_id}", response_model=list[CertificacionPredioRead])
 async def listar_certificaciones_de_predio(
