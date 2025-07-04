@@ -31,10 +31,23 @@ export default function Buyers() {
   const [loading, setLoading] = useState(true);
 
   const fetchCompradores = async () => {
-    const res = await fetch(`${API_URL}/compradores/`);
-    const data = await res.json();
-    setCompradores(data);
-    setLoading(false);
+    try {
+      const token = localStorage.getItem("access_token");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+
+      const res = await fetch(`${API_URL}/compradores/`, { headers });
+      if (!res.ok) throw new Error("Error al obtener compradores");
+      const data = await res.json();
+      setCompradores(data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Error al cargar los compradores.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = (id: number) => {
@@ -53,8 +66,14 @@ export default function Buyers() {
             <button
               onClick={async () => {
                 try {
+                  const token = localStorage.getItem("access_token");
+                  const headers = {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  };
                   const res = await fetch(`${API_URL}/compradores/${id}`, {
                     method: "DELETE",
+                    headers,
                   });
                   if (!res.ok) throw new Error("Error al eliminar");
                   toast.success("Comprador eliminado correctamente.");
