@@ -12,6 +12,11 @@ interface InsumoForm {
   costo_unitario: string;
 }
 
+interface Unidad {
+  id: number;
+  nombre: string;
+}
+
 interface Proveedor {
   id: number;
   nombre: string;
@@ -19,6 +24,7 @@ interface Proveedor {
 
 export default function InputsEdit() {
   const [searchParams] = useSearchParams();
+  const [unidades, setUnidades] = useState<Unidad[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const id = searchParams.get("id");
   const isEdit = !!id;
@@ -38,6 +44,7 @@ export default function InputsEdit() {
 
   useEffect(() => {
     fetchProveedores();
+    fetchUnidades();
     if (isEdit) fetchInsumo();
   }, [isEdit]);
 
@@ -51,6 +58,19 @@ export default function InputsEdit() {
       proveedor_id: data.proveedor_id,
       costo_unitario: data.costo_unitario,
     });
+  };
+
+  const fetchUnidades = async () => {
+    const token = localStorage.getItem("access_token");
+    try {
+      const res = await fetch(`${API_URL}/unidades/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setUnidades(data);
+    } catch (error) {
+      console.error("Error al obtener unidades:", error);
+    }
   };
 
   const fetchProveedores = async () => {
@@ -137,11 +157,21 @@ export default function InputsEdit() {
 
             <div className="form-group">
               <label className="form-label">Unidad</label>
-              <input
+              <select
                 className="form-input"
                 value={form.unidad}
                 onChange={(e) => setForm({ ...form, unidad: e.target.value })}
-              />
+              >
+                <option value="">-- Selecciona una unidad --</option>
+                {unidades.map((u) => (
+                  <option key={u.id} value={u.nombre}>
+                    {u.nombre}
+                  </option>
+                ))}
+              </select>
+              {errors.unidad && (
+                <div className="error-message">{errors.unidad}</div>
+              )}
               {errors.unidad && (
                 <div className="error-message">{errors.unidad}</div>
               )}

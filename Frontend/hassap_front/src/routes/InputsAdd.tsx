@@ -12,6 +12,11 @@ interface InsumoForm {
   costo_unitario: string;
 }
 
+interface Unidad {
+  id: number;
+  nombre: string;
+}
+
 interface Proveedor {
   id: number;
   nombre: string;
@@ -19,6 +24,7 @@ interface Proveedor {
 
 export default function InputsAdd() {
   const navigate = useNavigate();
+  const [unidades, setUnidades] = useState<Unidad[]>([]);
   const API_URL = import.meta.env.VITE_API_URL;
 
   const [form, setForm] = useState<InsumoForm>({
@@ -35,7 +41,21 @@ export default function InputsAdd() {
 
   useEffect(() => {
     fetchProveedores();
+    fetchUnidades();
   }, []);
+
+  const fetchUnidades = async () => {
+    const token = localStorage.getItem("access_token");
+    try {
+      const res = await fetch(`${API_URL}/unidades/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setUnidades(data);
+    } catch (error) {
+      console.error("Error al obtener unidades:", error);
+    }
+  };
 
   const fetchProveedores = async () => {
     const token = localStorage.getItem("access_token");
@@ -118,11 +138,21 @@ export default function InputsAdd() {
 
             <div className="form-group">
               <label className="form-label">Unidad</label>
-              <input
+              <select
                 className="form-input"
                 value={form.unidad}
                 onChange={(e) => setForm({ ...form, unidad: e.target.value })}
-              />
+              >
+                <option value="">-- Selecciona una unidad --</option>
+                {unidades.map((u) => (
+                  <option key={u.id} value={u.nombre}>
+                    {u.nombre}
+                  </option>
+                ))}
+              </select>
+              {errors.unidad && (
+                <div className="error-message">{errors.unidad}</div>
+              )}
               {errors.unidad && <div className="error-message">{errors.unidad}</div>}
             </div>
 

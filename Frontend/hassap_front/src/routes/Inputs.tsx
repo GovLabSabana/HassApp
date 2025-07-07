@@ -17,6 +17,11 @@ interface Insumo {
   costo_unitario: string;
 }
 
+interface Unidad {
+  id: number;
+  nombre: string;
+}
+
 interface Proveedor {
   id: number;
   nombre: string;
@@ -27,6 +32,7 @@ export default function Inputs() {
   const [filterCategoria, setFilterCategoria] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [proveedores, setProveedores] = useState<Proveedor[]>([]);
+  const [unidades, setUnidades] = useState<Unidad[]>([]);
   const categorias = data.categoria_insumo;
   const categoriaMap = categorias.reduce((acc, cat) => {
     acc[cat.id] = cat.name;
@@ -38,6 +44,7 @@ export default function Inputs() {
   useEffect(() => {
     fetchInsumos();
     fetchProveedores();
+    fetchUnidades();
   }, []);
 
   const fetchInsumos = async () => {
@@ -51,6 +58,71 @@ export default function Inputs() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchUnidades = async () => {
+    const token = localStorage.getItem("access_token");
+    try {
+      const res = await fetch(`${API_URL}/unidades/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      setUnidades(data);
+    } catch (error) {
+      console.error("Error al obtener unidades:", error);
+      toast.error("No se pudieron cargar las unidades.");
+    }
+  };
+
+  const eliminarUnidad = (unidad: Unidad) => {
+    toast.info(
+      ({ closeToast }) => (
+        <div>
+          <p>¿Deseas eliminar la unidad "{unidad.nombre}"?</p>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "10px" }}>
+            <button
+              onClick={async () => {
+                const token = localStorage.getItem("access_token");
+
+                try {
+                  const res = await fetch(`${API_URL}/unidades/${encodeURIComponent(unidad.nombre)}`, {
+                    method: "DELETE",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  });
+
+                  if (!res.ok) throw new Error("Error al eliminar.");
+                  toast.success(`Unidad "${unidad.nombre}" eliminada correctamente.`);
+                  fetchUnidades();
+                } catch (err) {
+                  console.error(err);
+                  toast.error("No se pudo eliminar la unidad.");
+                }
+                closeToast?.();
+              }}
+              style={{ backgroundColor: "#d9534f", color: "white", border: "none", padding: "6px 12px", borderRadius: "4px" }}
+            >
+              Confirmar
+            </button>
+            <button
+              onClick={() => closeToast?.()}
+              style={{ backgroundColor: "#6c757d", color: "white", border: "none", padding: "6px 12px", borderRadius: "4px" }}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        position: "top-center",
+      }
+    );
   };
 
   const fetchProveedores = async () => {
@@ -254,6 +326,47 @@ export default function Inputs() {
         >
           Histórico de Consumo
         </button>
+      </div>
+
+      <div className="units-section">
+        <h1 className="production-title">Unidades</h1>
+        {unidades.length === 0 ? (
+          <div className="no-data">No hay unidades registradas.</div>
+        ) : (
+          <table className="production-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {unidades.map((u) => (
+                <tr key={u.id}>
+                  <td>{u.id}</td>
+                  <td>{u.nombre}</td>
+                  <td>
+                    <button
+                      className="btn btn-delete"
+                      onClick={() => eliminarUnidad(u)}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        <div className="insumo-actions-container">
+        <button
+          className="btn-insumo-add"
+          onClick={() => navigate("/inputs/unit_add")}
+        >
+          Crear Unidad
+        </button>
+      </div>
       </div>
     </>
   );

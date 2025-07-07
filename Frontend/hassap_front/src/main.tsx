@@ -24,6 +24,7 @@ import InputsEdit from "./routes/InputsEdit.tsx";
 import Layout from "./routes/layouts/menu.tsx";
 import Login from "./routes/Login.tsx";
 import Production from "./routes/Production.tsx";
+import UnitsAdd from "./routes/UnitsAdd.tsx";
 import ProductionAdd from "./routes/ProductionAdd.tsx";
 import ProductionEdit from "./routes/ProductionEdit.tsx";
 import Properties from "./routes/Properties.tsx";
@@ -179,6 +180,10 @@ const router = createBrowserRouter([
       {
         path: "inputs/consumption",
         element: <HistoricConsumption />,
+      },
+      {
+        path: "inputs/unit_add",
+        element: <UnitsAdd />,
       },
       {
         path: "buyers",
