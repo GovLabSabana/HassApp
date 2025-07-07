@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../componentsStyles/BuyersAdd.css";
 import { toast } from "react-toastify";
@@ -14,9 +14,15 @@ const initialForm = {
   contacto: "",
 };
 
+interface TipoDocumento {
+  id: number;
+  name: string;
+}
+
 export default function BuyersAdd() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [tiposDocumento, setTiposDocumento] = useState<TipoDocumento[]>([]);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
@@ -35,6 +41,27 @@ export default function BuyersAdd() {
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
+
+  useEffect(() => {
+    const fetchTiposDocumento = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const res = await fetch(`${API_URL}/tipo-documento/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error("Error al obtener tipos de documento");
+        const data = await res.json();
+        setTiposDocumento(data);
+      } catch (err) {
+        console.error("Error al cargar tipos de documento:", err);
+        toast.error("No se pudieron cargar los tipos de documento.");
+      }
+    };
+
+    fetchTiposDocumento();
+  }, []);
 
   const handleSubmit = async () => {
     if (!validate()) return;
@@ -145,9 +172,11 @@ export default function BuyersAdd() {
             onChange={(e) => setForm({ ...form, tipo_doc: e.target.value })}
           >
             <option value="">Seleccione</option>
-            <option value={1}>Cédula de Ciudadanía</option>
-            <option value={2}>NIT</option>
-            <option value={3}>Cédula de Extranjería</option>
+            {tiposDocumento.map((td) => (
+              <option key={td.id} value={td.id}>
+                {td.name}
+              </option>
+            ))}
           </select>
           {errors.tipo_doc && (
             <div className="error-message">{errors.tipo_doc}</div>

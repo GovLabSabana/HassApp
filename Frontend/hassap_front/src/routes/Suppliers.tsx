@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../componentsStyles/Suppliers.css";
-import data from "../../BD_Keys.json";
 import Loader from "../components/utils/Loader";
 import { toast } from "react-toastify";
 
@@ -27,15 +26,7 @@ export default function Suppliers() {
     tipoDoc: "",
   });
   const [loading, setLoading] = useState(true);
-
-  const tipoDocMap: Record<number, string> = data.tipo_documento.reduce(
-    (acc, tipo) => {
-      acc[tipo.id] = tipo.name;
-      return acc;
-    },
-    {} as Record<number, string>
-  );
-
+  const [tiposDocumento, setTiposDocumento] = useState<{ id: number; name: string }[]>([]);
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token") || "";
 
@@ -53,6 +44,25 @@ export default function Suppliers() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchTiposDocumento = async () => {
+      try {
+        const res = await fetch(`${API_URL}/tipo-documento/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Error al cargar tipos de documento");
+        const data = await res.json();
+        setTiposDocumento(data);
+      } catch (err) {
+        console.error("Error al obtener tipos de documento:", err);
+        toast.error("Error al cargar tipos de documento");
+      }
+    };
+
+    fetchProveedores();
+    fetchTiposDocumento();
+  }, []);
 
   const handleDelete = (id: number) => {
     toast.info(
@@ -157,9 +167,9 @@ export default function Suppliers() {
               }
             >
               <option value="">Todos los tipos</option>
-              {Object.entries(tipoDocMap).map(([id, name]) => (
-                <option key={id} value={id}>
-                  {name}
+              {tiposDocumento.map((tipo) => (
+                <option key={tipo.id} value={tipo.id}>
+                  {tipo.name}
                 </option>
               ))}
             </select>
@@ -187,7 +197,7 @@ export default function Suppliers() {
               <tr key={p.id}>
                 <td>{p.id}</td>
                 <td>{p.nombre}</td>
-                <td>{tipoDocMap[p.tipo_doc]}</td>
+                <td>{tiposDocumento.find((t) => t.id === p.tipo_doc)?.name || "-"}</td>
                 <td>{p.num_doc}</td>
                 <td>{p.ciudad}</td>
                 <td>{p.pais}</td>

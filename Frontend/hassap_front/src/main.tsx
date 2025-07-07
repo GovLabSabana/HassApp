@@ -8,6 +8,7 @@ import AccountEdit from "./routes/AccountEdit.tsx";
 import Buyers from "./routes/Buyers.tsx";
 import BuyersAdd from "./routes/BuyersAdd.tsx";
 import BuyersEdit from "./routes/BuyersEdit.tsx";
+import DocumentTypeAdd from "./routes/DocumentTypeAdd.tsx";
 import ChangePass from "./routes/ChangePass.tsx";
 import Dashboard from "./routes/Dashboard.tsx";
 import Developers from "./routes/Developers.tsx";
@@ -200,6 +201,10 @@ const router = createBrowserRouter([
       {
         path: "buyers/edit",
         element: <BuyersEdit />,
+      },
+      {
+        path: "buyers/document_add",
+        element: <DocumentTypeAdd />,
       },
       {
         path: "suppliers",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../componentsStyles/SuppliersAdd.css";
 import { toast } from "react-toastify";
@@ -16,6 +16,7 @@ const initialForm = {
 export default function SuppliersAdd() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [tiposDocumento, setTiposDocumento] = useState<{ id: number; name: string }[]>([]);
   const [success, setSuccess] = useState(false);
   const [apiError, setApiError] = useState(""); // Nuevo: error de backend
   const navigate = useNavigate();
@@ -42,6 +43,26 @@ export default function SuppliersAdd() {
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
+
+  useEffect(() => {
+    const fetchTiposDocumento = async () => {
+      try {
+        const res = await fetch(`${API_URL}/tipo-documento/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error("Error al cargar tipos de documento");
+        const data = await res.json();
+        setTiposDocumento(data);
+      } catch (err) {
+        console.error(err);
+        toast.error("No se pudieron cargar los tipos de documento.");
+      }
+    };
+
+    fetchTiposDocumento();
+  }, []);
 
   const handleSubmit = async () => {
     setApiError("");
@@ -100,9 +121,11 @@ export default function SuppliersAdd() {
             onChange={(e) => setForm({ ...form, tipo_doc: e.target.value })}
           >
             <option value="">Seleccione</option>
-            <option value={1}>Cédula de Ciudadanía</option>
-            <option value={2}>Cédula de Extranjería</option>
-            <option value={3}>NIT</option>
+            {tiposDocumento.map((tipo) => (
+              <option key={tipo.id} value={tipo.id}>
+                {tipo.name}
+              </option>
+            ))}
           </select>
           {errors.tipo_doc && <div className="error-message">{errors.tipo_doc}</div>}
         </div>

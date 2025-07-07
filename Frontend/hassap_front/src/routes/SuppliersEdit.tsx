@@ -16,6 +16,7 @@ const initialForm = {
 export default function SuppliersEdit() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [tiposDocumento, setTiposDocumento] = useState<{ id: number; name: string }[]>([]);
   const [success, setSuccess] = useState(false);
   const [apiError, setApiError] = useState("");
   const [searchParams] = useSearchParams();
@@ -53,6 +54,26 @@ export default function SuppliersEdit() {
 
     if (id) fetchProveedor();
   }, [id]);
+
+  useEffect(() => {
+    const fetchTiposDocumento = async () => {
+      try {
+        const res = await fetch(`${API_URL}/tipo-documento/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error("No autorizado");
+        const data = await res.json();
+        setTiposDocumento(data);
+      } catch (err) {
+        console.error("Error al obtener tipos de documento:", err);
+        toast.error("Error al cargar los tipos de documento");
+      }
+    };
+
+    fetchTiposDocumento();
+  }, []);
 
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -134,9 +155,11 @@ export default function SuppliersEdit() {
             onChange={(e) => setForm({ ...form, tipo_doc: e.target.value })}
           >
             <option value="">Seleccione</option>
-            <option value={1}>Cédula de Ciudadanía</option>
-            <option value={2}>Cédula de Extranjería</option>
-            <option value={3}>NIT</option>
+            {tiposDocumento.map((tipo) => (
+              <option key={tipo.id} value={tipo.id}>
+                {tipo.name}
+              </option>
+            ))}
           </select>
           {errors.tipo_doc && <div className="error-message">{errors.tipo_doc}</div>}
         </div>

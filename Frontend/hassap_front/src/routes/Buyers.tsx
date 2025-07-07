@@ -19,8 +19,14 @@ interface Comprador {
   contacto: string;
 }
 
+interface TipoDocumento {
+  id: number;
+  name: string;
+}
+
 export default function Buyers() {
   const [compradores, setCompradores] = useState<Comprador[]>([]);
+  const [tiposDocumento, setTiposDocumento] = useState<TipoDocumento[]>([]);
   const [filtros, setFiltros] = useState({
     nombre: "",
     ciudad: "",
@@ -29,6 +35,22 @@ export default function Buyers() {
   });
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+
+  const fetchTiposDocumento = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const res = await fetch(`${API_URL}/tipo-documento/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      setTiposDocumento(data);
+    } catch (err) {
+      console.error("Error al obtener tipos de documento:", err);
+      toast.error("Error al cargar tipos de documento.");
+    }
+  };
 
   const fetchCompradores = async () => {
     try {
@@ -120,7 +142,65 @@ export default function Buyers() {
 
   useEffect(() => {
     fetchCompradores();
+    fetchTiposDocumento();
   }, []);
+
+  const handleDeleteTipoDocumento = (id: number) => {
+    toast.info(
+      ({ closeToast }) => (
+        <div>
+          <p>¿Estás seguro de eliminar este tipo de documento?</p>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "10px" }}>
+            <button
+              onClick={async () => {
+                try {
+                  const token = localStorage.getItem("access_token");
+                  const res = await fetch(`${API_URL}/tipo-documento/${id}`, {
+                    method: "DELETE",
+                    headers: { Authorization: `Bearer ${token}` },
+                  });
+                  if (!res.ok) throw new Error("Error al eliminar");
+                  toast.success("Tipo de documento eliminado correctamente.");
+                  fetchTiposDocumento();
+                } catch (err) {
+                  console.error(err);
+                  toast.error("No se pudo eliminar el tipo de documento.");
+                }
+                closeToast?.();
+              }}
+              style={{
+                backgroundColor: "#d9534f",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
+            >
+              Confirmar
+            </button>
+            <button
+              onClick={() => closeToast?.()}
+              style={{
+                backgroundColor: "#6c757d",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+              }}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        position: "top-center",
+      }
+    );
+  };
 
   // Filtrar compradores
   const compradoresFiltrados = compradores.filter((comprador) => {
@@ -188,9 +268,11 @@ export default function Buyers() {
               }
             >
               <option value="">Todos los tipos</option>
-              <option value="1">C.C.</option>
-              <option value="2">NIT</option>
-              <option value="3">C.E.</option>
+              {tiposDocumento.map((td) => (
+                <option key={td.id} value={td.id}>
+                  {td.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -217,7 +299,11 @@ export default function Buyers() {
               <tr key={c.id}>
                 <td>{c.id}</td>
                 <td>{c.nombre}</td>
-                <td>{["", "C.C.", "NIT", "C.E."][c.tipo_doc]}</td>
+                <td>
+                  {
+                    tiposDocumento.find((td) => td.id === c.tipo_doc)?.name || "Desconocido"
+                  }
+                </td>
                 <td>{c.num_doc}</td>
                 <td>{c.ciudad}</td>
                 <td>{c.pais}</td>
@@ -251,6 +337,49 @@ export default function Buyers() {
         >
           + Agregar Nuevo Comprador
         </button>
+      </div>
+
+      <div className="buyers-document-section">
+        <h2 className="buyers-title">Tipos de Documento</h2>
+
+        {tiposDocumento.length === 0 ? (
+          <div className="no-data">No hay tipos de documento registrados.</div>
+        ) : (
+          <table className="buyers-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tiposDocumento.map((td) => (
+                <tr key={td.id}>
+                  <td>{td.id}</td>
+                  <td>{td.name}</td>
+                  <td>
+                    <button
+                      className="buyers-btn-delete"
+                      onClick={() => handleDeleteTipoDocumento(td.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        <div className="buyers-add-container">
+          <button
+            className="buyers-btn-add"
+            onClick={() => navigate("/buyers/document_add")}
+          >
+            + Agregar Tipo de Documento
+          </button>
+        </div>
       </div>
     </>
   );
